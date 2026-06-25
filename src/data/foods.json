@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "nombre": "Burger Meat Pollo",
+    "marca": "Mercadona",
+    "unidad": "g",
+    "kcal": 123,
+    "proteinas": 16,
+    "hidratos": 1.6,
+    "grasas": 5.8,
+    "fibra": 0,
+    "sal": 1.3
+  }
+]
