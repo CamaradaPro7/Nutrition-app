@@ -103,21 +103,29 @@ function renderFoods(filter=""){
 
 }
 
+let currentMeal = "";
+
 function openMeal(meal){
 
-  modal.classList.remove("hidden");
+  currentMeal = meal;
 
-  searchInput.value="";
+  modal.classList.add("show");
+
+  searchInput.value = "";
 
   renderFoods();
 
+  searchInput.focus();
+
 }
 
-document
-.getElementById("closeModal")
-.onclick=()=>{
+modal.onclick = (e) => {
 
-modal.classList.add("hidden");
+  if (e.target === modal) {
+
+    modal.classList.remove("show");
+
+  }
 
 };
 
