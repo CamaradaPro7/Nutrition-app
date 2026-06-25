@@ -1,320 +1,1057 @@
+/* ==========================================================
+   MI NUTRICIÓN V3
+   styles.css
+   Bloque 1/3
+========================================================== */
+
 :root{
-  --bg:#0b0f17;
-  --card:#171c24;
-  --card2:#202733;
-  --border:#2a313d;
 
-  --text:#f5f7fb;
-  --muted:#8b94a3;
+--bg:#0B1018;
+--surface:#171D26;
+--surface2:#1D2430;
+--border:#2A3342;
 
-  --green:#45d05b;
-  --blue:#3ea6ff;
-  --yellow:#ffca3a;
+--text:#F7F9FC;
+--text2:#98A2B3;
 
-  --radius:28px;
+--green:#39D353;
+--blue:#3B82F6;
+--yellow:#F7C843;
+
+--shadow:0 12px 35px rgba(0,0,0,.35);
+
+--radius:26px;
+
 }
 
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
 }
 
 html{
-  scroll-behavior:smooth;
+
+scroll-behavior:smooth;
+
 }
 
 body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
-  padding:26px 22px 120px;
+
+background:var(--bg);
+
+color:var(--text);
+
+font-family:
+
+-apple-system,
+BlinkMacSystemFont,
+"SF Pro Display",
+"Segoe UI",
+sans-serif;
+
+padding:22px;
+
+padding-bottom:130px;
+
 }
 
 .app{
-  max-width:760px;
-  margin:auto;
+
+max-width:760px;
+
+margin:auto;
+
 }
+
+
+
+/* ==========================
+      HEADER
+========================== */
 
 .header{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  margin-bottom:28px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:flex-start;
+
+margin-bottom:26px;
+
 }
 
-.header h1{
-  font-size:54px;
-  font-weight:800;
-  letter-spacing:-2px;
+.titleBlock h1{
+
+font-size:36px;
+
+font-weight:700;
+
+letter-spacing:-1px;
+
 }
 
-.header p{
-  margin-top:8px;
-  font-size:22px;
-  color:var(--muted);
+.titleBlock p{
+
+margin-top:8px;
+
+font-size:15px;
+
+color:var(--text2);
+
 }
 
-.icon-btn{
-  width:58px;
-  height:58px;
-  border:none;
-  border-radius:50%;
-  background:var(--card);
-  color:white;
-  font-size:24px;
-  cursor:pointer;
-  box-shadow:0 8px 30px rgba(0,0,0,.35);
+.iconButton{
+
+width:46px;
+
+height:46px;
+
+border:none;
+
+border-radius:50%;
+
+background:var(--surface);
+
+color:white;
+
+font-size:18px;
+
+box-shadow:var(--shadow);
+
 }
 
-.dashboard{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:28px;
-  margin-bottom:28px;
-  box-shadow:0 10px 40px rgba(0,0,0,.35);
+
+
+/* ==========================
+      DASHBOARD
+========================== */
+
+.summaryCard{
+
+background:var(--surface);
+
+border:1px solid var(--border);
+
+border-radius:var(--radius);
+
+padding:22px;
+
+box-shadow:var(--shadow);
+
+margin-bottom:22px;
+
+}
+
+.summaryTop{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:28px;
+
+}
+
+.label{
+
+font-size:14px;
+
+color:var(--text2);
+
 }
 
 .kcal{
-  margin-bottom:26px;
+
+display:flex;
+
+align-items:flex-end;
+
+gap:6px;
+
+margin-top:8px;
+
 }
 
-.small{
-  color:var(--muted);
-  font-size:18px;
+#currentKcal{
+
+font-size:54px;
+
+font-weight:700;
+
+line-height:1;
+
 }
 
-.kcal h2{
-  font-size:82px;
-  line-height:1;
-  margin:8px 0;
-  font-weight:800;
+.divider{
+
+font-size:28px;
+
+opacity:.5;
+
 }
 
-.kcal p{
-  font-size:24px;
-  color:var(--muted);
+#goalKcal{
+
+font-size:28px;
+
+opacity:.75;
+
 }
+
+.goalText{
+
+margin-top:8px;
+
+font-size:14px;
+
+color:var(--text2);
+
+}
+
+
+
+/* ==========================
+      ANILLO
+========================== */
 
 .ring{
-  width:140px;
-  height:140px;
-  margin:10px auto 34px;
-  border-radius:50%;
-  border:10px solid var(--green);
-  display:flex;
-  justify-content:center;
-  align-items:center;
+
+position:relative;
+
+width:110px;
+
+height:110px;
+
 }
 
-.ring-value{
-  color:var(--green);
-  font-size:30px;
-  font-weight:700;
+.ring svg{
+
+width:110px;
+
+height:110px;
+
+transform:rotate(-90deg);
+
 }
 
-.macro{
-  margin-top:22px;
+.ringBackground{
+
+fill:none;
+
+stroke:#2B3444;
+
+stroke-width:8;
+
 }
 
-.macro div:first-child{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
-  font-size:22px;
+.ringProgress{
+
+fill:none;
+
+stroke:var(--green);
+
+stroke-width:8;
+
+stroke-linecap:round;
+
+stroke-dasharray:314;
+
+stroke-dashoffset:314;
+
+transition:.5s;
+
+}
+
+.ringText{
+
+position:absolute;
+
+inset:0;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:22px;
+
+font-weight:700;
+
+}
+
+
+
+/* ==========================
+      MACROS
+========================== */
+
+.macroList{
+
+display:flex;
+
+flex-direction:column;
+
+gap:18px;
+
+}
+
+.macroHeader{
+
+display:flex;
+
+justify-content:space-between;
+
+font-size:15px;
+
+margin-bottom:8px;
+
 }
 
 .progress{
-  height:10px;
-  background:#313846;
-  border-radius:20px;
-  overflow:hidden;
+
+height:7px;
+
+background:#2B3444;
+
+border-radius:999px;
+
+overflow:hidden;
+
 }
 
 .progress div{
-  width:0%;
-  height:100%;
-  border-radius:20px;
-  transition:.35s;
+
+height:100%;
+
+width:0%;
+
+transition:.35s;
+
+border-radius:999px;
+
 }
 
 #proteinBar{
-  background:var(--green);
+
+background:var(--green);
+
 }
 
-#carbsBar{
-  background:var(--blue);
+#carbBar{
+
+background:var(--blue);
+
 }
 
 #fatBar{
-  background:var(--yellow);
+
+background:var(--yellow);
+
 }
 
-.meal{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:24px;
-  margin-bottom:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,.25);
+/* ==========================================================
+   MI NUTRICIÓN V3
+   styles.css
+   Bloque 2/3
+========================================================== */
+
+
+/* ==========================
+      COMIDAS
+========================== */
+
+#meals{
+
+display:flex;
+
+flex-direction:column;
+
+gap:18px;
+
 }
 
-.meal-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.mealCard{
+
+background:var(--surface);
+
+border:1px solid var(--border);
+
+border-radius:var(--radius);
+
+padding:22px;
+
+box-shadow:var(--shadow);
+
+transition:.25s;
+
 }
 
-.meal-title{
-  font-size:36px;
-  font-weight:700;
+.mealCard:active{
+
+transform:scale(.99);
+
 }
 
-.meal-sub{
-  color:var(--muted);
-  margin-top:8px;
-  font-size:20px;
+.mealHeader{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:16px;
+
 }
 
-.add-btn{
-  width:54px;
-  height:54px;
-  border:none;
-  border-radius:50%;
-  background:var(--green);
-  color:white;
-  font-size:34px;
-  cursor:pointer;
+.mealHeader h2{
+
+font-size:24px;
+
+font-weight:650;
+
+letter-spacing:-.4px;
+
 }
+
+.addButton{
+
+width:42px;
+
+height:42px;
+
+border:none;
+
+border-radius:50%;
+
+background:var(--surface2);
+
+color:var(--green);
+
+font-size:28px;
+
+font-weight:500;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+.addButton:active{
+
+transform:scale(.92);
+
+background:var(--green);
+
+color:white;
+
+}
+
+.mealItems{
+
+display:flex;
+
+flex-direction:column;
+
+gap:12px;
+
+}
+
+.emptyMeal{
+
+color:var(--text2);
+
+font-size:15px;
+
+padding:8px 0;
+
+}
+
+.foodItem{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:14px 0;
+
+border-bottom:1px solid rgba(255,255,255,.06);
+
+}
+
+.foodItem:last-child{
+
+border-bottom:none;
+
+}
+
+.foodLeft{
+
+display:flex;
+
+flex-direction:column;
+
+gap:4px;
+
+}
+
+.foodName{
+
+font-size:16px;
+
+font-weight:600;
+
+}
+
+.foodAmount{
+
+font-size:13px;
+
+color:var(--text2);
+
+}
+
+.foodRight{
+
+text-align:right;
+
+}
+
+.foodKcal{
+
+font-size:16px;
+
+font-weight:600;
+
+}
+
+.foodMacros{
+
+font-size:12px;
+
+color:var(--text2);
+
+margin-top:4px;
+
+}
+
+
+
+/* ==========================
+      MODAL
+========================== */
 
 .modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  backdrop-filter:blur(12px);
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  z-index:999;
+
+position:fixed;
+
+inset:0;
+
+background:rgba(0,0,0,.55);
+
+backdrop-filter:blur(16px);
+
+display:flex;
+
+justify-content:center;
+
+align-items:flex-end;
+
+padding:18px;
+
+z-index:999;
+
+transition:.25s;
+
 }
 
 .hidden{
-  display:none;
+
+display:none;
+
 }
 
 .sheet{
-  width:100%;
-  max-width:760px;
-  background:var(--card);
-  border-radius:30px 30px 0 0;
-  padding:26px;
-  animation:up .25s ease;
+
+width:100%;
+
+max-width:760px;
+
+background:var(--surface);
+
+border:1px solid var(--border);
+
+border-radius:28px 28px 0 0;
+
+padding:24px;
+
+animation:sheetUp .25s ease;
+
 }
 
-.sheet-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:22px;
+.sheetHeader{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:20px;
+
 }
 
-.sheet-header h2{
-  font-size:36px;
+.sheetHeader h2{
+
+font-size:28px;
+
+font-weight:700;
+
 }
 
-.sheet-header button{
-  width:44px;
-  height:44px;
-  border:none;
-  border-radius:50%;
-  background:#2b3441;
-  color:white;
-  font-size:22px;
+#closeModal{
+
+width:40px;
+
+height:40px;
+
+border:none;
+
+border-radius:50%;
+
+background:var(--surface2);
+
+color:white;
+
+font-size:18px;
+
 }
 
-#searchInput{
-  width:100%;
-  padding:18px 22px;
-  border:none;
-  border-radius:18px;
-  background:var(--card2);
-  color:white;
-  font-size:22px;
-  margin-bottom:20px;
+#foodSearch{
+
+width:100%;
+
+padding:16px 18px;
+
+border:none;
+
+outline:none;
+
+border-radius:18px;
+
+background:var(--surface2);
+
+color:white;
+
+font-size:17px;
+
+margin-bottom:20px;
+
 }
 
-#searchInput::placeholder{
-  color:#7f8898;
+#foodSearch::placeholder{
+
+color:var(--text2);
+
 }
 
-#foodList{
-  max-height:55vh;
-  overflow:auto;
+#searchResults{
+
+display:flex;
+
+flex-direction:column;
+
+gap:12px;
+
+max-height:55vh;
+
+overflow-y:auto;
+
 }
 
-.food{
-  padding:18px;
-  border-radius:18px;
-  background:var(--card2);
-  margin-bottom:12px;
+.searchItem{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:16px;
+
+border-radius:18px;
+
+background:var(--surface2);
+
+cursor:pointer;
+
+transition:.2s;
+
 }
 
-.food-name{
-  font-size:22px;
-  font-weight:600;
+.searchItem:active{
+
+transform:scale(.98);
+
 }
 
-.food-info{
-  color:var(--muted);
-  margin-top:4px;
+.searchInfo{
+
+display:flex;
+
+flex-direction:column;
+
+gap:4px;
+
 }
 
-.tabbar{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  width:92%;
-  max-width:760px;
-  height:82px;
-  background:#151b25;
-  border:1px solid var(--border);
-  border-radius:42px;
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  box-shadow:0 10px 35px rgba(0,0,0,.4);
+.searchName{
+
+font-size:16px;
+
+font-weight:600;
+
 }
 
-.tabbar button{
-  background:none;
-  border:none;
-  color:#9aa3b0;
-  font-size:28px;
+.searchData{
+
+font-size:13px;
+
+color:var(--text2);
+
 }
 
-.tabbar .active{
-  color:var(--green);
+.searchAdd{
+
+width:34px;
+
+height:34px;
+
+border-radius:50%;
+
+background:var(--green);
+
+color:white;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:22px;
+
+font-weight:600;
+
 }
 
-.tabbar .add{
-  width:62px;
-  height:62px;
-  border-radius:50%;
-  background:var(--green);
-  color:white;
-  font-size:34px;
+/* ==========================================================
+   MI NUTRICIÓN V3
+   styles.css
+   Bloque 3/3
+========================================================== */
+
+
+/* ========= BARRA INFERIOR ========= */
+
+.bottomBar{
+
+position:fixed;
+
+left:50%;
+
+bottom:18px;
+
+transform:translateX(-50%);
+
+width:92%;
+
+max-width:760px;
+
+height:74px;
+
+background:rgba(23,29,38,.92);
+
+backdrop-filter:blur(20px);
+
+border:1px solid var(--border);
+
+border-radius:999px;
+
+display:flex;
+
+justify-content:space-around;
+
+align-items:center;
+
+box-shadow:0 20px 40px rgba(0,0,0,.45);
+
+z-index:100;
+
 }
 
-@keyframes up{
-  from{
-    transform:translateY(60px);
-    opacity:0;
-  }
-  to{
-    transform:translateY(0);
-    opacity:1;
-  }
+.tab{
+
+background:none;
+
+border:none;
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+gap:4px;
+
+color:var(--text2);
+
+font-size:22px;
+
+cursor:pointer;
+
+}
+
+.tab span{
+
+font-size:11px;
+
+}
+
+.tab.active{
+
+color:var(--green);
+
+}
+
+.centerButton{
+
+width:58px;
+
+height:58px;
+
+border:none;
+
+border-radius:50%;
+
+background:var(--green);
+
+color:white;
+
+font-size:34px;
+
+font-weight:300;
+
+box-shadow:0 10px 25px rgba(57,211,83,.35);
+
+}
+
+
+
+/* ========= SCROLL ========= */
+
+::-webkit-scrollbar{
+
+width:6px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+background:#364153;
+
+border-radius:999px;
+
+}
+
+
+
+/* ========= ANIMACIONES ========= */
+
+@keyframes sheetUp{
+
+from{
+
+transform:translateY(80px);
+
+opacity:0;
+
+}
+
+to{
+
+transform:translateY(0);
+
+opacity:1;
+
+}
+
+}
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+
+}
+
+to{
+
+opacity:1;
+
+}
+
+}
+
+.summaryCard,
+.mealCard{
+
+animation:fadeIn .35s ease;
+
+}
+
+
+
+/* ========= RESPONSIVE ========= */
+
+@media (max-width:600px){
+
+body{
+
+padding:18px;
+
+padding-bottom:120px;
+
+}
+
+.titleBlock h1{
+
+font-size:30px;
+
+}
+
+#currentKcal{
+
+font-size:46px;
+
+}
+
+#goalKcal{
+
+font-size:22px;
+
+}
+
+.ring{
+
+width:90px;
+
+height:90px;
+
+}
+
+.ring svg{
+
+width:90px;
+
+height:90px;
+
+}
+
+.ringText{
+
+font-size:18px;
+
+}
+
+.mealHeader h2{
+
+font-size:20px;
+
+}
+
+.sheet{
+
+padding:20px;
+
+}
+
+.sheetHeader h2{
+
+font-size:24px;
+
+}
+
+}
+
+
+
+/* ========= EFECTOS ========= */
+
+.iconButton,
+.addButton,
+.centerButton,
+#closeModal{
+
+transition:.2s;
+
+}
+
+.iconButton:active,
+.addButton:active,
+.centerButton:active,
+#closeModal:active{
+
+transform:scale(.94);
+
+}
+
+.summaryCard{
+
+overflow:hidden;
+
+position:relative;
+
+}
+
+.summaryCard::before{
+
+content:"";
+
+position:absolute;
+
+top:-80px;
+
+right:-80px;
+
+width:180px;
+
+height:180px;
+
+background:radial-gradient(circle,rgba(57,211,83,.08),transparent);
+
+pointer-events:none;
+
+}
+
+.mealCard:hover{
+
+border-color:#3a4658;
+
 }
