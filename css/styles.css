@@ -1,26 +1,39 @@
-/* ==========================================================
+/* ======================================================
    MI NUTRICIÓN V3
-   styles.css
-   Bloque 1/3
-========================================================== */
+   BLOQUE 1/4
+====================================================== */
 
 :root{
 
---bg:#0B1018;
---surface:#171D26;
---surface2:#1D2430;
---border:#2A3342;
+--bg:#0d1117;
+--card:#171c23;
+--card2:#1d2430;
 
---text:#F7F9FC;
---text2:#98A2B3;
+--border:#2b3442;
 
---green:#39D353;
---blue:#3B82F6;
---yellow:#F7C843;
+--text:#f4f6fb;
+--text2:#a5adba;
 
---shadow:0 12px 35px rgba(0,0,0,.35);
+--green:#38d46a;
+--green2:#25c65c;
 
---radius:26px;
+--blue:#4cb7ff;
+--orange:#ffb84d;
+--red:#ff5b67;
+
+--radius:28px;
+
+--shadow:
+0 12px 35px rgba(0,0,0,.35);
+
+--transition:.28s;
+
+font-family:
+-apple-system,
+BlinkMacSystemFont,
+"SF Pro Display",
+Segoe UI,
+sans-serif;
 
 }
 
@@ -28,7 +41,6 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
 }
 
 html{
@@ -43,400 +55,128 @@ background:var(--bg);
 
 color:var(--text);
 
-font-family:
+min-height:100vh;
 
--apple-system,
-BlinkMacSystemFont,
-"SF Pro Display",
-"Segoe UI",
-sans-serif;
-
-padding:22px;
-
-padding-bottom:130px;
+padding:28px;
 
 }
 
 .app{
 
-max-width:760px;
+max-width:620px;
 
 margin:auto;
 
+padding-bottom:120px;
+
 }
 
-
-
-/* ==========================
-      HEADER
-========================== */
+/* =======================
+HEADER
+======================= */
 
 .header{
 
 display:flex;
 
-justify-content:space-between;
-
-align-items:flex-start;
-
-margin-bottom:26px;
-
-}
-
-.titleBlock h1{
-
-font-size:36px;
-
-font-weight:700;
-
-letter-spacing:-1px;
-
-}
-
-.titleBlock p{
-
-margin-top:8px;
-
-font-size:15px;
-
-color:var(--text2);
-
-}
-
-.iconButton{
-
-width:46px;
-
-height:46px;
-
-border:none;
-
-border-radius:50%;
-
-background:var(--surface);
-
-color:white;
-
-font-size:18px;
-
-box-shadow:var(--shadow);
-
-}
-
-
-
-/* ==========================
-      DASHBOARD
-========================== */
-
-.summaryCard{
-
-background:var(--surface);
-
-border:1px solid var(--border);
-
-border-radius:var(--radius);
-
-padding:22px;
-
-box-shadow:var(--shadow);
-
-margin-bottom:22px;
-
-}
-
-.summaryTop{
-
-display:flex;
-
-justify-content:space-between;
-
 align-items:center;
 
-margin-bottom:28px;
+justify-content:space-between;
+
+margin-bottom:34px;
 
 }
 
-.label{
+.logo{
 
-font-size:14px;
-
-color:var(--text2);
+font-size:48px;
 
 }
 
-.kcal{
+.title{
 
-display:flex;
+flex:1;
 
-align-items:flex-end;
-
-gap:6px;
-
-margin-top:8px;
+margin-left:18px;
 
 }
 
-#currentKcal{
+.title h1{
 
-font-size:54px;
+font-size:56px;
 
-font-weight:700;
+font-weight:800;
+
+letter-spacing:-2px;
 
 line-height:1;
 
 }
 
-.divider{
+.title p{
 
-font-size:28px;
+margin-top:10px;
 
-opacity:.5;
-
-}
-
-#goalKcal{
-
-font-size:28px;
-
-opacity:.75;
-
-}
-
-.goalText{
-
-margin-top:8px;
-
-font-size:14px;
+font-size:22px;
 
 color:var(--text2);
 
 }
 
+.settings{
 
+width:56px;
 
-/* ==========================
-      ANILLO
-========================== */
+height:56px;
 
-.ring{
+border:none;
 
-position:relative;
+border-radius:50%;
 
-width:110px;
+background:var(--card);
 
-height:110px;
+color:white;
 
-}
+font-size:24px;
 
-.ring svg{
+cursor:pointer;
 
-width:110px;
+transition:.25s;
 
-height:110px;
-
-transform:rotate(-90deg);
+box-shadow:var(--shadow);
 
 }
 
-.ringBackground{
+.settings:active{
 
-fill:none;
-
-stroke:#2B3444;
-
-stroke-width:8;
+transform:scale(.95);
 
 }
 
-.ringProgress{
+/* =======================
+DASHBOARD
+======================= */
 
-fill:none;
+.dashboard{
 
-stroke:var(--green);
-
-stroke-width:8;
-
-stroke-linecap:round;
-
-stroke-dasharray:314;
-
-stroke-dashoffset:314;
-
-transition:.5s;
-
-}
-
-.ringText{
-
-position:absolute;
-
-inset:0;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-font-size:22px;
-
-font-weight:700;
-
-}
-
-
-
-/* ==========================
-      MACROS
-========================== */
-
-.macroList{
-
-display:flex;
-
-flex-direction:column;
-
-gap:18px;
-
-}
-
-.macroHeader{
-
-display:flex;
-
-justify-content:space-between;
-
-font-size:15px;
-
-margin-bottom:8px;
-
-}
-
-.progress{
-
-height:7px;
-
-background:#2B3444;
-
-border-radius:999px;
-
-overflow:hidden;
-
-}
-
-.progress div{
-
-height:100%;
-
-width:0%;
-
-transition:.35s;
-
-border-radius:999px;
-
-}
-
-#proteinBar{
-
-background:var(--green);
-
-}
-
-#carbBar{
-
-background:var(--blue);
-
-}
-
-#fatBar{
-
-background:var(--yellow);
-
-}
-
-/* ==========================================================
-   MI NUTRICIÓN V3
-   styles.css
-   Bloque 2/3
-========================================================== */
-
-
-/* ==========================
-      COMIDAS
-========================== */
-
-#meals{
-
-display:flex;
-
-flex-direction:column;
-
-gap:18px;
-
-}
-
-.mealCard{
-
-background:var(--surface);
+background:linear-gradient(
+180deg,
+#181d24,
+#141a21);
 
 border:1px solid var(--border);
 
 border-radius:var(--radius);
 
-padding:22px;
+padding:32px;
 
 box-shadow:var(--shadow);
 
-transition:.25s;
+margin-bottom:28px;
 
 }
 
-.mealCard:active{
-
-transform:scale(.99);
-
-}
-
-.mealHeader{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-margin-bottom:16px;
-
-}
-
-.mealHeader h2{
-
-font-size:24px;
-
-font-weight:650;
-
-letter-spacing:-.4px;
-
-}
-
-.addButton{
-
-width:42px;
-
-height:42px;
-
-border:none;
-
-border-radius:50%;
-
-background:var(--surface2);
-
-color:var(--green);
-
-font-size:28px;
-
-font-weight:500;
+.ring{
 
 display:flex;
 
@@ -444,313 +184,77 @@ justify-content:center;
 
 align-items:center;
 
-cursor:pointer;
-
-transition:.25s;
+margin-bottom:30px;
 
 }
 
-.addButton:active{
+.ring-center{
 
-transform:scale(.92);
+width:220px;
 
-background:var(--green);
-
-color:white;
-
-}
-
-.mealItems{
-
-display:flex;
-
-flex-direction:column;
-
-gap:12px;
-
-}
-
-.emptyMeal{
-
-color:var(--text2);
-
-font-size:15px;
-
-padding:8px 0;
-
-}
-
-.foodItem{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-padding:14px 0;
-
-border-bottom:1px solid rgba(255,255,255,.06);
-
-}
-
-.foodItem:last-child{
-
-border-bottom:none;
-
-}
-
-.foodLeft{
-
-display:flex;
-
-flex-direction:column;
-
-gap:4px;
-
-}
-
-.foodName{
-
-font-size:16px;
-
-font-weight:600;
-
-}
-
-.foodAmount{
-
-font-size:13px;
-
-color:var(--text2);
-
-}
-
-.foodRight{
-
-text-align:right;
-
-}
-
-.foodKcal{
-
-font-size:16px;
-
-font-weight:600;
-
-}
-
-.foodMacros{
-
-font-size:12px;
-
-color:var(--text2);
-
-margin-top:4px;
-
-}
-
-
-
-/* ==========================
-      MODAL
-========================== */
-
-.modal{
-
-position:fixed;
-
-inset:0;
-
-background:rgba(0,0,0,.55);
-
-backdrop-filter:blur(16px);
-
-display:flex;
-
-justify-content:center;
-
-align-items:flex-end;
-
-padding:18px;
-
-z-index:999;
-
-transition:.25s;
-
-}
-
-.hidden{
-
-display:none;
-
-}
-
-.sheet{
-
-width:100%;
-
-max-width:760px;
-
-background:var(--surface);
-
-border:1px solid var(--border);
-
-border-radius:28px 28px 0 0;
-
-padding:24px;
-
-animation:sheetUp .25s ease;
-
-}
-
-.sheetHeader{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-margin-bottom:20px;
-
-}
-
-.sheetHeader h2{
-
-font-size:28px;
-
-font-weight:700;
-
-}
-
-#closeModal{
-
-width:40px;
-
-height:40px;
-
-border:none;
+height:220px;
 
 border-radius:50%;
 
-background:var(--surface2);
+display:flex;
 
-color:white;
+flex-direction:column;
 
-font-size:18px;
+justify-content:center;
 
-}
+align-items:center;
 
-#foodSearch{
+background:
+radial-gradient(circle,
+#1d2430 58%,
+transparent 59%);
 
-width:100%;
+border:12px solid var(--green);
 
-padding:16px 18px;
-
-border:none;
-
-outline:none;
-
-border-radius:18px;
-
-background:var(--surface2);
-
-color:white;
-
-font-size:17px;
-
-margin-bottom:20px;
+box-shadow:
+0 0 45px rgba(56,212,106,.20);
 
 }
 
-#foodSearch::placeholder{
+.ring-center span{
+
+font-size:64px;
+
+font-weight:800;
+
+line-height:1;
+
+}
+
+.ring-center small{
+
+margin-top:8px;
+
+font-size:22px;
 
 color:var(--text2);
 
 }
 
-#searchResults{
+/* ======================================================
+   BLOQUE 2/4
+====================================================== */
+
+.macros{
 
 display:flex;
 
 flex-direction:column;
 
-gap:12px;
-
-max-height:55vh;
-
-overflow-y:auto;
+gap:22px;
 
 }
 
-.searchItem{
+.macro{
 
 display:flex;
 
 justify-content:space-between;
-
-align-items:center;
-
-padding:16px;
-
-border-radius:18px;
-
-background:var(--surface2);
-
-cursor:pointer;
-
-transition:.2s;
-
-}
-
-.searchItem:active{
-
-transform:scale(.98);
-
-}
-
-.searchInfo{
-
-display:flex;
-
-flex-direction:column;
-
-gap:4px;
-
-}
-
-.searchName{
-
-font-size:16px;
-
-font-weight:600;
-
-}
-
-.searchData{
-
-font-size:13px;
-
-color:var(--text2);
-
-}
-
-.searchAdd{
-
-width:34px;
-
-height:34px;
-
-border-radius:50%;
-
-background:var(--green);
-
-color:white;
-
-display:flex;
-
-justify-content:center;
 
 align-items:center;
 
@@ -760,38 +264,157 @@ font-weight:600;
 
 }
 
-/* ==========================================================
-   MI NUTRICIÓN V3
-   styles.css
-   Bloque 3/3
-========================================================== */
+.macro span{
 
+color:var(--text);
 
-/* ========= BARRA INFERIOR ========= */
+}
 
-.bottomBar{
+.macro strong{
+
+color:white;
+
+font-size:24px;
+
+}
+
+.macro::after{
+
+content:"";
+
+display:block;
+
+width:100%;
+
+height:8px;
+
+background:#2d3440;
+
+border-radius:999px;
+
+margin-top:12px;
+
+position:absolute;
+
+left:0;
+
+opacity:.18;
+
+}
+
+.meal{
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+border-radius:var(--radius);
+
+padding:24px;
+
+margin-bottom:22px;
+
+box-shadow:var(--shadow);
+
+transition:var(--transition);
+
+}
+
+.meal:hover{
+
+transform:translateY(-2px);
+
+}
+
+.meal-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:18px;
+
+}
+
+.meal-header h2{
+
+font-size:34px;
+
+font-weight:700;
+
+}
+
+.add{
+
+width:48px;
+
+height:48px;
+
+border:none;
+
+border-radius:50%;
+
+background:var(--green);
+
+color:white;
+
+font-size:32px;
+
+cursor:pointer;
+
+transition:.25s;
+
+box-shadow:
+
+0 0 25px rgba(56,212,106,.35);
+
+}
+
+.add:active{
+
+transform:scale(.92);
+
+}
+
+.meal-body{
+
+color:var(--text2);
+
+font-size:20px;
+
+line-height:1.6;
+
+min-height:28px;
+
+}
+
+/* ======================================================
+   BLOQUE 3/4
+====================================================== */
+
+.bottom-nav{
 
 position:fixed;
 
 left:50%;
 
-bottom:18px;
+bottom:22px;
 
 transform:translateX(-50%);
 
-width:92%;
+width:min(94%,520px);
 
-max-width:760px;
+height:72px;
 
-height:74px;
+background:rgba(23,28,35,.95);
 
-background:rgba(23,29,38,.92);
-
-backdrop-filter:blur(20px);
+backdrop-filter:blur(18px);
 
 border:1px solid var(--border);
 
-border-radius:999px;
+border-radius:24px;
 
 display:flex;
 
@@ -799,97 +422,121 @@ justify-content:space-around;
 
 align-items:center;
 
-box-shadow:0 20px 40px rgba(0,0,0,.45);
+box-shadow:var(--shadow);
 
 z-index:100;
 
 }
 
-.tab{
+.bottom-nav button{
 
 background:none;
 
 border:none;
 
-display:flex;
-
-flex-direction:column;
-
-align-items:center;
-
-gap:4px;
-
 color:var(--text2);
 
-font-size:22px;
+font-size:28px;
 
 cursor:pointer;
 
-}
-
-.tab span{
-
-font-size:11px;
+transition:.25s;
 
 }
 
-.tab.active{
+.bottom-nav button.active{
 
 color:var(--green);
 
+transform:scale(1.1);
+
 }
 
-.centerButton{
+.modal{
 
-width:58px;
+position:fixed;
 
-height:58px;
+inset:0;
 
-border:none;
+display:none;
 
-border-radius:50%;
+justify-content:center;
 
-background:var(--green);
+align-items:flex-end;
+
+background:rgba(0,0,0,.65);
+
+backdrop-filter:blur(10px);
+
+z-index:500;
+
+}
+
+.modal.show{
+
+display:flex;
+
+}
+
+.modal-content{
+
+width:100%;
+
+max-width:620px;
+
+background:var(--card);
+
+border-radius:28px 28px 0 0;
+
+padding:28px;
+
+animation:slideUp .28s ease;
+
+}
+
+.modal-title{
+
+font-size:38px;
+
+font-weight:700;
+
+margin-bottom:20px;
+
+}
+
+.search{
+
+width:100%;
+
+padding:18px 20px;
+
+font-size:20px;
+
+background:var(--card2);
 
 color:white;
 
-font-size:34px;
+border:1px solid var(--border);
 
-font-weight:300;
+border-radius:18px;
 
-box-shadow:0 10px 25px rgba(57,211,83,.35);
+outline:none;
 
-}
-
-
-
-/* ========= SCROLL ========= */
-
-::-webkit-scrollbar{
-
-width:6px;
+margin-bottom:20px;
 
 }
 
-::-webkit-scrollbar-thumb{
+.search::placeholder{
 
-background:#364153;
-
-border-radius:999px;
+color:var(--text2);
 
 }
 
-
-
-/* ========= ANIMACIONES ========= */
-
-@keyframes sheetUp{
+@keyframes slideUp{
 
 from{
 
-transform:translateY(80px);
-
-opacity:0;
+transform:translateY(100%);
 
 }
 
@@ -897,9 +544,191 @@ to{
 
 transform:translateY(0);
 
-opacity:1;
+}
 
 }
+
+/* ======================================================
+   BLOQUE 4/4
+====================================================== */
+
+.food-item{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:18px;
+
+margin-bottom:12px;
+
+background:var(--card2);
+
+border-radius:18px;
+
+transition:.25s;
+
+cursor:pointer;
+
+}
+
+.food-item:hover{
+
+background:#26303d;
+
+}
+
+.food-name{
+
+font-size:20px;
+
+font-weight:600;
+
+}
+
+.food-kcal{
+
+color:var(--green);
+
+font-weight:700;
+
+}
+
+.hidden{
+
+display:none !important;
+
+}
+
+::-webkit-scrollbar{
+
+width:8px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+background:#313b48;
+
+border-radius:999px;
+
+}
+
+::-webkit-scrollbar-track{
+
+background:transparent;
+
+}
+
+@media (max-width:640px){
+
+body{
+
+padding:18px;
+
+}
+
+.title h1{
+
+font-size:42px;
+
+}
+
+.title p{
+
+font-size:18px;
+
+}
+
+.dashboard{
+
+padding:22px;
+
+}
+
+.ring-center{
+
+width:180px;
+
+height:180px;
+
+border-width:10px;
+
+}
+
+.ring-center span{
+
+font-size:52px;
+
+}
+
+.ring-center small{
+
+font-size:18px;
+
+}
+
+.meal{
+
+padding:20px;
+
+}
+
+.meal-header h2{
+
+font-size:28px;
+
+}
+
+.add{
+
+width:44px;
+
+height:44px;
+
+font-size:28px;
+
+}
+
+.bottom-nav{
+
+height:64px;
+
+bottom:16px;
+
+}
+
+.bottom-nav button{
+
+font-size:24px;
+
+}
+
+.modal-content{
+
+padding:22px;
+
+}
+
+.modal-title{
+
+font-size:30px;
+
+}
+
+.search{
+
+font-size:18px;
+
+}
+
+}
+
+.fade-in{
+
+animation:fadeIn .35s ease;
 
 }
 
@@ -909,149 +738,16 @@ from{
 
 opacity:0;
 
+transform:translateY(8px);
+
 }
 
 to{
 
 opacity:1;
 
-}
+transform:translateY(0);
 
 }
-
-.summaryCard,
-.mealCard{
-
-animation:fadeIn .35s ease;
-
-}
-
-
-
-/* ========= RESPONSIVE ========= */
-
-@media (max-width:600px){
-
-body{
-
-padding:18px;
-
-padding-bottom:120px;
-
-}
-
-.titleBlock h1{
-
-font-size:30px;
-
-}
-
-#currentKcal{
-
-font-size:46px;
-
-}
-
-#goalKcal{
-
-font-size:22px;
-
-}
-
-.ring{
-
-width:90px;
-
-height:90px;
-
-}
-
-.ring svg{
-
-width:90px;
-
-height:90px;
-
-}
-
-.ringText{
-
-font-size:18px;
-
-}
-
-.mealHeader h2{
-
-font-size:20px;
-
-}
-
-.sheet{
-
-padding:20px;
-
-}
-
-.sheetHeader h2{
-
-font-size:24px;
-
-}
-
-}
-
-
-
-/* ========= EFECTOS ========= */
-
-.iconButton,
-.addButton,
-.centerButton,
-#closeModal{
-
-transition:.2s;
-
-}
-
-.iconButton:active,
-.addButton:active,
-.centerButton:active,
-#closeModal:active{
-
-transform:scale(.94);
-
-}
-
-.summaryCard{
-
-overflow:hidden;
-
-position:relative;
-
-}
-
-.summaryCard::before{
-
-content:"";
-
-position:absolute;
-
-top:-80px;
-
-right:-80px;
-
-width:180px;
-
-height:180px;
-
-background:radial-gradient(circle,rgba(57,211,83,.08),transparent);
-
-pointer-events:none;
-
-}
-
-.mealCard:hover{
-
-border-color:#3a4658;
 
 }
