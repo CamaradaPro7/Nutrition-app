@@ -19,13 +19,13 @@ const foods = [
   { name: "Yogur griego", kcal:97, protein:9, carbs:4, fat:5 }
 ];
 
-const today = document.getElementById("today");
+const fecha = document.getElementById("fecha");
 const mealsContainer = document.getElementById("meals");
 const modal = document.getElementById("foodModal");
 const foodList = document.getElementById("foodList");
 const searchInput = document.getElementById("searchInput");
 
-today.textContent = new Date().toLocaleDateString("es-ES", {
+fecha.textContent = new Date().toLocaleDateString("es-ES", {
   weekday: "long",
   day: "numeric",
   month: "long",
