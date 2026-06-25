@@ -1,0 +1,21 @@
+/* Nutrition App */
+
+:root{
+  --bg:#030712;
+  --card:#111827;
+  --text:#FFFFFF;
+  --green:#22C55E;
+  --blue:#22D3EE;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
