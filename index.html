@@ -6,60 +6,253 @@
 
 <title>Mi Nutrición</title>
 
-<link rel="stylesheet" href="css/styles.css">
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+}
+
+body{
+background:#0D1117;
+color:#F0F6FC;
+padding:22px;
+padding-bottom:120px;
+}
+
+h1{
+font-size:34px;
+font-weight:700;
+margin-bottom:6px;
+}
+
+.fecha{
+color:#8B949E;
+font-size:15px;
+margin-bottom:28px;
+}
+
+.card{
+background:#161B22;
+border:1px solid #2D333B;
+border-radius:22px;
+padding:22px;
+margin-bottom:18px;
+}
+
+.kcal{
+font-size:52px;
+font-weight:700;
+line-height:1;
+}
+
+.sub{
+margin-top:8px;
+color:#8B949E;
+margin-bottom:26px;
+}
+
+.macro{
+margin-top:18px;
+}
+
+.macro-top{
+display:flex;
+justify-content:space-between;
+font-size:15px;
+margin-bottom:8px;
+}
+
+.bar{
+height:6px;
+background:#30363D;
+border-radius:100px;
+overflow:hidden;
+}
+
+.fill{
+height:100%;
+border-radius:100px;
+background:#3FB950;
+width:0%;
+transition:.4s;
+}
+
+.meal{
+background:#161B22;
+border:1px solid #2D333B;
+border-radius:20px;
+padding:20px;
+margin-bottom:16px;
+}
+
+.meal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+}
+
+.meal-title{
+font-size:22px;
+font-weight:600;
+}
+
+.add{
+font-size:34px;
+color:#3FB950;
+cursor:pointer;
+user-select:none;
+}
+
+.empty{
+color:#8B949E;
+font-size:15px;
+}
+
+</style>
 </head>
 
 <body>
 
-<header class="header">
-    <h1>🍎 Mi Nutrición</h1>
-</header>
+<h1>Mi Nutrición</h1>
 
-<section class="card resumen">
+<div class="fecha">
+Hoy · 25-06-2026
+</div>
 
-    <p class="fecha">Hoy</p>
+<div class="card">
 
-    <h2 id="kcal">0 / 2600</h2>
-    <span>kcal</span>
+<div class="kcal">
+0
+</div>
 
-    <div class="macro">
-        <div>
-            🥩 Proteínas
-        </div>
-        <div id="proteinas">
-            0 g
-        </div>
-    </div>
+<div class="sub">
+de 2600 kcal
+</div>
 
-    <progress value="0" max="180"></progress>
+<div class="macro">
 
-    <div class="macro">
-        <div>
-            🍚 Hidratos
-        </div>
-        <div id="hidratos">
-            0 g
-        </div>
-    </div>
+<div class="macro-top">
+<div>Proteínas</div>
+<div>0 g</div>
+</div>
 
-    <progress value="0" max="250"></progress>
+<div class="bar">
+<div class="fill" style="width:0%"></div>
+</div>
 
-    <div class="macro">
-        <div>
-            🥑 Grasas
-        </div>
-        <div id="grasas">
-            0 g
-        </div>
-    </div>
+</div>
 
-    <progress value="0" max="70"></progress>
+<div class="macro">
 
-</section>
+<div class="macro-top">
+<div>Hidratos</div>
+<div>0 g</div>
+</div>
 
-<div id="meals"></div>
+<div class="bar">
+<div class="fill" style="width:0%;background:#58A6FF;"></div>
+</div>
 
-<script src="js/app.js"></script>
+</div>
+
+<div class="macro">
+
+<div class="macro-top">
+<div>Grasas</div>
+<div>0 g</div>
+</div>
+
+<div class="bar">
+<div class="fill" style="width:0%;background:#F2CC60;"></div>
+</div>
+
+</div>
+
+</div>
+
+<div class="meal">
+
+<div class="meal-header">
+
+<div class="meal-title">
+Desayuno
+</div>
+
+<div class="add">
+＋
+</div>
+
+</div>
+
+<div class="empty">
+Sin alimentos
+</div>
+
+</div>
+
+<div class="meal">
+
+<div class="meal-header">
+
+<div class="meal-title">
+Comida
+</div>
+
+<div class="add">
+＋
+</div>
+
+</div>
+
+<div class="empty">
+Sin alimentos
+</div>
+
+</div>
+
+<div class="meal">
+
+<div class="meal-header">
+
+<div class="meal-title">
+Merienda
+</div>
+
+<div class="add">
+＋
+</div>
+
+</div>
+
+<div class="empty">
+Sin alimentos
+</div>
+
+</div>
+
+<div class="meal">
+
+<div class="meal-header">
+
+<div class="meal-title">
+Cena
+</div>
+
+<div class="add">
+＋
+</div>
+
+</div>
+
+<div class="empty">
+Sin alimentos
+</div>
+
+</div>
 
 </body>
 </html>
