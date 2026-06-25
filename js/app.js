@@ -1,120 +1,83 @@
-// ===== Mi Nutrición V2 =====
+const STORAGE_KEY="mi-nutricion-v2";
 
-const fecha = document.getElementById("fecha");
+let data=JSON.parse(localStorage.getItem(STORAGE_KEY))||{
 
-fecha.textContent = new Date().toLocaleDateString("es-ES",{
-weekday:"long",
-day:"2-digit",
-month:"2-digit",
-year:"numeric"
-});
+objetivo:2600,
 
-const modal=document.getElementById("modal");
+totales:{
+kcal:0,
+proteinas:0,
+hidratos:0,
+grasas:0
+},
 
-const close=document.getElementById("closeModal");
-
-const search=document.getElementById("searchFood");
-
-const results=document.getElementById("foodResults");
-
-let mealSelected="";
-
-document.querySelectorAll(".meal button").forEach(btn=>{
-
-btn.onclick=()=>{
-
-mealSelected=btn.dataset.meal;
-
-modal.classList.remove("hidden");
-
-search.focus();
-
-renderFoods("");
-
-};
-
-});
-
-close.onclick=()=>{
-
-modal.classList.add("hidden");
-
-};
-
-modal.onclick=e=>{
-
-if(e.target===modal){
-
-modal.classList.add("hidden");
-
+meals:{
+desayuno:[],
+comida:[],
+merienda:[],
+cena:[]
 }
 
 };
 
-const foods=[
+function save(){
 
-{name:"Pechuga de pollo",kcal:110,p:23,c:0,g:1.5},
+localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
 
-{name:"Arroz blanco",kcal:130,p:2.7,c:28,g:0.3},
+}
 
-{name:"Patata cocida",kcal:87,p:2,c:20,g:0},
+function addFood(meal,food,grams){
 
-{name:"Huevo",kcal:155,p:13,c:1,g:11},
+const factor=grams/100;
 
-{name:"Plátano",kcal:89,p:1,c:23,g:0.3},
+const item={
 
-{name:"Avena",kcal:370,p:13,c:60,g:7},
+nombre:food.name,
 
-{name:"Yogur griego",kcal:97,p:9,c:4,g:5},
+gramos:grams,
 
-{name:"Atún",kcal:116,p:26,c:0,g:1},
+kcal:Math.round(food.kcal*factor),
 
-{name:"Salmón",kcal:208,p:20,c:0,g:13},
+proteinas:Number((food.p*factor).toFixed(1)),
 
-{name:"Aceite de oliva",kcal:884,p:0,c:0,g:100}
+hidratos:Number((food.c*factor).toFixed(1)),
 
-];
+grasas:Number((food.g*factor).toFixed(1))
 
-function renderFoods(filter){
+};
 
-results.innerHTML="";
+data.meals[meal].push(item);
 
-foods
+recalculate();
 
-.filter(f=>f.name.toLowerCase().includes(filter.toLowerCase()))
+save();
 
-.forEach(food=>{
+}
 
-results.innerHTML+=`
+function recalculate(){
 
-<div class="food">
+data.totales={
 
-<div>
+kcal:0,
+proteinas:0,
+hidratos:0,
+grasas:0
 
-<div class="food-name">${food.name}</div>
+};
 
-<div class="food-info">
+Object.values(data.meals).forEach(meal=>{
 
-${food.kcal} kcal · ${food.p}P · ${food.c}C · ${food.g}G
+meal.forEach(food=>{
 
-</div>
+data.totales.kcal+=food.kcal;
+data.totales.proteinas+=food.proteinas;
+data.totales.hidratos+=food.hidratos;
+data.totales.grasas+=food.grasas;
 
-</div>
-
-<div class="food-add">+</div>
-
-</div>
-
-`;
+});
 
 });
 
 }
 
-search.oninput=()=>{
-
-renderFoods(search.value);
-
-};
-
-renderFoods("");
+recalculate();
