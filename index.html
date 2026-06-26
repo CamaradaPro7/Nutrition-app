@@ -378,6 +378,17 @@ Plátano
             Nuevo alimento
         </h2>
 
+        <button id="pasteJsonBtn" class="new-food-btn">
+            📋 Pegar JSON de ChatGPT
+        </button>
+
+        <textarea
+            id="jsonInput"
+            class="search"
+            rows="7"
+            placeholder='Pega aquí el JSON de ChatGPT...'
+            style="resize:none;height:170px;"></textarea>
+
         <input
             id="foodName"
             class="search"
@@ -385,10 +396,22 @@ Plátano
             placeholder="Nombre">
 
         <input
+            id="foodBrand"
+            class="search"
+            type="text"
+            placeholder="Marca (opcional)">
+
+        <input
+            id="foodUnit"
+            class="search"
+            type="text"
+            placeholder="Unidad (g, ml, unidad...)">
+
+        <input
             id="foodKcal"
             class="search"
             type="number"
-            placeholder="Kcal /100 g">
+            placeholder="Kcal /100">
 
         <input
             id="foodProtein"
