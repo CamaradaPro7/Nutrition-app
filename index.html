@@ -368,6 +368,64 @@ Plátano
 
 </div>
 
+<!-- NUEVO MODAL -->
+
+<div id="newFoodModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2 class="modal-title">
+            Nuevo alimento
+        </h2>
+
+        <input
+            id="foodName"
+            class="search"
+            type="text"
+            placeholder="Nombre">
+
+        <input
+            id="foodKcal"
+            class="search"
+            type="number"
+            placeholder="Kcal /100 g">
+
+        <input
+            id="foodProtein"
+            class="search"
+            type="number"
+            placeholder="Proteínas">
+
+        <input
+            id="foodCarbs"
+            class="search"
+            type="number"
+            placeholder="Hidratos">
+
+        <input
+            id="foodFat"
+            class="search"
+            type="number"
+            placeholder="Grasas">
+
+        <div style="display:flex;gap:12px;margin-top:20px;">
+
+            <button id="cancelFood"
+                style="flex:1;padding:16px;border:none;border-radius:16px;background:#2b3442;color:white;font-size:18px;">
+                Cancelar
+            </button>
+
+            <button id="saveFood"
+                style="flex:1;padding:16px;border:none;border-radius:16px;background:#38d46a;color:white;font-size:18px;font-weight:600;">
+                Guardar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 <script src="js/storage.js"></script>
 <script src="js/app.js"></script>
 
