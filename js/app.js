@@ -107,6 +107,18 @@ const fat=document.getElementById("fat");
 
 const fecha=document.getElementById("fecha");
 
+const gramsModal=document.getElementById("gramsModal");
+
+const gramsInput=document.getElementById("gramsInput");
+
+const selectedFood=document.getElementById("selectedFood");
+
+const acceptGrams=document.getElementById("acceptGrams");
+
+const cancelGrams=document.getElementById("cancelGrams");
+
+let selectedFoodData=null;
+
 if(fecha){
 
 fecha.textContent=new Date().toLocaleDateString("es-ES",{
@@ -232,31 +244,41 @@ renderFoods(search.value);
 
 function addFood(food){
 
-    if(!currentMeal) return;
+    selectedFoodData=food;
 
-    let grams = prompt(`¿Cuántos gramos de ${food.name}?`, "100");
+    selectedFood.textContent=food.name;
 
-    if(grams===null) return;
+    gramsInput.value=100;
 
-    grams = parseFloat(grams);
+    gramsModal.classList.add("show");
+
+    gramsInput.focus();
+
+}
+
+acceptGrams.onclick=()=>{
+
+    if(!currentMeal || !selectedFoodData) return;
+
+    let grams=parseFloat(gramsInput.value);
 
     if(isNaN(grams) || grams<=0) return;
 
-    const factor = grams/100;
+    const factor=grams/100;
 
     meals[currentMeal].push({
 
-        name:food.name,
+        name:selectedFoodData.name,
 
         grams:grams,
 
-        kcal:Math.round(food.kcal*factor),
+        kcal:Math.round(selectedFoodData.kcal*factor),
 
-        protein:Number((food.protein*factor).toFixed(1)),
+        protein:Number((selectedFoodData.protein*factor).toFixed(1)),
 
-        carbs:Number((food.carbs*factor).toFixed(1)),
+        carbs:Number((selectedFoodData.carbs*factor).toFixed(1)),
 
-        fat:Number((food.fat*factor).toFixed(1))
+        fat:Number((selectedFoodData.fat*factor).toFixed(1))
 
     });
 
@@ -264,9 +286,21 @@ function addFood(food){
 
     updateTotals();
 
-    closeModal();
+    gramsInput.value=100;
 
-}
+    search.value="";
+
+    renderFoods();
+
+    gramsModal.classList.remove("show");
+
+};
+
+cancelGrams.onclick=()=>{
+
+    gramsModal.classList.remove("show");
+
+};
 
 function renderMeals(){
 
