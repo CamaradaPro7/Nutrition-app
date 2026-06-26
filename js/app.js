@@ -412,3 +412,9 @@ renderMeals();
 updateTotals();
 
 renderFoods();
+
+document.getElementById("closeFoodModal").onclick = () => {
+
+    closeModal();
+
+};
