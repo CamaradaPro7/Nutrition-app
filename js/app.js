@@ -363,7 +363,7 @@ importJsonBtn.onclick = () => {
     }catch(error){
 
         console.error(error);
-        alert("El JSON no es válido.");
+        alert(error.message);
 
     }
 
