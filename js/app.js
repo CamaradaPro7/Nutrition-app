@@ -79,6 +79,11 @@ const foodFat=document.getElementById("foodFat");
 const saveFood=document.getElementById("saveFood");
 const cancelFood=document.getElementById("cancelFood");
 
+const pasteJsonBtn=document.getElementById("pasteJsonBtn");
+const jsonInput=document.getElementById("jsonInput");
+const foodBrand=document.getElementById("foodBrand");
+const foodUnit=document.getElementById("foodUnit");
+
 /* ===========================
    DASHBOARD
 =========================== */
@@ -169,11 +174,38 @@ cancelFood.onclick=()=>{
 
 };
 
+pasteJsonBtn.onclick=()=>{
+
+    try{
+
+        const data=JSON.parse(jsonInput.value);
+
+        foodName.value=data.nombre ?? "";
+        foodBrand.value=data.marca ?? "";
+        foodUnit.value=data.unidad ?? "g";
+
+        foodKcal.value=data.kcal ?? "";
+        foodProtein.value=data.proteinas ?? "";
+        foodCarbs.value=data.hidratos ?? "";
+        foodFat.value=data.grasas ?? "";
+
+    }catch{
+
+        alert("El JSON no es válido.");
+
+    }
+
+};
+
 saveFood.onclick=()=>{
 
     const newFood={
 
         name:foodName.value.trim(),
+
+        brand:foodBrand.value.trim(),
+
+        unit:foodUnit.value.trim() || "g",
 
         kcal:Number(foodKcal.value),
 
@@ -185,7 +217,13 @@ saveFood.onclick=()=>{
 
     };
 
-    if(!newFood.name) return;
+    if(!newFood.name){
+
+        alert("Introduce un nombre.");
+
+        return;
+
+    }
 
     foods.push(newFood);
 
@@ -193,21 +231,19 @@ saveFood.onclick=()=>{
 
     newFoodModal.classList.remove("show");
 
+    jsonInput.value="";
+
+    foodName.value="";
+    foodBrand.value="";
+    foodUnit.value="";
+    foodKcal.value="";
+    foodProtein.value="";
+    foodCarbs.value="";
+    foodFat.value="";
+
     renderFoods(search.value);
 
 };
-
-document.querySelectorAll(".add").forEach((btn,index)=>{
-
-    const ids=["desayuno","comida","merienda","cena"];
-
-    btn.addEventListener("click",()=>{
-
-        openMeal(ids[index]);
-
-    });
-
-});
 
 function renderFoods(filter=""){
 
