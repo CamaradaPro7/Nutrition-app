@@ -4,7 +4,7 @@
    Parte 1/4
 ===================================================== */
 
-const foods = [
+let foods = JSON.parse(localStorage.getItem("foodLibrary")) || [
 
 { name:"Pechuga de pollo", kcal:110, protein:23, carbs:0, fat:1.5 },
 { name:"Arroz blanco", kcal:130, protein:2.7, carbs:28, fat:0.3 },
@@ -17,6 +17,8 @@ const foods = [
 { name:"Yogur griego", kcal:97, protein:9, carbs:4, fat:5 }
 
 ];
+
+localStorage.setItem("foodLibrary", JSON.stringify(foods));
 
 const meals = {
 
@@ -34,6 +36,7 @@ let editingIndex = null;
 
 const modal = document.getElementById("modal");
 const gramsModal = document.getElementById("gramsModal");
+const newFoodModal = document.getElementById("newFoodModal");
 
 const search = document.getElementById("searchFood");
 const foodResults = document.getElementById("foodResults");
@@ -43,6 +46,17 @@ const selectedFood = document.getElementById("selectedFood");
 
 const acceptGrams = document.getElementById("acceptGrams");
 const cancelGrams = document.getElementById("cancelGrams");
+
+const newFoodBtn = document.getElementById("newFoodBtn");
+
+const foodName = document.getElementById("foodName");
+const foodKcal = document.getElementById("foodKcal");
+const foodProtein = document.getElementById("foodProtein");
+const foodCarbs = document.getElementById("foodCarbs");
+const foodFat = document.getElementById("foodFat");
+
+const saveFood = document.getElementById("saveFood");
+const cancelFood = document.getElementById("cancelFood");
 
 const kcal = document.getElementById("totalKcal");
 const protein = document.getElementById("protein");
@@ -106,6 +120,54 @@ cancelGrams.onclick=()=>{
 
 };
 
+newFoodBtn.onclick=()=>{
+
+    newFoodModal.classList.add("show");
+
+    foodName.value="";
+    foodKcal.value="";
+    foodProtein.value="";
+    foodCarbs.value="";
+    foodFat.value="";
+
+    foodName.focus();
+
+};
+
+cancelFood.onclick=()=>{
+
+    newFoodModal.classList.remove("show");
+
+};
+
+saveFood.onclick=()=>{
+
+    const newFood={
+
+        name:foodName.value.trim(),
+
+        kcal:Number(foodKcal.value),
+
+        protein:Number(foodProtein.value),
+
+        carbs:Number(foodCarbs.value),
+
+        fat:Number(foodFat.value)
+
+    };
+
+    if(!newFood.name) return;
+
+    foods.push(newFood);
+
+    localStorage.setItem("foodLibrary",JSON.stringify(foods));
+
+    newFoodModal.classList.remove("show");
+
+    renderFoods(search.value);
+
+};
+
 document.querySelectorAll(".add").forEach((btn,index)=>{
 
     const ids=["desayuno","comida","merienda","cena"];
@@ -138,23 +200,23 @@ function renderFoods(filter=""){
 
         item.innerHTML=`
 
-            <div>
+<div>
 
-                <div class="food-name">
+<div class="food-name">
 
-                    ${food.name}
+${food.name}
 
-                </div>
+</div>
 
-                <div class="food-kcal">
+<div class="food-kcal">
 
-                    ${food.kcal} kcal / 100 g
+${food.kcal} kcal / 100 g
 
-                </div>
+</div>
 
-            </div>
+</div>
 
-        `;
+`;
 
         item.onclick=()=>{
 
