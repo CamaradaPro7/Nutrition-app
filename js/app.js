@@ -311,8 +311,12 @@ function renderMeals(){
 
 <div onclick="editFood('${meal}',${index})" style="flex:1;cursor:pointer;">
 
-<div class="food-name">
+<div class="food-name"
+onclick="editFood('${meal}',${index})"
+style="cursor:pointer;">
+
 ${food.name}
+
 </div>
 
 <small style="color:#999;">
