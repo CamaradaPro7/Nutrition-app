@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+
+<title>Mi Nutrición</title>
+
+<meta name="theme-color" content="#0d1117">
+
+<link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+
+<div class="logo">
+🍎
+</div>
+
+<div class="title">
+
+<h1>
+Mi Nutrición
+</h1>
+
+<p id="fecha">
+Cargando...
+</p>
+
+</div>
+
+<button
+id="btnSettings"
+class="settings">
+
+⚙️
+
+</button>
+
+</header>
+
+<section class="dashboard">
+
+<div class="ring">
+
+<div class="ring-center">
+
+<span id="totalKcal">
+
+0
+
+</span>
+
+<small>
+
+de 2600 kcal
+
+</small>
+
+</div>
+
+</div>
+
+<div class="macros">
+
+<div class="macro">
+
+<span>
+
+🥩 Proteínas
+
+</span>
+
+<strong id="protein">
+
+0 g
+
+</strong>
+
+</div>
+
+<div class="macro">
+
+<span>
+
+🍚 Hidratos
+
+</span>
+
+<strong id="carbs">
+
+0 g
+
+</strong>
+
+</div>
+
+<div class="macro">
+
+<span>
+
+🥑 Grasas
+
+</span>
+
+<strong id="fat">
+
+0 g
+
+</strong>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="meals">
+
+<div
+class="meal"
+data-meal="desayuno">
+
+<div class="meal-header">
+
+<h2>
+
+🍳 Desayuno
+
+</h2>
+
+<button class="add">
+
++
+
+</button>
+
+</div>
+
+<div class="meal-body">
+
+<p class="emptyMeal">
+
+Sin alimentos
+
+</p>
+
+<div class="meal-list">
+
+</div>
+
+</div>
+
+</div>
+
+<div
+class="meal"
+data-meal="comida">
+
+<div class="meal-header">
+
+<h2>
+
+🍝 Comida
+
+</h2>
+
+<button class="add">
+
++
+
+</button>
+
+</div>
+
+<div class="meal-body">
+
+<p class="emptyMeal">
+
+Sin alimentos
+
+</p>
+
+<div class="meal-list">
+
+</div>
+
+</div>
+
+</div>
+
+<div
+class="meal"
+data-meal="merienda">
+
+<div class="meal-header">
+
+<h2>
+
+🥪 Merienda
+
+</h2>
+
+<button class="add">
+
++
+
+</button>
+
+</div>
+
+<div class="meal-body">
+
+<p class="emptyMeal">
+
+Sin alimentos
+
+</p>
+
+<div class="meal-list">
+
+</div>
+
+</div>
+
+</div>
+
+<div
+class="meal"
+data-meal="cena">
+
+<div class="meal-header">
+
+<h2>
+
+🌙 Cena
+
+</h2>
+
+<button class="add">
+
++
+
+</button>
+
+</div>
+
+<div class="meal-body">
+
+<p class="emptyMeal">
+
+Sin alimentos
+
+</p>
+
+<div class="meal-list">
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+<!-- ==========================
+     MODAL BIBLIOTECA
+========================== -->
+
+<div
+id="modal"
+class="modal">
+
+<div class="modal-content">
+
+<button
+id="closeFoodModal"
+class="close-modal">
+
+✕
+
+</button>
+
+<h2 class="modal-title">
+
+Biblioteca
+
+</h2>
+
+<input
+
+id="searchFood"
+
+class="search"
+
+type="text"
+
+placeholder="Buscar alimento...">
+
+<button
+
+id="newFoodBtn"
+
+class="new-food-btn">
+
+➕ Nuevo alimento
+
+</button>
+
+<div
+id="foodResults">
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ==========================
+     MODAL CANTIDAD
+========================== -->
+
+<div
+id="gramsModal"
+class="modal">
+
+<div class="modal-content">
+
+<h2 class="modal-title">
+
+Cantidad
+
+</h2>
+
+<p
+id="selectedFood">
+
+</p>
+
+<input
+
+id="gramsInput"
+
+class="search"
+
+type="number"
+
+inputmode="decimal"
+
+value="100"
+
+min="1"
+
+placeholder="Cantidad">
+
+<div
+style="display:flex;gap:12px;margin-top:20px;">
+
+<button
+id="cancelGrams"
+class="secondary-btn">
+
+Cancelar
+
+</button>
+
+<button
+id="acceptGrams"
+class="primary-btn">
+
+Añadir
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ==========================
+     MODAL NUEVO ALIMENTO
+========================== -->
+
+<div
+id="newFoodModal"
+class="modal">
+
+<div class="modal-content">
+
+<h2 class="modal-title">
+
+Nuevo alimento
+
+</h2>
+
+<textarea
+
+id="jsonInput"
+
+class="json-box"
+
+placeholder="Pega aquí el JSON generado por ChatGPT..."></textarea>
+
+<input
+
+id="foodName"
+
+class="search"
+
+type="text"
+
+placeholder="Nombre">
+
+<input
+
+id="foodBrand"
+
+class="search"
+
+type="text"
+
+placeholder="Marca">
+
+<input
+
+id="foodUnit"
+
+class="search"
+
+type="text"
+
+placeholder="Unidad (g, ml)">
+
+<input
+
+id="foodKcal"
+
+class="search"
+
+type="number"
+
+placeholder="Kcal /100">
+
+<input
+
+id="foodProtein"
+
+class="search"
+
+type="number"
+
+placeholder="Proteínas">
+
+<input
+
+id="foodCarbs"
+
+class="search"
+
+type="number"
+
+placeholder="Hidratos">
+
+<input
+
+id="foodFat"
+
+class="search"
+
+type="number"
+
+placeholder="Grasas">
+
+<div
+style="display:flex;gap:12px;margin-top:20px;">
+
+<button
+id="cancelFood"
+class="secondary-btn">
+
+Cancelar
+
+</button>
+
+<button
+id="saveFood"
+class="primary-btn">
+
+Guardar
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<nav class="bottom-nav">
+
+<button class="active">
+
+🏠
+
+</button>
+
+<button>
+
+📅
+
+</button>
+
+<button>
+
+📚
+
+</button>
+
+<button>
+
+📊
+
+</button>
+
+<button>
+
+⚙️
+
+</button>
+
+</nav>
+
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
