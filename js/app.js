@@ -335,23 +335,34 @@ document
    IMPORTAR JSON
 =========================== */
 
-importJsonBtn.onclick=()=>{
+importJsonBtn.onclick = () => {
+
+    const texto = jsonInput.value.trim();
+
+    if(texto === ""){
+
+        alert("Pega primero el JSON.");
+
+        return;
+
+    }
 
     try{
 
-        const data=JSON.parse(jsonInput.value);
+        const data = JSON.parse(texto);
 
-        foodName.value=data.nombre ?? "";
-        foodBrand.value=data.marca ?? "";
-        foodUnit.value=data.unidad ?? "g";
+        foodName.value = data.nombre || "";
+        foodBrand.value = data.marca || "";
+        foodUnit.value = data.unidad || "g";
 
-        foodKcal.value=Number(data.kcal) || 0;
-        foodProtein.value=Number(data.proteinas) || 0;
-        foodCarbs.value=Number(data.hidratos) || 0;
-        foodFat.value=Number(data.grasas) || 0;
+        foodKcal.value = parseFloat(data.kcal) || 0;
+        foodProtein.value = parseFloat(data.proteinas) || 0;
+        foodCarbs.value = parseFloat(data.hidratos) || 0;
+        foodFat.value = parseFloat(data.grasas) || 0;
 
-    }catch{
+    }catch(error){
 
+        console.error(error);
         alert("El JSON no es válido.");
 
     }
