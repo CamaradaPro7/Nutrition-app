@@ -234,7 +234,31 @@ function addFood(food){
 
     if(!currentMeal) return;
 
-    meals[currentMeal].push(food);
+    let grams = prompt(`¿Cuántos gramos de ${food.name}?`, "100");
+
+    if(grams===null) return;
+
+    grams = parseFloat(grams);
+
+    if(isNaN(grams) || grams<=0) return;
+
+    const factor = grams/100;
+
+    meals[currentMeal].push({
+
+        name:food.name,
+
+        grams:grams,
+
+        kcal:Math.round(food.kcal*factor),
+
+        protein:Number((food.protein*factor).toFixed(1)),
+
+        carbs:Number((food.carbs*factor).toFixed(1)),
+
+        fat:Number((food.fat*factor).toFixed(1))
+
+    });
 
     renderMeals();
 
@@ -277,7 +301,13 @@ function renderMeals(){
 
             <div class="food-name">
 
-                ${food.name}
+        ${food.name}
+
+<br>
+
+<small style="color:#999;">
+${food.grams} g
+</small>
 
             </div>
 
