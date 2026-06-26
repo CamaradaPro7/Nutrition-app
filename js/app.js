@@ -83,9 +83,6 @@ document.getElementById("cancelGrams");
 const jsonInput =
 document.getElementById("jsonInput");
 
-const importJsonBtn =
-document.getElementById("importJsonBtn");
-
 const newFoodBtn =
 document.getElementById("newFoodBtn");
 
@@ -335,39 +332,29 @@ document
    IMPORTAR JSON
 =========================== */
 
-importJsonBtn.onclick = () => {
-
-    const texto = jsonInput.value.trim();
-
-    if(texto === ""){
-
-        alert("Pega primero el JSON.");
-
-        return;
-
-    }
+jsonInput.addEventListener("input",()=>{
 
     try{
 
-        const data = JSON.parse(texto);
+        const data = JSON.parse(jsonInput.value.trim());
 
         foodName.value = data.nombre || "";
         foodBrand.value = data.marca || "";
         foodUnit.value = data.unidad || "g";
 
-        foodKcal.value = parseFloat(data.kcal) || 0;
-        foodProtein.value = parseFloat(data.proteinas) || 0;
-        foodCarbs.value = parseFloat(data.hidratos) || 0;
-        foodFat.value = parseFloat(data.grasas) || 0;
+        foodKcal.value = data.kcal || "";
+        foodProtein.value = data.proteinas || "";
+        foodCarbs.value = data.hidratos || "";
+        foodFat.value = data.grasas || "";
 
-    }catch(error){
+    }catch(e){
 
-        console.error(error);
-        alert(error.message);
+        // Mientras se está pegando el JSON
+        // es normal que aún no sea válido.
 
     }
 
-};
+});
 
 /* ===========================
    GUARDAR ALIMENTO
