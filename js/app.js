@@ -267,15 +267,45 @@ function renderMeals(){
 
         empty.style.display="none";
 
-        meals[meal].forEach(food=>{
+        meals[meal].forEach((food,index)=>{
 
             const item=document.createElement("div");
 
             item.className="food-item fade-in";
 
             item.innerHTML=`
-                <div class="food-name">${food.name}</div>
-                <div class="food-kcal">${food.kcal} kcal</div>
+
+            <div class="food-name">
+
+                ${food.name}
+
+            </div>
+
+            <div style="display:flex;align-items:center;gap:12px;">
+
+                <div class="food-kcal">
+
+                    ${food.kcal} kcal
+
+                </div>
+
+                <button
+                onclick="removeFood('${meal}',${index})"
+                style="
+                width:34px;
+                height:34px;
+                border:none;
+                border-radius:10px;
+                background:#ff5b67;
+                color:white;
+                font-size:18px;
+                cursor:pointer;
+                ">
+                🗑️
+                </button>
+
+            </div>
+
             `;
 
             list.appendChild(item);
@@ -308,6 +338,16 @@ function updateTotals(){
     fat.textContent=Math.round(totalFat)+" g";
 
     localStorage.setItem("miNutricion",JSON.stringify(meals));
+
+}
+
+function removeFood(meal,index){
+
+    meals[meal].splice(index,1);
+
+    renderMeals();
+
+    updateTotals();
 
 }
 
