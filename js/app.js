@@ -56,6 +56,14 @@ const foodCarbs = document.getElementById("foodCarbs");
 const foodFat = document.getElementById("foodFat");
 
 const saveFood = document.getElementById("saveFood");
+
+console.log({
+  newFoodBtn,
+  newFoodModal,
+  saveFood,
+  cancelFood
+});
+
 const cancelFood = document.getElementById("cancelFood");
 
 const kcal = document.getElementById("totalKcal");
