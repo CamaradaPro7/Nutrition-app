@@ -319,8 +319,12 @@ ${food.name}
 
 </div>
 
-<small style="color:#999;">
+<small
+onclick="editFood('${meal}',${index})"
+style="color:#999;cursor:pointer;">
+
 ${food.grams} g
+
 </small>
 
 </div>
