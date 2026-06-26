@@ -1,26 +1,27 @@
 /* =====================================================
    MI NUTRICIÓN V3
    app.js
-   Parte 1/4
 ===================================================== */
 
-let foods = JSON.parse(localStorage.getItem("foodLibrary")) || [
+/* ===========================
+   BIBLIOTECA DE ALIMENTOS
+=========================== */
 
-{ name:"Pechuga de pollo", kcal:110, protein:23, carbs:0, fat:1.5 },
-{ name:"Arroz blanco", kcal:130, protein:2.7, carbs:28, fat:0.3 },
-{ name:"Avena", kcal:370, protein:13, carbs:60, fat:7 },
-{ name:"Plátano", kcal:89, protein:1.1, carbs:23, fat:0.3 },
-{ name:"Huevo", kcal:155, protein:13, carbs:1, fat:11 },
-{ name:"Salmón", kcal:208, protein:20, carbs:0, fat:13 },
-{ name:"Atún", kcal:116, protein:26, carbs:0, fat:1 },
-{ name:"Patata cocida", kcal:87, protein:2, carbs:20, fat:0.1 },
-{ name:"Yogur griego", kcal:97, protein:9, carbs:4, fat:5 }
+let foods = JSON.parse(localStorage.getItem("foodLibrary"));
 
-];
+if(!foods){
 
-localStorage.setItem("foodLibrary", JSON.stringify(foods));
+    foods=[];
 
-const meals = {
+    localStorage.setItem("foodLibrary",JSON.stringify(foods));
+
+}
+
+/* ===========================
+   COMIDAS DEL DÍA
+=========================== */
+
+const meals={
 
 desayuno:[],
 comida:[],
@@ -29,45 +30,73 @@ cena:[]
 
 };
 
-let currentMeal = null;
-let selectedFoodData = null;
-let editingMeal = null;
-let editingIndex = null;
+/* ===========================
+   VARIABLES
+=========================== */
 
-const modal = document.getElementById("modal");
-const gramsModal = document.getElementById("gramsModal");
-const newFoodModal = document.getElementById("newFoodModal");
+let currentMeal=null;
+let selectedFoodData=null;
+let editingMeal=null;
+let editingIndex=null;
 
-const search = document.getElementById("searchFood");
-const foodResults = document.getElementById("foodResults");
+/* ===========================
+   MODALES
+=========================== */
 
-const gramsInput = document.getElementById("gramsInput");
-const selectedFood = document.getElementById("selectedFood");
+const modal=document.getElementById("modal");
+const gramsModal=document.getElementById("gramsModal");
+const newFoodModal=document.getElementById("newFoodModal");
 
-const acceptGrams = document.getElementById("acceptGrams");
-const cancelGrams = document.getElementById("cancelGrams");
+/* ===========================
+   BUSCADOR
+=========================== */
 
-const newFoodBtn = document.getElementById("newFoodBtn");
+const search=document.getElementById("searchFood");
+const foodResults=document.getElementById("foodResults");
 
-const foodName = document.getElementById("foodName");
-const foodKcal = document.getElementById("foodKcal");
-const foodProtein = document.getElementById("foodProtein");
-const foodCarbs = document.getElementById("foodCarbs");
-const foodFat = document.getElementById("foodFat");
+/* ===========================
+   GRAMOS
+=========================== */
 
-const saveFood = document.getElementById("saveFood");
-const cancelFood = document.getElementById("cancelFood");
+const gramsInput=document.getElementById("gramsInput");
+const selectedFood=document.getElementById("selectedFood");
 
-const kcal = document.getElementById("totalKcal");
-const protein = document.getElementById("protein");
-const carbs = document.getElementById("carbs");
-const fat = document.getElementById("fat");
+const acceptGrams=document.getElementById("acceptGrams");
+const cancelGrams=document.getElementById("cancelGrams");
 
-const fecha = document.getElementById("fecha");
+/* ===========================
+   NUEVO ALIMENTO
+=========================== */
+
+const newFoodBtn=document.getElementById("newFoodBtn");
+
+const foodName=document.getElementById("foodName");
+const foodKcal=document.getElementById("foodKcal");
+const foodProtein=document.getElementById("foodProtein");
+const foodCarbs=document.getElementById("foodCarbs");
+const foodFat=document.getElementById("foodFat");
+
+const saveFood=document.getElementById("saveFood");
+const cancelFood=document.getElementById("cancelFood");
+
+/* ===========================
+   DASHBOARD
+=========================== */
+
+const kcal=document.getElementById("totalKcal");
+const protein=document.getElementById("protein");
+const carbs=document.getElementById("carbs");
+const fat=document.getElementById("fat");
+
+/* ===========================
+   FECHA
+=========================== */
+
+const fecha=document.getElementById("fecha");
 
 if(fecha){
 
-fecha.textContent = new Date().toLocaleDateString("es-ES",{
+fecha.textContent=new Date().toLocaleDateString("es-ES",{
 
 weekday:"long",
 day:"numeric",
@@ -184,14 +213,39 @@ function renderFoods(filter=""){
 
     foodResults.innerHTML="";
 
-    foods
+    if(foods.length===0){
 
+        foodResults.innerHTML=`
+
+        <div style="
+        padding:40px 20px;
+        text-align:center;
+        color:#8d97a6;
+        ">
+
+        📚<br><br>
+
+        Tu biblioteca está vacía.<br><br>
+
+        Pulsa <strong>➕ Nuevo alimento</strong><br>
+        para crear el primero.
+
+        </div>
+
+        `;
+
+        return;
+
+    }
+
+    foods
     .filter(food=>
 
-        food.name.toLowerCase().includes(filter.toLowerCase())
+        food.name
+        .toLowerCase()
+        .includes(filter.toLowerCase())
 
     )
-
     .forEach(food=>{
 
         const item=document.createElement("div");
@@ -200,30 +254,29 @@ function renderFoods(filter=""){
 
         item.innerHTML=`
 
-<div>
+        <div>
 
-<div class="food-name">
+            <div class="food-name">
 
-${food.name}
+                ${food.name}
 
-</div>
+            </div>
 
-<div class="food-kcal">
+            <div class="food-kcal">
 
-${food.kcal} kcal / 100 g
+                ${food.kcal} kcal /100 g
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-`;
+        `;
 
         item.onclick=()=>{
 
             selectedFoodData=food;
 
             editingMeal=null;
-
             editingIndex=null;
 
             selectedFood.textContent=food.name;
@@ -241,12 +294,6 @@ ${food.kcal} kcal / 100 g
     });
 
 }
-
-search.addEventListener("input",()=>{
-
-    renderFoods(search.value);
-
-});
 
 /* =====================================================
    MI NUTRICIÓN V3
