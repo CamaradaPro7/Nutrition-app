@@ -23,3 +23,8 @@ function agregarAlimento(alimento) {
     guardarBiblioteca();
     return true;
 }
+
+function vaciarBiblioteca() {
+    biblioteca = [];
+    guardarBiblioteca();
+}
