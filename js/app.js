@@ -499,17 +499,17 @@ function renderFoods(filter=""){
 
         <div>
 
-            <div class="food-name">
+        <div class="food-name">
 
-                ${food.name}
+    ${food.emoji || "🍽️"} ${food.name}
 
-            </div>
+</div>
 
-            <div class="food-kcal">
+<div class="food-kcal">
 
-                ${food.kcal} kcal /100 ${food.unit}
+    ${food.category || "Otros"} · ${food.kcal} kcal /100 ${food.unit}
 
-            </div>
+</div>
 
         </div>
 
@@ -561,6 +561,10 @@ acceptGrams.onclick=()=>{
         name:selectedFood.name,
 
         brand:selectedFood.brand,
+        
+        emoji: selectedFood.emoji,
+        
+        category: selectedFood.category,
 
         unit:selectedFood.unit,
 
@@ -676,7 +680,7 @@ onclick="editFood('${meal}',${index})">
 
 <div class="food-name">
 
-${food.name}
+${food.emoji || "🍽️"} ${food.name}
 
 </div>
 
