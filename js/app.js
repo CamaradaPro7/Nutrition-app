@@ -336,16 +336,19 @@ jsonInput.addEventListener("input",()=>{
 
     try{
 
-        const data = JSON.parse(jsonInput.value.trim());
+const data = JSON.parse(jsonInput.value.trim());
 
-        foodName.value = data.nombre || "";
-        foodBrand.value = data.marca || "";
-        foodUnit.value = data.unidad || "g";
+foodName.value = data.nombre ?? "";
+foodBrand.value = data.marca ?? "";
+foodUnit.value = data.unidad ?? "g";
 
-        foodKcal.value = data.kcal || "";
-        foodProtein.value = data.proteinas || "";
-        foodCarbs.value = data.hidratos || "";
-        foodFat.value = data.grasas || "";
+foodKcal.value = data.kcal ?? "";
+foodProtein.value = data.proteinas ?? "";
+foodCarbs.value = data.hidratos ?? "";
+foodFat.value = data.grasas ?? "";
+
+foodName.dataset.emoji = data.emoji ?? "🍽️";
+foodName.dataset.category = data.categoria ?? "Otros";
 
     }catch(e){
 
@@ -370,25 +373,55 @@ saveFood.onclick=()=>{
 
     }
 
-    const food={
+const food = {
 
-        id:Date.now(),
+    id: Date.now(),
 
-        name:foodName.value.trim(),
+    name: foodName.value.trim(),
 
-        brand:foodBrand.value.trim(),
+    brand: foodBrand.value.trim(),
 
-        unit:foodUnit.value.trim() || "g",
+    category: foodName.dataset.category || "Otros",
 
-        kcal:Number(foodKcal.value),
+    emoji: foodName.dataset.emoji || "🍽️",
 
-        protein:Number(foodProtein.value),
+    unit: foodUnit.value.trim() || "g",
 
-        carbs:Number(foodCarbs.value),
+    kcal: Number(foodKcal.value),
 
-        fat:Number(foodFat.value)
+    protein: Number(foodProtein.value),
 
-    };
+    carbs: Number(foodCarbs.value),
+
+    fat: Number(foodFat.value)
+
+};
+
+const duplicate = foods.find(f =>
+    f.name.toLowerCase() === food.name.toLowerCase()
+);
+
+if (duplicate) {
+
+    if (!confirm("Este alimento ya existe.\n\n¿Actualizarlo?")) {
+        return;
+    }
+
+    duplicate.brand = food.brand;
+    duplicate.category = food.category;
+    duplicate.emoji = food.emoji;
+    duplicate.unit = food.unit;
+    duplicate.kcal = food.kcal;
+    duplicate.protein = food.protein;
+    duplicate.carbs = food.carbs;
+    duplicate.fat = food.fat;
+
+    saveFoods();
+    closeNewFood();
+    renderFoods(search.value);
+
+    return;
+}
 
     foods.push(food);
 
