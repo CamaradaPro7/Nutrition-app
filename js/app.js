@@ -334,18 +334,31 @@ document
 
 const jsonStatus = document.getElementById("jsonStatus");
 
-jsonInput.addEventListener("input", () => {
+jsonInput.addEventListener("input",()=>{
 
-    try {
+    try{
 
-        JSON.parse(jsonInput.value.trim());
+        const data = JSON.parse(jsonInput.value.trim());
 
-        jsonStatus.textContent = "✅ JSON válido";
-        jsonStatus.style.color = "#38d46a";
+        foodName.value = data.nombre || "";
+        foodBrand.value = data.marca || "";
+        foodUnit.value = data.unidad || "g";
 
-    } catch {
+        foodKcal.value = data.kcal || 0;
+        foodProtein.value = data.proteinas || 0;
+        foodCarbs.value = data.hidratos || 0;
+        foodFat.value = data.grasas || 0;
 
-        jsonStatus.textContent = "❌ JSON no válido";
+        jsonStatus.innerHTML =
+            "✅ JSON válido";
+
+        jsonStatus.style.color = "#39d96c";
+
+    }catch{
+
+        jsonStatus.innerHTML =
+            "❌ JSON no válido";
+
         jsonStatus.style.color = "#ff5b67";
 
     }
