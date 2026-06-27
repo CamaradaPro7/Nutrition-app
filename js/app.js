@@ -384,29 +384,31 @@ saveFood.onclick = ()=>{
 
     }
 
-    const food={
+const food = {
 
-        id:Date.now(),
+    id: Date.now(),
 
-        name:foodName.value.trim(),
+    name: foodName.value.trim(),
 
-        brand:foodBrand.value.trim(),
+    brand: foodBrand.value.trim(),
 
-        category:"",
+    category: "",
 
-        emoji:"🍽️",
+    emoji: "🍽️",
 
-        unit:foodUnit.value.trim(),
+    unit: foodUnit.value.trim().replace(/^100\s*/i, ""),
 
-        kcal:Number(foodKcal.value),
+    base: 100,
 
-        protein:Number(foodProtein.value),
+    kcal: Number(foodKcal.value),
 
-        carbs:Number(foodCarbs.value),
+    protein: Number(foodProtein.value),
 
-        fat:Number(foodFat.value)
+    carbs: Number(foodCarbs.value),
 
-    };
+    fat: Number(foodFat.value)
+
+};
 
     try{
 
@@ -522,7 +524,7 @@ function renderFoods(filter=""){
 
 <div class="food-kcal">
 
-    ${food.category || "Otros"} · ${food.kcal} kcal /100 ${food.unit}
+${food.category || "Otros"} · ${food.kcal} kcal/${food.base || 100} ${food.unit}
 
 </div>
 
