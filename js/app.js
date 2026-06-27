@@ -388,6 +388,8 @@ saveFood.onclick = ()=>{
     }
 
 const food = {
+    
+type: data.tipo || "alimento",
 
     id: Date.now(),
 
@@ -395,9 +397,9 @@ const food = {
 
     brand: foodBrand.value.trim(),
 
-    category: "",
+    category: data.categoria || "Otros",
 
-    emoji: "🍽️",
+    emoji: data.emoji || "🍽️",
 
     unit: foodUnit.value.trim().replace(/^100\s*/i, ""),
 
@@ -410,6 +412,8 @@ const food = {
     carbs: Number(foodCarbs.value),
 
     fat: Number(foodFat.value)
+    
+    base: Number(data.base || 100),
 
 };
 
