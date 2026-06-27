@@ -338,7 +338,16 @@ jsonInput.addEventListener("input",()=>{
 
     try{
 
-        const data = JSON.parse(jsonInput.value.trim());
+        let text = jsonInput.value.trim();
+
+        text = text
+            .replace(/[“”]/g,'"')
+            .replace(/[‘’]/g,"'")
+            .replace(/```json/g,"")
+            .replace(/```/g,"")
+            .trim();
+
+        const data = JSON.parse(text);
 
         foodName.value = data.nombre || "";
         foodBrand.value = data.marca || "";
