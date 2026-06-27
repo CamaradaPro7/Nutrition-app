@@ -92,9 +92,6 @@ document.getElementById("cancelFood");
 const saveFood =
 document.getElementById("saveFood");
 
-const jsonStatus =
-document.getElementById("jsonStatus");
-
 const foodName =
 document.getElementById("foodName");
 
