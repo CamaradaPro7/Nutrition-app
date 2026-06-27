@@ -4,9 +4,6 @@
    Parte 1/8
 ===================================================== */
 
-localStorage.removeItem("foodLibrary");
-localStorage.removeItem("miNutricion");
-
 /* ===========================
    BIBLIOTECA DE ALIMENTOS
 =========================== */
