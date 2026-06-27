@@ -394,114 +394,40 @@ Añadir
      MODAL NUEVO ALIMENTO
 ========================== -->
 
-<div
-id="newFoodModal"
-class="modal">
-
-<div class="modal-content">
-
-<h2 class="modal-title">
-
-Nuevo alimento
-
-</h2>
+<h2>📋 Importar alimento</h2>
 
 <textarea
+    id="jsonInput"
+    class="json-box"
+    placeholder="Pega aquí el JSON generado por ChatGPT..."></textarea>
 
-id="jsonInput"
+<div id="jsonStatus"
+    style="
+        margin-top:12px;
+        min-height:24px;
+        color:#8d97a6;
+        font-size:14px;
+        font-weight:600;
+    ">
+</div>
 
-class="json-box"
+<div style="display:flex;gap:12px;margin-top:20px;">
 
-placeholder="Pega aquí el JSON generado por ChatGPT..."></textarea>
+    <button
+        id="cancelFood"
+        class="secondary-btn">
 
-<input
+        Cancelar
 
-id="foodName"
+    </button>
 
-class="search"
+    <button
+        id="saveFood"
+        class="primary-btn">
 
-type="text"
+        📋 Importar
 
-placeholder="Nombre">
-
-<input
-
-id="foodBrand"
-
-class="search"
-
-type="text"
-
-placeholder="Marca">
-
-<input
-
-id="foodUnit"
-
-class="search"
-
-type="text"
-
-placeholder="Unidad (g, ml)">
-
-<input
-
-id="foodKcal"
-
-class="search"
-
-type="number"
-
-placeholder="Kcal /100">
-
-<input
-
-id="foodProtein"
-
-class="search"
-
-type="number"
-
-placeholder="Proteínas">
-
-<input
-
-id="foodCarbs"
-
-class="search"
-
-type="number"
-
-placeholder="Hidratos">
-
-<input
-
-id="foodFat"
-
-class="search"
-
-type="number"
-
-placeholder="Grasas">
-
-<div
-style="display:flex;gap:12px;margin-top:20px;">
-
-<button
-id="cancelFood"
-class="secondary-btn">
-
-Cancelar
-
-</button>
-
-<button
-id="saveFood"
-class="primary-btn">
-
-Guardar
-
-</button>
+    </button>
 
 </div>
 
