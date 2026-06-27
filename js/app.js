@@ -374,71 +374,70 @@ jsonInput.addEventListener("input",()=>{
    GUARDAR ALIMENTO
 =========================== */
 
-saveFood.onclick = ()=>{
+saveFood.onclick = () => {
 
-    if(!foodName.value.trim()){
-
+    if (!foodName.value.trim()) {
         alert("El JSON no es válido.");
-
         return;
-
     }
 
-const food = {
-    
-type: data.tipo || "alimento",
+    let data = {};
 
-    id: Date.now(),
+    try {
 
-    name: foodName.value.trim(),
-
-    brand: foodBrand.value.trim(),
-
-    category: data.categoria || "Otros",
-
-    emoji: data.emoji || "🍽️",
-
-    unit: foodUnit.value.trim().replace(/^100\s*/i, ""),
-
-    base: 100,
-
-    kcal: Number(foodKcal.value),
-
-    protein: Number(foodProtein.value),
-
-    carbs: Number(foodCarbs.value),
-
-    fat: Number(foodFat.value)
-    
-    base: Number(data.base || 100),
-
-};
-
-    try{
-
-        const data = JSON.parse(
+        data = JSON.parse(
             jsonInput.value
-                .replace(/[“”]/g,'"')
-                .replace(/[‘’]/g,"'")
-                .replace(/```json/g,"")
-                .replace(/```/g,"")
+                .replace(/[“”]/g, '"')
+                .replace(/[‘’]/g, "'")
+                .replace(/```json/g, "")
+                .replace(/```/g, "")
                 .trim()
         );
 
-        food.category = data.categoria || "Otros";
-        food.emoji = data.emoji || "🍽️";
+    } catch (e) {
 
-    }catch{}
+        // Si no hay JSON válido, usamos los datos escritos a mano
+        data = {};
 
-    const duplicate = foods.find(f=>
-        f.name.toLowerCase()===food.name.toLowerCase()
+    }
+
+    const food = {
+
+        id: Date.now(),
+
+        type: data.tipo || "alimento",
+
+        name: foodName.value.trim(),
+
+        brand: foodBrand.value.trim(),
+
+        category: data.categoria || "Otros",
+
+        emoji: data.emoji || "🍽️",
+
+        unit: foodUnit.value.trim().replace(/^100\s*/i, ""),
+
+        base: Number(data.base || 100),
+
+        kcal: Number(foodKcal.value),
+
+        protein: Number(foodProtein.value),
+
+        carbs: Number(foodCarbs.value),
+
+        fat: Number(foodFat.value)
+
+    };
+
+    const duplicate = foods.find(f =>
+        f.name.toLowerCase() === food.name.toLowerCase()
     );
 
-    if(duplicate){
+    if (duplicate) {
 
-        Object.assign(duplicate,food);
+        Object.assign(duplicate, food);
 
-    }else{
+    } else {
 
         foods.push(food);
 
@@ -450,7 +449,7 @@ type: data.tipo || "alimento",
 
     renderFoods(search.value);
 
-    alert("✅ Alimento importado");
+    alert("✅ Alimento guardado");
 
 };
 
