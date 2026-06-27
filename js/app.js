@@ -374,69 +374,65 @@ jsonInput.addEventListener("input",()=>{
    GUARDAR ALIMENTO
 =========================== */
 
-saveFood.onclick = () => {
+saveFood.onclick = ()=>{
 
-    let data;
+    if(!foodName.value.trim()){
 
-    try {
-
-        data = JSON.parse(jsonInput.value.trim());
-
-    } catch {
-
-        alert("❌ El JSON no es válido.");
+        alert("El JSON no es válido.");
 
         return;
 
     }
 
-    if (!data.nombre) {
+    const food={
 
-        alert("❌ Falta el nombre del alimento.");
+        id:Date.now(),
 
-        return;
+        name:foodName.value.trim(),
 
-    }
+        brand:foodBrand.value.trim(),
 
-    const food = {
+        category:"",
 
-        id: Date.now(),
+        emoji:"🍽️",
 
-        name: data.nombre,
+        unit:foodUnit.value.trim(),
 
-        brand: data.marca || "",
+        kcal:Number(foodKcal.value),
 
-        category: data.categoria || "Otros",
+        protein:Number(foodProtein.value),
 
-        emoji: data.emoji || "🍽️",
+        carbs:Number(foodCarbs.value),
 
-        unit: data.unidad || "g",
-
-        kcal: Number(data.kcal || 0),
-
-        protein: Number(data.proteinas || 0),
-
-        carbs: Number(data.hidratos || 0),
-
-        fat: Number(data.grasas || 0)
+        fat:Number(foodFat.value)
 
     };
 
-    const duplicate = foods.find(f =>
-        f.name.toLowerCase() === food.name.toLowerCase()
+    try{
+
+        const data = JSON.parse(
+            jsonInput.value
+                .replace(/[“”]/g,'"')
+                .replace(/[‘’]/g,"'")
+                .replace(/```json/g,"")
+                .replace(/```/g,"")
+                .trim()
+        );
+
+        food.category = data.categoria || "Otros";
+        food.emoji = data.emoji || "🍽️";
+
+    }catch{}
+
+    const duplicate = foods.find(f=>
+        f.name.toLowerCase()===food.name.toLowerCase()
     );
 
-    if (duplicate) {
+    if(duplicate){
 
-        if (!confirm("Este alimento ya existe.\n\n¿Actualizarlo?")) {
+        Object.assign(duplicate,food);
 
-            return;
-
-        }
-
-        Object.assign(duplicate, food);
-
-    } else {
+    }else{
 
         foods.push(food);
 
@@ -444,13 +440,11 @@ saveFood.onclick = () => {
 
     saveFoods();
 
+    closeNewFood();
+
     renderFoods(search.value);
 
-    jsonInput.value = "";
-
-    jsonStatus.textContent = "";
-
-    closeNewFood();
+    alert("✅ Alimento importado");
 
 };
 
