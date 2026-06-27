@@ -92,6 +92,9 @@ document.getElementById("cancelFood");
 const saveFood =
 document.getElementById("saveFood");
 
+const jsonStatus =
+document.getElementById("jsonStatus");
+
 const foodName =
 document.getElementById("foodName");
 
@@ -349,16 +352,12 @@ jsonInput.addEventListener("input",()=>{
         foodCarbs.value = data.hidratos || 0;
         foodFat.value = data.grasas || 0;
 
-        jsonStatus.innerHTML =
-            "✅ JSON válido";
-
+        jsonStatus.textContent = "✅ JSON válido";
         jsonStatus.style.color = "#39d96c";
 
     }catch{
 
-        jsonStatus.innerHTML =
-            "❌ JSON no válido";
-
+        jsonStatus.textContent = "❌ JSON no válido";
         jsonStatus.style.color = "#ff5b67";
 
     }
