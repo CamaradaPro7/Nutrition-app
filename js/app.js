@@ -332,28 +332,21 @@ document
    IMPORTAR JSON
 =========================== */
 
-jsonInput.addEventListener("input",()=>{
+const jsonStatus = document.getElementById("jsonStatus");
 
-    try{
+jsonInput.addEventListener("input", () => {
 
-const data = JSON.parse(jsonInput.value.trim());
+    try {
 
-foodName.value = data.nombre ?? "";
-foodBrand.value = data.marca ?? "";
-foodUnit.value = data.unidad ?? "g";
+        JSON.parse(jsonInput.value.trim());
 
-foodKcal.value = data.kcal ?? "";
-foodProtein.value = data.proteinas ?? "";
-foodCarbs.value = data.hidratos ?? "";
-foodFat.value = data.grasas ?? "";
+        jsonStatus.textContent = "✅ JSON válido";
+        jsonStatus.style.color = "#38d46a";
 
-foodName.dataset.emoji = data.emoji ?? "🍽️";
-foodName.dataset.category = data.categoria ?? "Otros";
+    } catch {
 
-    }catch(e){
-
-        // Mientras se está pegando el JSON
-        // es normal que aún no sea válido.
+        jsonStatus.textContent = "❌ JSON no válido";
+        jsonStatus.style.color = "#ff5b67";
 
     }
 
@@ -363,73 +356,83 @@ foodName.dataset.category = data.categoria ?? "Otros";
    GUARDAR ALIMENTO
 =========================== */
 
-saveFood.onclick=()=>{
+saveFood.onclick = () => {
 
-    if(foodName.value.trim()===""){
+    let data;
 
-        alert("Introduce un nombre.");
+    try {
+
+        data = JSON.parse(jsonInput.value.trim());
+
+    } catch {
+
+        alert("❌ El JSON no es válido.");
 
         return;
 
     }
 
-const food = {
+    if (!data.nombre) {
 
-    id: Date.now(),
+        alert("❌ Falta el nombre del alimento.");
 
-    name: foodName.value.trim(),
-
-    brand: foodBrand.value.trim(),
-
-    category: foodName.dataset.category || "Otros",
-
-    emoji: foodName.dataset.emoji || "🍽️",
-
-    unit: foodUnit.value.trim() || "g",
-
-    kcal: Number(foodKcal.value),
-
-    protein: Number(foodProtein.value),
-
-    carbs: Number(foodCarbs.value),
-
-    fat: Number(foodFat.value)
-
-};
-
-const duplicate = foods.find(f =>
-    f.name.toLowerCase() === food.name.toLowerCase()
-);
-
-if (duplicate) {
-
-    if (!confirm("Este alimento ya existe.\n\n¿Actualizarlo?")) {
         return;
+
     }
 
-    duplicate.brand = food.brand;
-    duplicate.category = food.category;
-    duplicate.emoji = food.emoji;
-    duplicate.unit = food.unit;
-    duplicate.kcal = food.kcal;
-    duplicate.protein = food.protein;
-    duplicate.carbs = food.carbs;
-    duplicate.fat = food.fat;
+    const food = {
+
+        id: Date.now(),
+
+        name: data.nombre,
+
+        brand: data.marca || "",
+
+        category: data.categoria || "Otros",
+
+        emoji: data.emoji || "🍽️",
+
+        unit: data.unidad || "g",
+
+        kcal: Number(data.kcal || 0),
+
+        protein: Number(data.proteinas || 0),
+
+        carbs: Number(data.hidratos || 0),
+
+        fat: Number(data.grasas || 0)
+
+    };
+
+    const duplicate = foods.find(f =>
+        f.name.toLowerCase() === food.name.toLowerCase()
+    );
+
+    if (duplicate) {
+
+        if (!confirm("Este alimento ya existe.\n\n¿Actualizarlo?")) {
+
+            return;
+
+        }
+
+        Object.assign(duplicate, food);
+
+    } else {
+
+        foods.push(food);
+
+    }
 
     saveFoods();
-    closeNewFood();
-    renderFoods(search.value);
-
-    return;
-}
-
-    foods.push(food);
-
-    saveFoods();
-
-    closeNewFood();
 
     renderFoods(search.value);
+
+    jsonInput.value = "";
+
+    jsonStatus.textContent = "";
+
+    closeNewFood();
 
 };
 
