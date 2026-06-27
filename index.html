@@ -394,57 +394,69 @@ Añadir
      MODAL NUEVO ALIMENTO
 ========================== -->
 
-<h2>📋 Importar alimento</h2>
+<div
+id="newFoodModal"
+class="modal">
 
-<textarea
-    id="jsonInput"
-    class="json-box"
-    placeholder="Pega aquí el JSON generado por ChatGPT..."></textarea>
+    <div class="modal-content">
 
-<div id="jsonStatus"
-    style="
-        margin-top:12px;
-        min-height:24px;
-        color:#8d97a6;
-        font-size:14px;
-        font-weight:600;
-    ">
-</div>
+        <h2 class="modal-title">
 
-<div style="display:none;">
+            📋 Importar alimento
 
-<input id="foodName">
-<input id="foodBrand">
-<input id="foodUnit" value="g">
+        </h2>
 
-<input id="foodKcal">
-<input id="foodProtein">
-<input id="foodCarbs">
-<input id="foodFat">
+        <textarea
+            id="jsonInput"
+            class="json-box"
+            placeholder="Pega aquí el JSON generado por ChatGPT..."></textarea>
 
-</div>
+        <div
+            id="jsonStatus"
+            style="
+                margin-top:12px;
+                min-height:24px;
+                color:#8d97a6;
+                font-size:14px;
+                font-weight:600;
+            ">
+        </div>
 
-<div style="display:flex;gap:12px;margin-top:20px;">
+        <div style="display:none;">
 
-    <button
-        id="cancelFood"
-        class="secondary-btn">
+            <input id="foodName">
+            <input id="foodBrand">
+            <input id="foodUnit" value="g">
 
-        Cancelar
+            <input id="foodKcal">
+            <input id="foodProtein">
+            <input id="foodCarbs">
+            <input id="foodFat">
 
-    </button>
+        </div>
 
-    <button
-        id="saveFood"
-        class="primary-btn">
+        <div
+            style="display:flex;gap:12px;margin-top:20px;">
 
-        📋 Importar
+            <button
+                id="cancelFood"
+                class="secondary-btn">
 
-    </button>
+                Cancelar
 
-</div>
+            </button>
 
-</div>
+            <button
+                id="saveFood"
+                class="primary-btn">
+
+                📋 Importar
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
