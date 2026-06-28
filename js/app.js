@@ -239,6 +239,12 @@ function openMeal(meal){
     renderFoods();
 
     modal.classList.add("show");
+    
+    lastScroll = window.scrollY;
+
+document.body.style.position = "fixed";
+document.body.style.top = `-${lastScroll}px`;
+document.body.style.width = "100%";
 
     search.focus();
 
@@ -247,6 +253,12 @@ function openMeal(meal){
 function closeMeal(){
 
     modal.classList.remove("show");
+    
+    document.body.style.position = "";
+document.body.style.top = "";
+document.body.style.width = "";
+
+window.scrollTo(0, lastScroll);
 
 }
 
@@ -266,12 +278,24 @@ function openNewFood(){
     foodFat.value = "";
 
     newFoodModal.classList.add("show");
+    
+    lastScroll = window.scrollY;
+
+document.body.style.position = "fixed";
+document.body.style.top = `-${lastScroll}px`;
+document.body.style.width = "100%";
 
 }
 
 function closeNewFood(){
 
     newFoodModal.classList.remove("show");
+    
+    document.body.style.position = "";
+document.body.style.top = "";
+document.body.style.width = "";
+
+window.scrollTo(0, lastScroll);
 
 }
 
