@@ -238,15 +238,15 @@ function openMeal(meal){
 
     renderFoods();
 
-    modal.classList.add("show");
-    
     lastScroll = window.scrollY;
 
-document.body.style.position = "fixed";
-document.body.style.top = `-${lastScroll}px`;
-document.body.style.width = "100%";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${lastScroll}px`;
+    document.body.style.width = "100%";
 
-    search.focus();
+    modal.classList.add("show");
+
+    // search.focus();
 
 }
 
