@@ -427,24 +427,33 @@ display:flex;
 }
 
 .modal-content{
+
     width:100%;
     max-width:620px;
-    max-height:90vh;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
+    height:90vh;
+
+    display:flex;
+    flex-direction:column;
+
     background:var(--card);
+
     border-radius:28px 28px 0 0;
+
     padding:28px;
+
     animation:slideUp .28s ease;
+
 }
 
 #foodResults{
 
-    max-height:55vh;
+    flex:1;
 
     overflow-y:auto;
 
     -webkit-overflow-scrolling:touch;
+
+    padding-bottom:20px;
 
 }
 
