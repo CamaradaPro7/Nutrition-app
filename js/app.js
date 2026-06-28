@@ -554,26 +554,31 @@ jsonInput.addEventListener("input",()=>{
 
 function importFoodList(text){
 
-    const blocks = text
-        .split(/\n\s*\n/)
-        .map(x=>x.trim())
-        .filter(Boolean);
+    const lines = text
+        .split("\n")
+        .map(l => l.trim())
+        .filter(l => l);
 
     let imported = 0;
     let updated = 0;
 
-    blocks.forEach(block=>{
+    for(let i=0;i<lines.length;i++){
 
-        const lines = block
-            .split("\n")
-            .map(x=>x.trim())
-            .filter(Boolean);
+        const name = lines[i];
 
-        if(lines.length<2) return;
+        if(
+            name.toUpperCase().includes("ALIMENTOS") ||
+            name.includes("Macros") ||
+            name.includes("kcal")
+        ){
+            continue;
+        }
 
-        const name = lines[0];
+        if(i+1 >= lines.length) continue;
 
-        const info = lines[1];
+        const info = lines[i+1];
+
+        if(!info.includes("kcal")) continue;
 
         const unit =
             info.includes("ml") ? "ml" :
@@ -581,28 +586,33 @@ function importFoodList(text){
             "g";
 
         const base =
-            number(
-                info.match(/^([\d.,]+)/)?.[1] || 100
+            parseFloat(
+                (info.match(/^([\d.,]+)/)?.[1] || "100")
+                .replace(",",".")
             );
 
         const kcal =
-            number(
-                info.match(/=\s*([\d.,]+)\s*kcal/i)?.[1]
+            parseFloat(
+                (info.match(/=\s*([\d.,]+)\s*kcal/i)?.[1] || "0")
+                .replace(",",".")
             );
 
         const protein =
-            number(
-                info.match(/P\s*([\d.,]+)/i)?.[1]
+            parseFloat(
+                (info.match(/P\s*([\d.,]+)/i)?.[1] || "0")
+                .replace(",",".")
             );
 
         const carbs =
-            number(
-                info.match(/HC\s*([\d.,]+)/i)?.[1]
+            parseFloat(
+                (info.match(/HC\s*([\d.,]+)/i)?.[1] || "0")
+                .replace(",",".")
             );
 
         const fat =
-            number(
-                info.match(/G\s*([\d.,]+)/i)?.[1]
+            parseFloat(
+                (info.match(/G\s*([\d.,]+)/i)?.[1] || "0")
+                .replace(",",".")
             );
 
         const food = {
@@ -633,8 +643,7 @@ function importFoodList(text){
 
         };
 
-        const existing =
-        existsFood(name);
+        const existing = existsFood(name);
 
         if(existing){
 
@@ -650,18 +659,16 @@ function importFoodList(text){
 
         }
 
-    });
+        i++;
+
+    }
 
     saveFoods();
 
     renderFoods();
 
     alert(
-
-        `✅ ${imported} añadidos\n` +
-
-        `🔄 ${updated} actualizados`
-
+        `✅ ${imported} alimentos importados\n🔄 ${updated} actualizados`
     );
 
 }
