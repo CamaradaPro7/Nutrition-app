@@ -336,18 +336,50 @@ const jsonStatus = document.getElementById("jsonStatus");
 
 jsonInput.addEventListener("input",()=>{
 
+    let text = jsonInput.value.trim();
+
+    text = text
+        .replace(/[“”]/g,'"')
+        .replace(/[‘’]/g,"'")
+        .replace(/```json/g,"")
+        .replace(/```/g,"")
+        .trim();
+
     try{
 
-        let text = jsonInput.value.trim();
-
-        text = text
-            .replace(/[“”]/g,'"')
-            .replace(/[‘’]/g,"'")
-            .replace(/```json/g,"")
-            .replace(/```/g,"")
-            .trim();
-
         const data = JSON.parse(text);
+
+        foodName.value = data.nombre || "";
+        foodBrand.value = data.marca || "";
+        foodUnit.value = data.unidad || "g";
+
+        foodKcal.value = data.kcal || 0;
+        foodProtein.value = data.proteinas || 0;
+        foodCarbs.value = data.hidratos || 0;
+        foodFat.value = data.grasas || 0;
+
+        jsonStatus.textContent = "✅ JSON válido";
+        jsonStatus.style.color = "#39d96c";
+
+        return;
+
+    }catch{}
+
+    if(text.includes("kcal") && text.includes("|")){
+
+        jsonStatus.textContent =
+        "📋 Lista de alimentos detectada";
+
+        jsonStatus.style.color="#39d96c";
+
+        return;
+
+    }
+
+    jsonStatus.textContent="❌ Formato no válido";
+    jsonStatus.style.color="#ff5b67";
+
+});
 
         foodName.value = data.nombre || "";
         foodBrand.value = data.marca || "";
