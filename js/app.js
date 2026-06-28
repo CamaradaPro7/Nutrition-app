@@ -450,6 +450,9 @@ function deleteFood(id){
 }
 
 function editFood(id){
+    alert(id);
+    newFoodModal.classList.add("show");
+}
 
     const food = foods.find(f => f.id === id);
 
