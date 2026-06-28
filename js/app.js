@@ -43,6 +43,7 @@ let selectedFood = null;
 
 let editingMeal = null;
 let editingIndex = null;
+let editingFood = null;
 
 /* ===========================
    ELEMENTOS
@@ -394,6 +395,15 @@ function renderFoods(filter=""){
 
 <div class="food-actions">
 
+<button
+class="icon-btn"
+onclick="
+event.stopPropagation();
+editFood(${food.id});
+">
+✏️
+</button>
+
     <button
         class="icon-btn delete"
         onclick="event.stopPropagation();deleteFood(${food.id})">
@@ -436,6 +446,29 @@ function deleteFood(id){
     saveFoods();
 
     renderFoods(search.value);
+
+}
+
+function editFood(id){
+
+    const food = foods.find(f => f.id === id);
+
+    if(!food) return;
+
+    editingFood = food;
+
+    foodName.value = food.name;
+    foodBrand.value = food.brand || "";
+    foodUnit.value = food.unit || "g";
+
+    foodKcal.value = food.kcal;
+    foodProtein.value = food.protein;
+    foodCarbs.value = food.carbs;
+    foodFat.value = food.fat;
+
+    jsonInput.value = "";
+
+    newFoodModal.classList.add("show");
 
 }
 
@@ -718,6 +751,28 @@ function importFoodList(text){
 =========================== */
 
 saveFood.onclick = ()=>{
+    
+if(editingFood){
+
+    editingFood.name = foodName.value.trim();
+    editingFood.brand = foodBrand.value.trim();
+    editingFood.unit = foodUnit.value.trim();
+
+    editingFood.kcal = Number(foodKcal.value);
+    editingFood.protein = Number(foodProtein.value);
+    editingFood.carbs = Number(foodCarbs.value);
+    editingFood.fat = Number(foodFat.value);
+
+    saveFoods();
+
+    editingFood = null;
+
+    closeNewFood();
+
+    renderFoods(search.value);
+
+    return;
+}
 
     let text = jsonInput.value.trim();
 
