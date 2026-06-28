@@ -352,37 +352,35 @@ function renderFoods(filter=""){
 
         item.innerHTML = `
 
-        <div style="flex:1;">
+<div style="flex:1;">
 
-            <div class="food-name">
+    <div class="food-name">
+        ${food.emoji || "🍽️"} ${food.name}
+    </div>
 
-                ${food.emoji || "🍽️"} ${food.name}
+    <div class="food-brand">
+        ${food.brand || ""}
+    </div>
 
-            </div>
+    <div class="food-kcal">
+        ${food.category || "Otros"} · ${food.kcal} kcal / ${food.base || 100} ${food.unit}
+    </div>
 
-            <div class="food-brand">
+</div>
 
-                ${food.brand || ""}
+<div class="food-actions">
 
-            </div>
+    <button
+        class="icon-btn delete"
+        onclick="event.stopPropagation();deleteFood(${food.id})">
 
-            <div class="food-kcal">
+        🗑️
 
-                ${food.category || "Otros"}
+    </button>
 
-                ·
+</div>
 
-                ${food.kcal} kcal /
-
-                ${food.base || 100}
-
-                ${food.unit}
-
-            </div>
-
-        </div>
-
-        `;
+`;
 
         item.onclick = ()=>{
 
@@ -396,6 +394,24 @@ function renderFoods(filter=""){
         foodResults.appendChild(item);
 
     });
+
+}
+
+function deleteFood(id){
+
+    const food = foods.find(f => f.id === id);
+
+    if(!food) return;
+
+    if(!confirm(`¿Eliminar "${food.name}" de la biblioteca?`)){
+        return;
+    }
+
+    foods = foods.filter(f => f.id !== id);
+
+    saveFoods();
+
+    renderFoods(search.value);
 
 }
 
