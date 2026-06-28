@@ -450,27 +450,28 @@ function deleteFood(id){
 }
 
 function editFood(id){
-    
 
-    const food = foods.find(f => f.id === id);
-
+    const food = foods.find(f => f.id == id);
     if(!food) return;
 
     editingFood = food;
 
-    foodName.value = food.name;
+    foodName.value = food.name || "";
     foodBrand.value = food.brand || "";
+    foodCategory.value = food.category || "Otros";
     foodUnit.value = food.unit || "g";
 
-    foodKcal.value = food.kcal;
-    foodProtein.value = food.protein;
-    foodCarbs.value = food.carbs;
-    foodFat.value = food.fat;
+    foodBase.value = food.base || 100;
+
+    foodKcal.value = food.kcal || 0;
+    foodProtein.value = food.protein || 0;
+    foodCarbs.value = food.carbs || 0;
+    foodFat.value = food.fat || 0;
 
     jsonInput.value = "";
+    jsonStatus.textContent = "";
 
     newFoodModal.classList.add("show");
-
 }
 
 /* ===========================
@@ -752,28 +753,31 @@ function importFoodList(text){
 =========================== */
 
 saveFood.onclick = ()=>{
-    
-if(editingFood){
 
-    editingFood.name = foodName.value.trim();
-    editingFood.brand = foodBrand.value.trim();
-    editingFood.unit = foodUnit.value.trim();
+    if(editingFood){
 
-    editingFood.kcal = Number(foodKcal.value);
-    editingFood.protein = Number(foodProtein.value);
-    editingFood.carbs = Number(foodCarbs.value);
-    editingFood.fat = Number(foodFat.value);
+        editingFood.name = foodName.value.trim();
+        editingFood.brand = foodBrand.value.trim();
+        editingFood.category = foodCategory.value.trim() || "Otros";
+        editingFood.unit = foodUnit.value.trim();
 
-    saveFoods();
+        editingFood.base = Number(foodBase.value) || 100;
 
-    editingFood = null;
+        editingFood.kcal = Number(foodKcal.value);
+        editingFood.protein = Number(foodProtein.value);
+        editingFood.carbs = Number(foodCarbs.value);
+        editingFood.fat = Number(foodFat.value);
 
-    closeNewFood();
+        saveFoods();
 
-    renderFoods(search.value);
+        editingFood = null;
 
-    return;
-}
+        renderFoods(search.value);
+
+        closeNewFood();
+
+        return;
+    }
 
     let text = jsonInput.value.trim();
 
@@ -791,7 +795,6 @@ if(editingFood){
         closeNewFood();
 
         return;
-
     }
 
     let data;
@@ -805,7 +808,6 @@ if(editingFood){
         alert("JSON no válido");
 
         return;
-
     }
 
     const food = {
@@ -822,8 +824,7 @@ if(editingFood){
 
         emoji:data.emoji || "🍽️",
 
-        unit:(data.unidad || "g")
-            .replace(/^100\s*/i,""),
+        unit:(data.unidad || "g").replace(/^100\s*/i,""),
 
         base:Number(data.base || 100),
 
@@ -837,8 +838,7 @@ if(editingFood){
 
     };
 
-    const existing =
-    existsFood(food.name);
+    const existing = existsFood(food.name);
 
     if(existing){
 
@@ -857,7 +857,6 @@ if(editingFood){
     closeNewFood();
 
     alert("✅ Alimento guardado");
-
 };
 
 /* =====================================================
