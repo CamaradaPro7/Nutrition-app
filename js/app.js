@@ -432,7 +432,7 @@ function renderFoods(filter=""){
 class="icon-btn"
 onclick="
 event.stopPropagation();
-alert('${food.id}');
+editFood(${food.id});
 ">
 ✏️
 </button>
