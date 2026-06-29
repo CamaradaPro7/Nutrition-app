@@ -487,35 +487,15 @@ function editFood(id){
     const food = foods.find(f => f.id == id);
     if(!food) return;
 
+    alert("1");
+
     editingFood = food;
 
-    document.getElementById("foodModalTitle").textContent = "✏️ Editar alimento";
-
-    jsonInput.style.display = "none";
-    jsonStatus.style.display = "none";
-    foodEditor.style.display = "block";
-
-    saveFood.textContent = "💾 Guardar";
-
-    foodName.value = food.name || "";
-    foodBrand.value = food.brand || "";
-    foodCategory.value = food.category || "Otros";
-
-    foodBase.value = food.base || 100;
-    foodUnit.value = food.unit || "g";
-
-    foodKcal.value = food.kcal || 0;
-    foodProtein.value = food.protein || 0;
-    foodCarbs.value = food.carbs || 0;
-    foodFat.value = food.fat || 0;
-
-    lastScroll = window.scrollY;
-
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${lastScroll}px`;
-    document.body.style.width = "100%";
+    alert("2");
 
     newFoodModal.classList.add("show");
+
+    alert("3");
 
 }
 
