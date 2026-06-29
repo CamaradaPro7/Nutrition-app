@@ -391,7 +391,7 @@ Añadir
 </div>
 
 <!-- ==========================
-     MODAL NUEVO ALIMENTO
+     MODAL NUEVO / EDITAR ALIMENTO
 ========================== -->
 
 <div
@@ -400,7 +400,9 @@ class="modal">
 
     <div class="modal-content">
 
-        <h2 class="modal-title">
+        <h2
+            id="foodModalTitle"
+            class="modal-title">
 
             📋 Importar alimento
 
@@ -409,7 +411,7 @@ class="modal">
         <textarea
             id="jsonInput"
             class="json-box"
-            placeholder="Pega aquí el JSON generado por ChatGPT..."></textarea>
+            placeholder="Pega aquí el JSON o una lista de alimentos..."></textarea>
 
         <div
             id="jsonStatus"
@@ -422,16 +424,71 @@ class="modal">
             ">
         </div>
 
-        <div style="display:none;">
+        <!-- FORMULARIO DE EDICIÓN -->
 
-            <input id="foodName">
-            <input id="foodBrand">
-            <input id="foodUnit" value="g">
+        <div
+            id="foodEditor"
+            style="display:none;">
 
-            <input id="foodKcal">
-            <input id="foodProtein">
-            <input id="foodCarbs">
-            <input id="foodFat">
+            <input
+                id="foodName"
+                class="search"
+                type="text"
+                placeholder="Nombre">
+
+            <input
+                id="foodBrand"
+                class="search"
+                type="text"
+                placeholder="Marca">
+
+            <input
+                id="foodCategory"
+                class="search"
+                type="text"
+                placeholder="Categoría">
+
+            <div
+                style="display:flex;gap:12px;">
+
+                <input
+                    id="foodBase"
+                    class="search"
+                    type="number"
+                    placeholder="Base"
+                    value="100">
+
+                <input
+                    id="foodUnit"
+                    class="search"
+                    type="text"
+                    placeholder="Unidad">
+
+            </div>
+
+            <input
+                id="foodKcal"
+                class="search"
+                type="number"
+                placeholder="kcal">
+
+            <input
+                id="foodProtein"
+                class="search"
+                type="number"
+                placeholder="Proteínas">
+
+            <input
+                id="foodCarbs"
+                class="search"
+                type="number"
+                placeholder="Hidratos">
+
+            <input
+                id="foodFat"
+                class="search"
+                type="number"
+                placeholder="Grasas">
 
         </div>
 
@@ -450,7 +507,7 @@ class="modal">
                 id="saveFood"
                 class="primary-btn">
 
-                📋 Importar
+                💾 Guardar
 
             </button>
 
