@@ -970,7 +970,7 @@ acceptGrams.onclick = ()=>{
    EDITAR
 =========================== */
 
-function editFood(meal,index){
+function editMealFood(meal,index){
 
     const item =
         meals[meal][index];
@@ -986,8 +986,8 @@ function editFood(meal,index){
 
     }
 
-    editingMeal=meal;
-    editingIndex=index;
+    editingMeal = meal;
+    editingIndex = index;
 
     openGrams(original);
 
