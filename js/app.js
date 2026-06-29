@@ -112,6 +112,18 @@ document.getElementById("foodCarbs");
 const foodFat =
 document.getElementById("foodFat");
 
+const foodEditor =
+document.getElementById("foodEditor");
+
+const foodModalTitle =
+document.getElementById("foodModalTitle");
+
+const foodCategory =
+document.getElementById("foodCategory");
+
+const foodBase =
+document.getElementById("foodBase");
+
 /* ===========================
    DASHBOARD
 =========================== */
@@ -265,38 +277,59 @@ window.scrollTo(0, lastScroll);
 
 function openNewFood(){
 
-    jsonInput.value = "";
+    editingFood = null;
 
+    document.getElementById("foodModalTitle").textContent = "📋 Importar alimento";
+
+    jsonInput.style.display = "";
+    jsonStatus.style.display = "";
+    foodEditor.style.display = "none";
+
+    saveFood.textContent = "📋 Importar";
+
+    jsonInput.value = "";
     jsonStatus.textContent = "";
 
     foodName.value = "";
     foodBrand.value = "";
+    foodCategory.value = "";
     foodUnit.value = "g";
+    foodBase.value = 100;
 
     foodKcal.value = "";
     foodProtein.value = "";
     foodCarbs.value = "";
     foodFat.value = "";
 
-    newFoodModal.classList.add("show");
-    
     lastScroll = window.scrollY;
 
-document.body.style.position = "fixed";
-document.body.style.top = `-${lastScroll}px`;
-document.body.style.width = "100%";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${lastScroll}px`;
+    document.body.style.width = "100%";
+
+    newFoodModal.classList.add("show");
 
 }
 
 function closeNewFood(){
 
     newFoodModal.classList.remove("show");
-    
-    document.body.style.position = "";
-document.body.style.top = "";
-document.body.style.width = "";
 
-window.scrollTo(0, lastScroll);
+    editingFood = null;
+
+    jsonInput.style.display = "";
+    jsonStatus.style.display = "";
+    foodEditor.style.display = "none";
+
+    saveFood.textContent = "📋 Importar";
+
+    document.getElementById("foodModalTitle").textContent = "📋 Importar alimento";
+
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.width = "";
+
+    window.scrollTo(0,lastScroll);
 
 }
 
@@ -456,22 +489,34 @@ function editFood(id){
 
     editingFood = food;
 
+    document.getElementById("foodModalTitle").textContent = "✏️ Editar alimento";
+
+    jsonInput.style.display = "none";
+    jsonStatus.style.display = "none";
+    foodEditor.style.display = "block";
+
+    saveFood.textContent = "💾 Guardar";
+
     foodName.value = food.name || "";
     foodBrand.value = food.brand || "";
     foodCategory.value = food.category || "Otros";
-    foodUnit.value = food.unit || "g";
 
     foodBase.value = food.base || 100;
+    foodUnit.value = food.unit || "g";
 
     foodKcal.value = food.kcal || 0;
     foodProtein.value = food.protein || 0;
     foodCarbs.value = food.carbs || 0;
     foodFat.value = food.fat || 0;
 
-    jsonInput.value = "";
-    jsonStatus.textContent = "";
+    lastScroll = window.scrollY;
+
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${lastScroll}px`;
+    document.body.style.width = "100%";
 
     newFoodModal.classList.add("show");
+
 }
 
 /* ===========================
