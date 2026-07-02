@@ -1312,9 +1312,13 @@ function openGrams(food){
 
     gramsModal.classList.add("show");
 
-    gramsInput.focus();
+    setTimeout(() => {
 
-}
+    gramsInput.focus({
+        preventScroll: true
+    });
+
+}, 250);
 
 /* =====================================================
    CERRAR CANTIDAD
