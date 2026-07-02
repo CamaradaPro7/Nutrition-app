@@ -21,7 +21,7 @@ const STORAGE = {
 
 };
 
-const DAILY_GOAL = 2600;
+const DAILY_GOAL = 2200;
 
 /* =====================================================
    ESTADO
@@ -52,7 +52,7 @@ let settings = JSON.parse(
 
 ) || {
 
-    kcalGoal:2600
+    kcalGoal:DAILY_GOAL
 
 };
 
