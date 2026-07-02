@@ -88,7 +88,7 @@ const carbs = $("carbs");
 
 const fat = $("fat");
 
-const ring = document.querySelector(".ring-center");
+const ring = document.getElementById("ringProgress");
 
 /* Biblioteca */
 
@@ -359,47 +359,34 @@ function updateRing(percent){
 
     if(!ring) return;
 
-    ring.classList.remove(
+    const value = Math.max(0, Math.min(percent,100));
 
-        "green",
+    let color = "#38d46a";
+    let glow  = "rgba(56,212,106,.28)";
 
-        "yellow",
+    if(percent >= 120){
 
-        "orange",
+        color = "#ff5b67";
+        glow  = "rgba(255,91,103,.35)";
 
-        "red",
+    }else if(percent >= 100){
 
-        "animate"
+        color = "#ff9f43";
+        glow  = "rgba(255,159,67,.35)";
 
-    );
+    }else if(percent >= 80){
 
-    if(percent < 60){
-
-        ring.classList.add("green");
-
-    }
-
-    else if(percent < 90){
-
-        ring.classList.add("yellow");
+        color = "#ffd54a";
+        glow  = "rgba(255,213,74,.35)";
 
     }
 
-    else if(percent <= 100){
+    ring.style.background = `conic-gradient(
+        ${color} ${value * 3.6}deg,
+        #2b3442 ${value * 3.6}deg 360deg
+    )`;
 
-        ring.classList.add("orange");
-
-    }
-
-    else{
-
-        ring.classList.add("red");
-
-    }
-
-    void ring.offsetWidth;
-
-    ring.classList.add("animate");
+    ring.style.boxShadow = `0 0 35px ${glow}`;
 
 }
 
