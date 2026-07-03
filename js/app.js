@@ -1636,20 +1636,6 @@ function buildSummary(){
     return text.trim();
 
 }
-`━━━━━━━━━━━━━━━━━━
-
-TOTAL DEL DÍA
-
-🔥 ${Math.round(totals.kcal)} kcal
-🥩 ${totals.protein.toFixed(1)} g
-🍚 ${totals.carbs.toFixed(1)} g
-🥑 ${totals.fat.toFixed(1)} g
-
-`;
-
-    return text;
-
-}
 
 /* =====================================================
    COPIAR
