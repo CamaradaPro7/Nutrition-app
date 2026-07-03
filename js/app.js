@@ -1650,17 +1650,22 @@ function buildSummary(){
 
 ────────────────────
 
-🤖 PROMPT PARA CHATGPT
+🤖 INSTRUCCIONES PARA CHATGPT
 
 Analiza mi alimentación de hoy.
 
-Indícame:
+Mi objetivo es mejorar mi alimentación y alcanzar aproximadamente el objetivo calórico indicado.
 
-1. Si voy bien de calorías.
-2. Si voy bien de proteínas, hidratos y grasas.
-3. Qué alimentos me recomendarías añadir o quitar.
-4. Qué debería comer en la siguiente comida para acercarme a mi objetivo sin sobrepasarlo.
-5. Si ves algún desequilibrio nutricional importante.
+Quiero que me indiques:
+
+• Si voy bien de calorías.
+• Si voy bien de proteínas, hidratos y grasas.
+• Qué alimentos añadirías o quitarías.
+• Qué debería comer en la siguiente comida para acercarme al objetivo sin sobrepasarlo.
+• Si observas algún desequilibrio nutricional.
+• Si ves una opción mejor, explícamela.
+
+Ten en cuenta únicamente los alimentos que aparecen en este resumen.
 
 `;
 
