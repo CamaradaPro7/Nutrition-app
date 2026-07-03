@@ -362,22 +362,17 @@ function updateRing(percent){
     let color = "#38d46a";
     let glow = "rgba(56,212,106,.22)";
 
-    if(percent >= 120){
+    if(percent >= 100){
 
-        color = "#ff5b67";
-        glow = "rgba(255,91,103,.25)";
+    color = "#ff5b67";
+    glow = "rgba(255,91,103,.25)";
 
-    }else if(percent >= 100){
+}else if(percent >= 80){
 
-        color = "#ffb84d";
-        glow = "rgba(255,184,77,.25)";
+    color = "#ffd84d";
+    glow = "rgba(255,216,77,.25)";
 
-    }else if(percent >= 80){
-
-        color = "#ffd84d";
-        glow = "rgba(255,216,77,.25)";
-
-    }
+}
 
     ring.style.background = color;
 
