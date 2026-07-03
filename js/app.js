@@ -381,12 +381,18 @@ function updateRing(percent){
 
     }
 
-    ring.style.background = `conic-gradient(
-        ${color} ${value * 3.6}deg,
-        #2b3442 ${value * 3.6}deg 360deg
-    )`;
+    const angle = value * 3.6;
 
-    ring.style.boxShadow = `0 0 35px ${glow}`;
+ring.style.background = `conic-gradient(
+    from -90deg,
+    ${color} 0deg ${angle}deg,
+    #2b3442 ${angle}deg 360deg
+)`;
+
+    ring.style.boxShadow = `
+0 0 18px ${glow},
+0 0 45px ${glow}
+`;
 
 }
 
