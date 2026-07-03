@@ -1604,12 +1604,16 @@ function buildSummary(){
 
     let text = `📅 ${formatDate(new Date())}
 
-🔥 ${Math.round(totals.kcal)} / ${goal} kcal (${percent}%)
+🎯 Objetivo: ${goal} kcal
+🔥 Consumidas: ${Math.round(totals.kcal)} kcal (${percent}%)
 
-🥩 ${totals.protein.toFixed(1)} g
-🍚 ${totals.carbs.toFixed(1)} g
-🥑 ${totals.fat.toFixed(1)} g
+🥩 Proteínas: ${totals.protein.toFixed(1)} g
+🍚 Hidratos: ${totals.carbs.toFixed(1)} g
+🥑 Grasas: ${totals.fat.toFixed(1)} g
 
+────────────────────
+
+🍳 Desayuno
 `;
 
     const names = {
@@ -1619,11 +1623,20 @@ function buildSummary(){
         cena:"🌙 Cena"
     };
 
+    text = `📅 ${formatDate(new Date())}
+
+🎯 Objetivo: ${goal} kcal
+🔥 Consumidas: ${Math.round(totals.kcal)} kcal (${percent}%)
+
+🥩 Proteínas: ${totals.protein.toFixed(1)} g
+🍚 Hidratos: ${totals.carbs.toFixed(1)} g
+🥑 Grasas: ${totals.fat.toFixed(1)} g`;
+
     Object.keys(meals).forEach(meal=>{
 
         if(meals[meal].length===0) return;
 
-        text += `\n${names[meal]}\n`;
+        text += `\n\n${names[meal]}\n`;
 
         meals[meal].forEach(food=>{
 
@@ -1632,6 +1645,24 @@ function buildSummary(){
         });
 
     });
+
+    text += `
+
+────────────────────
+
+🤖 PROMPT PARA CHATGPT
+
+Analiza mi alimentación de hoy.
+
+Indícame:
+
+1. Si voy bien de calorías.
+2. Si voy bien de proteínas, hidratos y grasas.
+3. Qué alimentos me recomendarías añadir o quitar.
+4. Qué debería comer en la siguiente comida para acercarme a mi objetivo sin sobrepasarlo.
+5. Si ves algún desequilibrio nutricional importante.
+
+`;
 
     return text.trim();
 
