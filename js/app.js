@@ -2037,6 +2037,8 @@ function init(){
     
     ring.onclick = copySummary;
     
+    alert("Biblioteca: " + foods.length + "\nDesayuno: " + meals.desayuno.length);
+    
     console.clear();
 
     console.log(
