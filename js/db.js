@@ -32,3 +32,9 @@ function openDB(){
     });
 
 }
+
+openDB().then(()=>{
+
+    console.log("✅ IndexedDB lista");
+
+});
