@@ -2000,8 +2000,7 @@ function init(){
     renderMeals();
     
     ring.onclick = copySummary;
-    ring.style.cursor = "pointer";
-
+    
     console.clear();
 
     console.log(
