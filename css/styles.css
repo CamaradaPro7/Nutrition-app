@@ -171,14 +171,14 @@ margin-bottom:26px;
 
 display:flex;
 justify-content:center;
-margin-bottom:28px;
+margin-bottom:40px;
 
 }
 
 .ring-progress{
 
-width:250px;
-height:250px;
+width:210px;
+height:210px;
 
 border-radius:50%;
 
@@ -186,29 +186,18 @@ display:flex;
 justify-content:center;
 align-items:center;
 
-background:conic-gradient(#38d46a 0deg,#2b3442 0deg);
+background:#38d46a;
 
-box-shadow:0 0 30px rgba(56,212,106,.22);
+box-shadow:0 0 18px rgba(56,212,106,.22);
 
-transition:.35s;
+transition:.3s;
 
 }
 
 .ring-center{
 
-width:230px;
-height:230px;
-
-border-radius:50%;
-
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-
-background:#1d2430;
-
-}
+width:198px;
+height:198px;
 
 border-radius:50%;
 
@@ -223,17 +212,15 @@ background:#1d2430;
 
 .ring-center span{
 
-font-size:74px;
+font-size:64px;
 font-weight:800;
 
 }
 
 .ring-center small{
 
-margin-top:10px;
-
-font-size:20px;
-
+margin-top:8px;
+font-size:18px;
 color:var(--text2);
 
 }
