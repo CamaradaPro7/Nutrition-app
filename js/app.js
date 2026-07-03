@@ -359,40 +359,29 @@ function updateRing(percent){
 
     if(!ring) return;
 
-    const value = Math.max(0, Math.min(percent,100));
-
     let color = "#38d46a";
-    let glow  = "rgba(56,212,106,.28)";
+    let glow = "rgba(56,212,106,.22)";
 
     if(percent >= 120){
 
         color = "#ff5b67";
-        glow  = "rgba(255,91,103,.35)";
+        glow = "rgba(255,91,103,.25)";
 
     }else if(percent >= 100){
 
-        color = "#ff9f43";
-        glow  = "rgba(255,159,67,.35)";
+        color = "#ffb84d";
+        glow = "rgba(255,184,77,.25)";
 
     }else if(percent >= 80){
 
-        color = "#ffd54a";
-        glow  = "rgba(255,213,74,.35)";
+        color = "#ffd84d";
+        glow = "rgba(255,216,77,.25)";
 
     }
 
-    const angle = value * 3.6;
+    ring.style.background = color;
 
-ring.style.background = `conic-gradient(
-    from -90deg,
-    ${color} 0deg ${angle}deg,
-    #2b3442 ${angle}deg 360deg
-)`;
-
-    ring.style.boxShadow = `
-0 0 18px ${glow},
-0 0 45px ${glow}
-`;
+    ring.style.boxShadow = `0 0 18px ${glow}`;
 
 }
 
