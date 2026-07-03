@@ -1999,7 +1999,8 @@ function init(){
 
     renderMeals();
     
-    document.getElementById("copySummaryBtn").onclick = copySummary;
+    ring.onclick = copySummary;
+    ring.style.cursor = "pointer";
 
     console.clear();
 
