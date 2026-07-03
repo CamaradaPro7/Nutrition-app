@@ -192,6 +192,14 @@ box-shadow:0 0 18px rgba(56,212,106,.22);
 
 transition:.3s;
 
+cursor:pointer;
+
+}
+
+.ring-progress:active{
+
+transform:scale(.98);
+
 }
 
 .ring-center{
