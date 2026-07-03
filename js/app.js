@@ -271,23 +271,23 @@ function updateGreeting(){
 
     const hour = new Date().getHours();
 
-    let text = "Buenos días";
+    let text;
 
-    if(hour >= 12 && hour < 21){
+    if(hour >= 6 && hour < 14){
+
+        text = "Buenos días";
+
+    }else if(hour >= 14 && hour < 21){
 
         text = "Buenas tardes";
 
-    }else if(hour >= 21 || hour < 6){
+    }else{
 
         text = "Buenas noches";
 
     }
 
-    if(greeting){
-
-        greeting.textContent = text;
-
-    }
+    greeting.textContent = text;
 
 }
 
