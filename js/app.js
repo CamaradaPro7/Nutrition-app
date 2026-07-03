@@ -2036,9 +2036,7 @@ function init(){
     renderMeals();
     
     ring.onclick = copySummary;
-    
-    alert("Biblioteca: " + foods.length + "\nDesayuno: " + meals.desayuno.length);
-    
+     
     console.clear();
 
     console.log(
