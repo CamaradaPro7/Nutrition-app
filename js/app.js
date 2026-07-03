@@ -1636,7 +1636,6 @@ function buildSummary(){
     return text.trim();
 
 }
-
 `━━━━━━━━━━━━━━━━━━
 
 TOTAL DEL DÍA
