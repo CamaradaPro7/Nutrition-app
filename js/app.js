@@ -1597,40 +1597,45 @@ acceptGrams.onclick = saveMealFood;
 
 function buildSummary(){
 
-    let text = "";
+    const totals = calculateTotals();
+
+    const goal = settings.kcalGoal || DAILY_GOAL;
+    const percent = Math.round((totals.kcal / goal) * 100);
+
+    let text = `📅 ${formatDate(new Date())}
+
+🔥 ${Math.round(totals.kcal)} / ${goal} kcal (${percent}%)
+
+🥩 ${totals.protein.toFixed(1)} g
+🍚 ${totals.carbs.toFixed(1)} g
+🥑 ${totals.fat.toFixed(1)} g
+
+`;
 
     const names = {
-
-        desayuno:"🍳 DESAYUNO",
-        comida:"🍝 COMIDA",
-        merienda:"🥪 MERIENDA",
-        cena:"🌙 CENA"
-
+        desayuno:"🍳 Desayuno",
+        comida:"🍝 Comida",
+        merienda:"🥪 Merienda",
+        cena:"🌙 Cena"
     };
 
     Object.keys(meals).forEach(meal=>{
 
         if(meals[meal].length===0) return;
 
-        text += names[meal] + "\n\n";
+        text += `\n${names[meal]}\n`;
 
         meals[meal].forEach(food=>{
 
-            text +=
-
-`• ${food.name}
-${food.grams} ${food.unit}
-${food.kcal} kcal | P ${food.protein} g | HC ${food.carbs} g | G ${food.fat} g
-
-`;
+            text += `• ${food.name} (${food.grams} ${food.unit})\n`;
 
         });
 
     });
 
-    const totals = calculateTotals();
+    return text.trim();
 
-    text +=
+}
 
 `━━━━━━━━━━━━━━━━━━
 
