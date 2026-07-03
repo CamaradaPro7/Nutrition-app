@@ -2008,6 +2008,8 @@ function init(){
     renderFoods();
 
     renderMeals();
+    
+    document.getElementById("copySummaryBtn").onclick = copySummary;
 
     console.clear();
 
