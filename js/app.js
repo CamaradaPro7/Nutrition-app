@@ -140,40 +140,16 @@ const foodFat = $("foodFat");
    GUARDAR
 ===================================================== */
 
-function saveFoods(){
-
-    localStorage.setItem(
-
-        STORAGE.FOODS,
-
-        JSON.stringify(foods)
-
-    );
-
+async function saveFoods(){
+    await dbSet("foods", foods);
 }
 
-function saveMeals(){
-
-    localStorage.setItem(
-
-        STORAGE.MEALS,
-
-        JSON.stringify(meals)
-
-    );
-
+async function saveMeals(){
+    await dbSet("meals", meals);
 }
 
-function saveSettings(){
-
-    localStorage.setItem(
-
-        STORAGE.SETTINGS,
-
-        JSON.stringify(settings)
-
-    );
-
+async function saveSettings(){
+    await dbSet("settings", settings);
 }
 
 /* =====================================================
@@ -2030,6 +2006,25 @@ function unlockScroll(){
 async function init(){
 
     await openDB();
+    
+    if (!await dbGet("foods")) {
+    await dbSet("foods", JSON.parse(localStorage.getItem(STORAGE.FOODS)) || []);
+}
+
+if (!await dbGet("meals")) {
+    await dbSet("meals", JSON.parse(localStorage.getItem(STORAGE.MEALS)) || {
+        desayuno: [],
+        comida: [],
+        merienda: [],
+        cena: []
+    });
+}
+
+if (!await dbGet("settings")) {
+    await dbSet("settings", JSON.parse(localStorage.getItem(STORAGE.SETTINGS)) || {
+        kcalGoal: DAILY_GOAL
+    });
+}
 
     foods = await dbGet("foods") || JSON.parse(localStorage.getItem(STORAGE.FOODS)) || [];
 
