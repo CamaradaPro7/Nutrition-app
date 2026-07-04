@@ -2027,48 +2027,28 @@ function unlockScroll(){
    INICIALIZAR
 ===================================================== */
 
-function init(){
-    
-    alert(
-localStorage.getItem("foodLibrary")?.substring(0,300) +
-"\n\n---\n\n" +
-localStorage.getItem("miNutricion")
-);
+async function init(){
+
+    await openDB();
+
+    foods = await dbGet("foods") || JSON.parse(localStorage.getItem(STORAGE.FOODS)) || [];
+
+    meals = await dbGet("meals") || JSON.parse(localStorage.getItem(STORAGE.MEALS)) || {
+        desayuno:[],
+        comida:[],
+        merienda:[],
+        cena:[]
+    };
+
+    settings = await dbGet("settings") || JSON.parse(localStorage.getItem(STORAGE.SETTINGS)) || {
+        kcalGoal: DAILY_GOAL
+    };
 
     refreshDashboard();
-
     renderFoods();
-
     renderMeals();
-    
+
     ring.onclick = copySummary;
-     
-    console.clear();
-
-    console.log(
-
-        "%c🍎 Mi Nutrición V3",
-
-        "color:#38d46a;font-size:18px;font-weight:bold;"
-
-    );
-
-    console.table({
-
-        Biblioteca:foods.length,
-
-        Desayuno:meals.desayuno.length,
-
-        Comida:meals.comida.length,
-
-        Merienda:meals.merienda.length,
-
-        Cena:meals.cena.length
-
-    });
-
-    console.log("✅ Aplicación iniciada");
-
 }
 
 /* =====================================================
