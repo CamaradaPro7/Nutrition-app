@@ -10,31 +10,29 @@
    ESTADO
 ========================================================== */
 
-const state = {
+const state={
 
-    foods: [],
+    foods:[],
 
-    settings: {
-
-        kcalGoal: 2200
-
+    settings:{
+        kcalGoal:2200
     },
 
-    currentDate: DB.todayKey(),
+    currentDate:DB.todayKey(),
 
-    meals: DB.emptyDay(),
+    meals:DB.emptyDay(),
 
-    currentMeal: null,
+    currentMeal:null,
 
-    selectedFood: null,
+    selectedFood:null,
 
-    editingFood: null,
+    editingFood:null,
 
-    editingMeal: null,
+    editingMeal:null,
 
-    editingIndex: null,
+    editingIndex:null,
 
-    lastScroll: 0
+    lastScroll:0
 
 };
 
@@ -42,63 +40,63 @@ const state = {
    SELECTORES
 ========================================================== */
 
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
 
-const ui = {
+const ui={
 
-    greeting: $("greeting"),
+    greeting:$("greeting"),
 
-    fecha: $("fecha"),
+    fecha:$("fecha"),
 
-    totalKcal: $("totalKcal"),
+    totalKcal:$("totalKcal"),
 
-    protein: $("protein"),
+    protein:$("protein"),
 
-    carbs: $("carbs"),
+    carbs:$("carbs"),
 
-    fat: $("fat"),
+    fat:$("fat"),
 
-    ring: $("ringProgress"),
+    ring:$("ringProgress"),
 
-    meals: $("meals"),
+    meals:$("meals"),
 
-    modal: $("modal"),
+    modal:$("modal"),
 
-    searchFood: $("searchFood"),
+    searchFood:$("searchFood"),
 
-    foodResults: $("foodResults"),
+    foodResults:$("foodResults"),
 
-    gramsModal: $("gramsModal"),
+    gramsModal:$("gramsModal"),
 
-    gramsInput: $("gramsInput"),
+    gramsInput:$("gramsInput"),
 
-    selectedFood: $("selectedFood"),
+    selectedFood:$("selectedFood"),
 
-    newFoodModal: $("newFoodModal"),
+    newFoodModal:$("newFoodModal"),
 
-    jsonInput: $("jsonInput"),
+    jsonInput:$("jsonInput"),
 
-    jsonStatus: $("jsonStatus"),
+    jsonStatus:$("jsonStatus"),
 
-    editFoodModal: $("editFoodModal"),
+    editFoodModal:$("editFoodModal"),
 
-    foodName: $("foodName"),
+    foodName:$("foodName"),
 
-    foodBrand: $("foodBrand"),
+    foodBrand:$("foodBrand"),
 
-    foodCategory: $("foodCategory"),
+    foodCategory:$("foodCategory"),
 
-    foodBase: $("foodBase"),
+    foodBase:$("foodBase"),
 
-    foodUnit: $("foodUnit"),
+    foodUnit:$("foodUnit"),
 
-    foodKcal: $("foodKcal"),
+    foodKcal:$("foodKcal"),
 
-    foodProtein: $("foodProtein"),
+    foodProtein:$("foodProtein"),
 
-    foodCarbs: $("foodCarbs"),
+    foodCarbs:$("foodCarbs"),
 
-    foodFat: $("foodFat")
+    foodFat:$("foodFat")
 
 };
 
@@ -108,13 +106,13 @@ const ui = {
 
 async function loadApp(){
 
-    const data = await DB.load();
+    const data=await DB.load();
 
-    state.foods = data.foods;
+    state.foods=data.foods;
 
-    state.settings = data.settings;
+    state.settings=data.settings;
 
-    state.meals = await DB.getDay(
+    state.meals=await DB.getDay(
 
         state.currentDate
 
@@ -126,6 +124,16 @@ async function loadApp(){
    GUARDADO
 ========================================================== */
 
+async function saveFoods(){
+
+    await DB.saveFoods(
+
+        state.foods
+
+    );
+
+}
+
 async function saveMeals(){
 
     await DB.saveDay(
@@ -133,16 +141,6 @@ async function saveMeals(){
         state.currentDate,
 
         state.meals
-
-    );
-
-}
-
-async function saveFoods(){
-
-    await DB.saveFoods(
-
-        state.foods
 
     );
 
@@ -166,13 +164,13 @@ function normalize(text){
 
     return String(text)
 
-        .normalize("NFD")
+    .normalize("NFD")
 
-        .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[\u0300-\u036f]/g,"")
 
-        .toLowerCase()
+    .toLowerCase()
 
-        .trim();
+    .trim();
 
 }
 
@@ -182,21 +180,23 @@ function number(value){
 
         String(value)
 
-            .replace(",", ".")
+        .replace(",", ".")
 
-    ) || 0;
+    )||0;
 
 }
 
 function createId(){
 
-    return Date.now() +
+    return Date.now()
 
-        Math.floor(
+    +
 
-            Math.random()*100000
+    Math.floor(
 
-        );
+        Math.random()*100000
+
+    );
 
 }
 
@@ -204,7 +204,9 @@ function existsFood(name){
 
     return state.foods.find(food=>
 
-        normalize(food.name)===
+        normalize(food.name)
+
+        ===
 
         normalize(name)
 
@@ -214,7 +216,7 @@ function existsFood(name){
 
 function formatDate(date){
 
-    const text = date.toLocaleDateString(
+    const text=date.toLocaleDateString(
 
         "es-ES",
 
@@ -234,9 +236,9 @@ function formatDate(date){
 
     return text.charAt(0).toUpperCase()
 
-        +
+    +
 
-        text.slice(1);
+    text.slice(1);
 
 }
 
@@ -246,25 +248,25 @@ function formatDate(date){
 
 function lockScroll(){
 
-    state.lastScroll = window.scrollY;
+    state.lastScroll=window.scrollY;
 
-    document.body.style.position = "fixed";
+    document.body.style.position="fixed";
 
-    document.body.style.top =
+    document.body.style.top=
 
-        `-${state.lastScroll}px`;
+    `-${state.lastScroll}px`;
 
-    document.body.style.width = "100%";
+    document.body.style.width="100%";
 
 }
 
 function unlockScroll(){
 
-    document.body.style.position = "";
+    document.body.style.position="";
 
-    document.body.style.top = "";
+    document.body.style.top="";
 
-    document.body.style.width = "";
+    document.body.style.width="";
 
     window.scrollTo(
 
@@ -273,6 +275,187 @@ function unlockScroll(){
         state.lastScroll
 
     );
+
+}
+
+/* ==========================================================
+   MI NUTRICIÓN NEXT
+   app.js
+   PARTE 2/8
+   Dashboard
+========================================================== */
+
+/* ==========================================================
+   SALUDO
+========================================================== */
+
+function updateGreeting(){
+
+    const hour = new Date().getHours();
+
+    let text = "Buenas noches";
+
+    if(hour >= 6 && hour < 14){
+
+        text = "Buenos días";
+
+    }else if(hour >= 14 && hour < 21){
+
+        text = "Buenas tardes";
+
+    }
+
+    ui.greeting.textContent = text;
+
+}
+
+/* ==========================================================
+   FECHA
+========================================================== */
+
+function updateDate(){
+
+    ui.fecha.textContent = formatDate(
+
+        new Date(state.currentDate)
+
+    );
+
+}
+
+/* ==========================================================
+   TOTALES
+========================================================== */
+
+function calculateTotals(){
+
+    const totals={
+
+        kcal:0,
+
+        protein:0,
+
+        carbs:0,
+
+        fat:0
+
+    };
+
+    Object.values(state.meals).forEach(meal=>{
+
+        meal.forEach(food=>{
+
+            totals.kcal+=Number(food.kcal||0);
+
+            totals.protein+=Number(food.protein||0);
+
+            totals.carbs+=Number(food.carbs||0);
+
+            totals.fat+=Number(food.fat||0);
+
+        });
+
+    });
+
+    return totals;
+
+}
+
+/* ==========================================================
+   ANILLO
+========================================================== */
+
+function updateRing(){
+
+    const totals = calculateTotals();
+
+    const goal = state.settings.kcalGoal || 2200;
+
+    const percent = Math.min(
+
+        (totals.kcal/goal)*100,
+
+        100
+
+    );
+
+    const degrees = percent * 3.6;
+
+    ui.ring.style.setProperty(
+
+        "--progress",
+
+        `${degrees}deg`
+
+    );
+
+    ui.ring.classList.remove(
+
+        "green",
+
+        "yellow",
+
+        "red"
+
+    );
+
+    if(percent < 80){
+
+        ui.ring.classList.add("green");
+
+    }else if(percent < 100){
+
+        ui.ring.classList.add("yellow");
+
+    }else{
+
+        ui.ring.classList.add("red");
+
+    }
+
+}
+
+/* ==========================================================
+   DASHBOARD
+========================================================== */
+
+function refreshDashboard(){
+
+    const totals = calculateTotals();
+
+    const goal = state.settings.kcalGoal || 2200;
+
+    updateGreeting();
+
+    updateDate();
+
+    updateRing();
+
+    ui.totalKcal.textContent =
+
+        Math.round(totals.kcal);
+
+    ui.protein.textContent =
+
+        `${totals.protein.toFixed(1)} g`;
+
+    ui.carbs.textContent =
+
+        `${totals.carbs.toFixed(1)} g`;
+
+    ui.fat.textContent =
+
+        `${totals.fat.toFixed(1)} g`;
+
+    const label = ui.ring.querySelector("small");
+
+    if(label){
+
+        label.textContent =
+
+            `de ${goal} kcal`;
+
+    }
 
 }
 
@@ -298,241 +481,6 @@ function refresh(){
 
 }
 
-console.clear();
-
-console.log(
-
-    "%c🍎 Mi Nutrición NEXT",
-
-    "color:#38d46a;font-size:18px;font-weight:bold;"
-
-);
-
-/* ==========================================================
-   MI NUTRICIÓN NEXT
-   app.js
-   PARTE 2/8
-   Dashboard
-========================================================== */
-
-/* ==========================================================
-   SALUDO
-========================================================== */
-
-function updateGreeting(){
-
-    const hour = new Date().getHours();
-
-    let greeting = "Buenas noches";
-
-    if(hour >= 6 && hour < 14){
-
-        greeting = "Buenos días";
-
-    }else if(hour >= 14 && hour < 21){
-
-        greeting = "Buenas tardes";
-
-    }
-
-    ui.greeting.textContent = greeting;
-
-}
-
-/* ==========================================================
-   FECHA
-========================================================== */
-
-function updateDate(){
-
-    ui.fecha.textContent = formatDate(
-
-        new Date(state.currentDate)
-
-    );
-
-}
-
-/* ==========================================================
-   TOTALES
-========================================================== */
-
-function calculateTotals(){
-
-    const totals = {
-
-        kcal:0,
-
-        protein:0,
-
-        carbs:0,
-
-        fat:0
-
-    };
-
-    Object.values(state.meals)
-
-        .forEach(meal=>{
-
-            meal.forEach(food=>{
-
-                totals.kcal += Number(food.kcal || 0);
-
-                totals.protein += Number(food.protein || 0);
-
-                totals.carbs += Number(food.carbs || 0);
-
-                totals.fat += Number(food.fat || 0);
-
-            });
-
-        });
-
-    return totals;
-
-}
-
-/* ==========================================================
-   ANILLO
-========================================================== */
-
-function updateRing(percent){
-
-    if(!ui.ring){
-
-        return;
-
-    }
-
-    const progress = Math.max(
-
-        0,
-
-        Math.min(percent,100)
-
-    );
-
-    const degrees = progress * 3.6;
-
-    ui.ring.style.setProperty(
-
-        "--progress",
-
-        `${degrees}deg`
-
-    );
-
-    ui.ring.classList.remove(
-
-        "green",
-
-        "yellow",
-
-        "orange",
-
-        "red"
-
-    );
-
-    let color = "green";
-
-    if(progress >= 100){
-
-        color = "red";
-
-    }else if(progress >= 80){
-
-        color = "yellow";
-
-    }
-
-    ui.ring.classList.add(color);
-
-}
-
-/* ==========================================================
-   DASHBOARD
-========================================================== */
-
-function updateDashboard(){
-
-    const totals = calculateTotals();
-
-    const goal =
-
-        Number(state.settings.kcalGoal)
-
-        ||
-
-        2200;
-
-    ui.totalKcal.textContent =
-
-        Math.round(totals.kcal);
-
-    ui.protein.textContent =
-
-        `${totals.protein.toFixed(1)} g`;
-
-    ui.carbs.textContent =
-
-        `${totals.carbs.toFixed(1)} g`;
-
-    ui.fat.textContent =
-
-        `${totals.fat.toFixed(1)} g`;
-
-    const label = ui.ring.querySelector("small");
-
-    if(label){
-
-        label.textContent = `de ${goal} kcal`;
-
-    }
-
-    updateRing(
-
-        (totals.kcal / goal) * 100
-
-    );
-
-}
-
-/* ==========================================================
-   CALORÍAS RESTANTES
-========================================================== */
-
-function caloriesRemaining(){
-
-    return Math.max(
-
-        0,
-
-        (state.settings.kcalGoal || 2200)
-
-        -
-
-        calculateTotals().kcal
-
-    );
-
-}
-
-/* ==========================================================
-   REFRESCAR DASHBOARD
-========================================================== */
-
-function refreshDashboard(){
-
-    updateGreeting();
-
-    updateDate();
-
-    updateDashboard();
-
-}
-
 /* ==========================================================
    MI NUTRICIÓN NEXT
    app.js
@@ -547,6 +495,20 @@ function refreshDashboard(){
 function openLibrary(meal){
 
     state.currentMeal = meal;
+
+    const title = {
+
+        desayuno:"🍳 Desayuno",
+
+        comida:"🍝 Comida",
+
+        merienda:"🥪 Merienda",
+
+        cena:"🌙 Cena"
+
+    };
+
+    $("sheetTitle").textContent = title[meal];
 
     ui.searchFood.value = "";
 
@@ -571,288 +533,102 @@ function closeLibrary(){
 }
 
 /* ==========================================================
-   RENDER
+   RENDER BIBLIOTECA
 ========================================================== */
 
-function renderFoods(filter = ""){
+function renderFoods(filter=""){
 
-    ui.foodResults.innerHTML = "";
-
-    const text = normalize(filter);
-
-    const list = state.foods
-
-        .filter(food=>{
-
-            return (
-
-                normalize(food.name).includes(text) ||
-
-                normalize(food.brand || "").includes(text) ||
-
-                normalize(food.category || "").includes(text)
-
-            );
-
-        })
-
-        .sort((a,b)=>
-
-            a.name.localeCompare(
-
-                b.name,
-
-                "es"
-
-            )
-
-        );
-
-    if(list.length === 0){
-
-        ui.foodResults.innerHTML = `
-
-<div class="empty-library">
-
-No hay alimentos
-
-</div>
-
-`;
+    if(!ui.foodResults){
 
         return;
 
     }
 
-    list.forEach(food=>{
+    ui.foodResults.innerHTML="";
 
-        const row = document.createElement("div");
+    const text = normalize(filter);
 
-        row.className = "food-item fade-in";
+    const foods = state.foods
 
-        row.innerHTML = `
+    .filter(food=>
 
-<div class="food-info">
+        normalize(food.name).includes(text)
+
+        ||
+
+        normalize(food.brand||"")
+
+        .includes(text)
+
+    )
+
+    .sort((a,b)=>
+
+        a.name.localeCompare(
+
+            b.name,
+
+            "es"
+
+        )
+
+    );
+
+    if(!foods.length){
+
+        ui.foodResults.innerHTML=
+
+        `<p class="emptyMeal">
+
+        No hay alimentos.
+
+        </p>`;
+
+        return;
+
+    }
+
+    foods.forEach(food=>{
+
+        const item=document.createElement("div");
+
+        item.className="food-item fade-in";
+
+        item.innerHTML=`
+
+<div>
 
 <div class="food-name">
 
-${food.emoji || "🍽️"} ${food.name}
+${food.emoji||"🍽️"} ${food.name}
 
 </div>
 
 <div class="food-brand">
 
-${food.brand || ""}
+${food.brand||""}
 
 </div>
 
 <div class="food-kcal">
 
-${food.kcal} kcal / ${food.base}${food.unit}
+${food.kcal} kcal · ${food.base}${food.unit}
 
 </div>
-
-</div>
-
-<div class="food-actions">
-
-<button
-class="icon-btn"
-data-action="edit">
-
-✏️
-
-</button>
-
-<button
-class="icon-btn delete"
-data-action="delete">
-
-🗑️
-
-</button>
 
 </div>
 
 `;
 
-        row.querySelector('[data-action="edit"]')
-            .onclick = e=>{
-
-                e.stopPropagation();
-
-                openEditFood(food);
-
-            };
-
-        row.querySelector('[data-action="delete"]')
-            .onclick = async e=>{
-
-                e.stopPropagation();
-
-                await deleteFood(food.id);
-
-            };
-
-        row.onclick = ()=>{
+        item.onclick=()=>{
 
             openGrams(food);
 
         };
 
-        ui.foodResults.appendChild(row);
+        ui.foodResults.appendChild(item);
 
     });
-
-}
-
-/* ==========================================================
-   ELIMINAR
-========================================================== */
-
-async function deleteFood(id){
-
-    const food = state.foods.find(
-
-        f=>f.id===id
-
-    );
-
-    if(!food){
-
-        return;
-
-    }
-
-    if(
-
-        !confirm(
-
-            `¿Eliminar "${food.name}"?`
-
-        )
-
-    ){
-
-        return;
-
-    }
-
-    state.foods = state.foods.filter(
-
-        f=>f.id!==id
-
-    );
-
-    await saveFoods();
-
-    renderFoods(
-
-        ui.searchFood.value
-
-    );
-
-}
-
-/* ==========================================================
-   NUEVO ALIMENTO
-========================================================== */
-
-function newFood(){
-
-    state.editingFood = null;
-
-    ui.foodName.value = "";
-
-    ui.foodBrand.value = "";
-
-    ui.foodCategory.value = "Otros";
-
-    ui.foodBase.value = 100;
-
-    ui.foodUnit.value = "g";
-
-    ui.foodKcal.value = "";
-
-    ui.foodProtein.value = "";
-
-    ui.foodCarbs.value = "";
-
-    ui.foodFat.value = "";
-
-    lockScroll();
-
-    ui.editFoodModal.classList.add(
-
-        "show"
-
-    );
-
-}
-
-/* ==========================================================
-   EDITAR
-========================================================== */
-
-function openEditFood(food){
-
-    state.editingFood = food;
-
-    ui.foodName.value = food.name;
-
-    ui.foodBrand.value = food.brand || "";
-
-    ui.foodCategory.value =
-
-        food.category || "Otros";
-
-    ui.foodBase.value =
-
-        food.base || 100;
-
-    ui.foodUnit.value =
-
-        food.unit || "g";
-
-    ui.foodKcal.value =
-
-        food.kcal || 0;
-
-    ui.foodProtein.value =
-
-        food.protein || 0;
-
-    ui.foodCarbs.value =
-
-        food.carbs || 0;
-
-    ui.foodFat.value =
-
-        food.fat || 0;
-
-    lockScroll();
-
-    ui.editFoodModal.classList.add(
-
-        "show"
-
-    );
-
-}
-
-/* ==========================================================
-   CERRAR EDITOR
-========================================================== */
-
-function closeEditFood(){
-
-    ui.editFoodModal.classList.remove(
-
-        "show"
-
-    );
-
-    unlockScroll();
 
 }
 
@@ -860,35 +636,61 @@ function closeEditFood(){
    BUSCADOR
 ========================================================== */
 
-if(ui.searchFood){
+ui.searchFood.addEventListener(
 
-    ui.searchFood.addEventListener(
+    "input",
 
-        "input",
+    ()=>{
 
-        ()=>{
+        renderFoods(
 
-            renderFoods(
+            ui.searchFood.value
 
-                ui.searchFood.value
+        );
 
-            );
+    }
 
-        }
+);
 
-    );
+/* ==========================================================
+   ABRIR NUEVO ALIMENTO
+========================================================== */
 
-}
+$("newFoodBtn").onclick=()=>{
+
+    ui.modal.classList.remove("show");
+
+    ui.newFoodModal.classList.add("show");
+
+};
+
+/* ==========================================================
+   CERRAR MODAL
+========================================================== */
+
+$("closeFoodModal").onclick=
+
+closeLibrary;
+
+ui.modal.onclick=e=>{
+
+    if(e.target===ui.modal){
+
+        closeLibrary();
+
+    }
+
+};
 
 /* ==========================================================
    MI NUTRICIÓN NEXT
    app.js
    PARTE 4/8
-   Gestión de comidas
+   Comidas
 ========================================================== */
 
 /* ==========================================================
-   ABRIR MODAL DE CANTIDAD
+   ABRIR CANTIDAD
 ========================================================== */
 
 function openGrams(food){
@@ -903,6 +705,8 @@ function openGrams(food){
 
         food.base || 100;
 
+    ui.newFoodModal.classList.remove("show");
+
     lockScroll();
 
     ui.gramsModal.classList.add("show");
@@ -913,12 +717,12 @@ function openGrams(food){
 
         ui.gramsInput.select();
 
-    },200);
+    },150);
 
 }
 
 /* ==========================================================
-   CERRAR MODAL
+   CERRAR CANTIDAD
 ========================================================== */
 
 function closeGrams(){
@@ -930,50 +734,62 @@ function closeGrams(){
 }
 
 /* ==========================================================
-   CALCULAR ALIMENTO
+   CREAR ALIMENTO
 ========================================================== */
 
-function buildMealFood(food, grams){
+function buildMealFood(food,grams){
 
-    const factor = grams / (food.base || 100);
+    const factor =
 
-    return {
+        grams / (food.base || 100);
 
-        id: createId(),
+    return{
 
-        foodId: food.id,
+        id:createId(),
 
-        emoji: food.emoji || "🍽️",
+        foodId:food.id,
 
-        name: food.name,
+        emoji:food.emoji || "🍽️",
 
-        brand: food.brand || "",
+        name:food.name,
 
-        category: food.category || "Otros",
+        brand:food.brand || "",
 
-        unit: food.unit || "g",
-
-        base: food.base || 100,
+        category:food.category || "Otros",
 
         grams,
 
-        kcal: Math.round(food.kcal * factor),
+        unit:food.unit || "g",
 
-        protein: Number(
+        base:food.base || 100,
 
-            (food.protein * factor).toFixed(1)
+        kcal:Math.round(
 
-        ),
-
-        carbs: Number(
-
-            (food.carbs * factor).toFixed(1)
+            food.kcal * factor
 
         ),
 
-        fat: Number(
+        protein:Number(
 
-            (food.fat * factor).toFixed(1)
+            (food.protein * factor)
+
+            .toFixed(1)
+
+        ),
+
+        carbs:Number(
+
+            (food.carbs * factor)
+
+            .toFixed(1)
+
+        ),
+
+        fat:Number(
+
+            (food.fat * factor)
+
+            .toFixed(1)
 
         )
 
@@ -982,10 +798,10 @@ function buildMealFood(food, grams){
 }
 
 /* ==========================================================
-   GUARDAR ALIMENTO
+   AÑADIR ALIMENTO
 ========================================================== */
 
-async function saveMealFood(){
+async function addFoodToMeal(){
 
     if(!state.selectedFood){
 
@@ -993,15 +809,21 @@ async function saveMealFood(){
 
     }
 
-    const grams = number(
+    const grams =
 
-        ui.gramsInput.value
+        number(
 
-    );
+            ui.gramsInput.value
 
-    if(grams <= 0){
+        );
 
-        alert("Cantidad no válida.");
+    if(grams<=0){
+
+        alert(
+
+            "Cantidad no válida."
+
+        );
 
         return;
 
@@ -1015,91 +837,19 @@ async function saveMealFood(){
 
     );
 
-    if(state.editingMeal !== null){
+    state.meals
 
-        state.meals[state.editingMeal]
+        [state.currentMeal]
 
-            [state.editingIndex] = item;
-
-        state.editingMeal = null;
-
-        state.editingIndex = null;
-
-    }else{
-
-        state.meals[state.currentMeal]
-
-            .push(item);
-
-    }
+        .push(item);
 
     await saveMeals();
 
-    renderMeals();
-
-    refreshDashboard();
+    refresh();
 
     closeGrams();
 
-}
-
-/* ==========================================================
-   EDITAR ALIMENTO
-========================================================== */
-
-function editMealFood(meal,index){
-
-    const item =
-
-        state.meals[meal][index];
-
-    const original =
-
-        state.foods.find(
-
-            f=>f.id===item.foodId
-
-        );
-
-    if(!original){
-
-        alert(
-
-            "El alimento ya no existe en la biblioteca."
-
-        );
-
-        return;
-
-    }
-
-    state.editingMeal = meal;
-
-    state.editingIndex = index;
-
-    openGrams(original);
-
-}
-
-/* ==========================================================
-   ELIMINAR ALIMENTO
-========================================================== */
-
-async function removeMealFood(meal,index){
-
-    if(!confirm("¿Eliminar alimento?")){
-
-        return;
-
-    }
-
-    state.meals[meal].splice(index,1);
-
-    await saveMeals();
-
-    renderMeals();
-
-    refreshDashboard();
+    closeLibrary();
 
 }
 
@@ -1109,139 +859,133 @@ async function removeMealFood(meal,index){
 
 function renderMeals(){
 
-    Object.keys(state.meals).forEach(meal=>{
+    document
 
-        const card = document.querySelector(
+    .querySelectorAll(".meal")
 
-            `[data-meal="${meal}"]`
+    .forEach(card=>{
 
-        );
+        const meal =
 
-        if(!card){
+            card.dataset.meal;
 
-            return;
+        const preview =
 
-        }
+            card.querySelector(
 
-        const list =
+                ".meal-preview"
 
-            card.querySelector(".meal-list");
+            );
 
         const empty =
 
-            card.querySelector(".emptyMeal");
+            card.querySelector(
 
-        list.innerHTML = "";
+                ".emptyMeal"
 
-        const foods = state.meals[meal];
+            );
 
-        if(foods.length === 0){
+        const total =
 
-            empty.style.display = "block";
+            card.querySelector(
+
+                ".meal-total"
+
+            );
+
+        preview.innerHTML = "";
+
+        const foods =
+
+            state.meals[meal];
+
+        if(!foods.length){
+
+            empty.style.display="block";
+
+            total.textContent="0 kcal";
 
             return;
 
         }
 
-        empty.style.display = "none";
+        empty.style.display="none";
 
-        let total = 0;
+        let kcal = 0;
 
         foods.forEach((food,index)=>{
 
-            total += food.kcal;
+            kcal += food.kcal;
 
-            const row =
+            if(index<3){
 
-                document.createElement("div");
+                const row =
 
-            row.className =
+                    document.createElement(
 
-                "food-item fade-in";
-
-            row.innerHTML = `
-
-<div class="food-info">
-
-<div class="food-name">
-
-${food.emoji} ${food.name}
-
-</div>
-
-<div class="food-brand">
-
-${food.grams} ${food.unit}
-
-</div>
-
-</div>
-
-<div class="food-actions">
-
-<div class="food-kcal">
-
-${food.kcal} kcal
-
-</div>
-
-<button class="icon-btn delete">
-
-🗑️
-
-</button>
-
-</div>
-
-`;
-
-            row.onclick = ()=>{
-
-                editMealFood(
-
-                    meal,
-
-                    index
-
-                );
-
-            };
-
-            row.querySelector("button")
-
-                .onclick = e=>{
-
-                    e.stopPropagation();
-
-                    removeMealFood(
-
-                        meal,
-
-                        index
+                        "div"
 
                     );
 
-                };
+                row.className=
 
-            list.appendChild(row);
+                    "preview-item";
 
-        });
+                row.innerHTML=`
 
-        const footer =
+<span>
 
-            document.createElement("div");
+${food.name}
 
-        footer.className = "meal-total";
+</span>
 
-        footer.innerHTML = `
+<span>
 
-<span>Total</span>
+${food.kcal} kcal
 
-<strong>${Math.round(total)} kcal</strong>
+</span>
 
 `;
 
-        list.appendChild(footer);
+                preview.appendChild(
+
+                    row
+
+                );
+
+            }
+
+        });
+
+        if(foods.length>3){
+
+            const more =
+
+                document.createElement(
+
+                    "div"
+
+                );
+
+            more.className=
+
+                "more-foods";
+
+            more.textContent=
+
+                `+${foods.length-3} más`;
+
+            preview.appendChild(
+
+                more
+
+            );
+
+        }
+
+        total.innerHTML=
+
+        `<strong>${Math.round(kcal)} kcal</strong>`;
 
     });
 
@@ -1251,34 +995,58 @@ ${food.kcal} kcal
    EVENTOS
 ========================================================== */
 
-if(ui.gramsInput){
+document
 
-    ui.gramsInput.addEventListener(
+.querySelectorAll(".meal")
 
-        "keydown",
+.forEach(card=>{
 
-        e=>{
+    card.onclick=()=>{
 
-            if(e.key==="Enter"){
+        openLibrary(
 
-                saveMealFood();
+            card.dataset.meal
 
-            }
+        );
+
+    };
+
+});
+
+$("acceptGrams").onclick =
+
+    addFoodToMeal;
+
+$("cancelGrams").onclick =
+
+    closeGrams;
+
+ui.gramsModal.onclick=e=>{
+
+    if(e.target===ui.gramsModal){
+
+        closeGrams();
+
+    }
+
+};
+
+ui.gramsInput.addEventListener(
+
+    "keydown",
+
+    e=>{
+
+        if(e.key==="Enter"){
+
+            addFoodToMeal();
 
         }
 
-    );
+    }
 
-}
+);
 
-document.getElementById("acceptGrams").onclick =
-
-    saveMealFood;
-
-document.getElementById("cancelGrams").onclick =
-
-    closeGrams;
-    
 /* ==========================================================
    MI NUTRICIÓN NEXT
    app.js
@@ -1290,121 +1058,77 @@ document.getElementById("cancelGrams").onclick =
    NUEVO ALIMENTO
 ========================================================== */
 
-function createFoodFromForm(){
+function newFood(){
 
-    return {
+    state.editingFood = null;
 
-        id: state.editingFood
-            ? state.editingFood.id
-            : createId(),
+    ui.foodName.value = "";
 
-        emoji: state.editingFood?.emoji || "🍽️",
+    ui.foodBrand.value = "";
 
-        name: ui.foodName.value.trim(),
+    ui.foodCategory.value = "";
 
-        brand: ui.foodBrand.value.trim(),
+    ui.foodBase.value = 100;
 
-        category:
-            ui.foodCategory.value.trim() || "Otros",
+    ui.foodUnit.value = "g";
 
-        base:
-            number(ui.foodBase.value) || 100,
+    ui.foodKcal.value = "";
 
-        unit:
-            ui.foodUnit.value.trim() || "g",
+    ui.foodProtein.value = "";
 
-        kcal:
-            number(ui.foodKcal.value),
+    ui.foodCarbs.value = "";
 
-        protein:
-            number(ui.foodProtein.value),
+    ui.foodFat.value = "";
 
-        carbs:
-            number(ui.foodCarbs.value),
+    ui.newFoodModal.classList.remove("show");
 
-        fat:
-            number(ui.foodFat.value)
+    lockScroll();
 
-    };
+    ui.editFoodModal.classList.add("show");
 
 }
 
 /* ==========================================================
-   VALIDACIÓN
+   EDITAR
 ========================================================== */
 
-function validateFood(food){
+function editFood(food){
 
-    if(!food.name){
+    state.editingFood = food;
 
-        alert("Introduce un nombre.");
+    ui.foodName.value = food.name;
 
-        return false;
+    ui.foodBrand.value = food.brand || "";
 
-    }
+    ui.foodCategory.value = food.category || "";
 
-    if(food.base <= 0){
+    ui.foodBase.value = food.base || 100;
 
-        alert("La base debe ser mayor que cero.");
+    ui.foodUnit.value = food.unit || "g";
 
-        return false;
+    ui.foodKcal.value = food.kcal || 0;
 
-    }
+    ui.foodProtein.value = food.protein || 0;
 
-    return true;
+    ui.foodCarbs.value = food.carbs || 0;
+
+    ui.foodFat.value = food.fat || 0;
+
+    lockScroll();
+
+    ui.editFoodModal.classList.add("show");
 
 }
 
 /* ==========================================================
-   ACTUALIZAR COMIDAS
+   CERRAR EDITOR
 ========================================================== */
 
-function updateMealsFromFood(food){
+function closeEditFood(){
 
-    Object.keys(state.meals).forEach(meal=>{
+    ui.editFoodModal.classList.remove("show");
 
-        state.meals[meal].forEach(item=>{
-
-            if(item.foodId !== food.id){
-
-                return;
-
-            }
-
-            const factor =
-                item.grams / food.base;
-
-            item.name = food.name;
-
-            item.brand = food.brand;
-
-            item.category = food.category;
-
-            item.unit = food.unit;
-
-            item.base = food.base;
-
-            item.emoji = food.emoji;
-
-            item.kcal = Math.round(
-                food.kcal * factor
-            );
-
-            item.protein = Number(
-                (food.protein * factor).toFixed(1)
-            );
-
-            item.carbs = Number(
-                (food.carbs * factor).toFixed(1)
-            );
-
-            item.fat = Number(
-                (food.fat * factor).toFixed(1)
-            );
-
-        });
-
-    });
+    unlockScroll();
 
 }
 
@@ -1414,79 +1138,87 @@ function updateMealsFromFood(food){
 
 async function saveEditedFood(){
 
-    const food = createFoodFromForm();
+    const food={
 
-    if(!validateFood(food)){
+        id:state.editingFood
+            ? state.editingFood.id
+            : createId(),
+
+        emoji:state.editingFood?.emoji || "🍽️",
+
+        name:ui.foodName.value.trim(),
+
+        brand:ui.foodBrand.value.trim(),
+
+        category:ui.foodCategory.value.trim(),
+
+        base:number(ui.foodBase.value),
+
+        unit:ui.foodUnit.value.trim(),
+
+        kcal:number(ui.foodKcal.value),
+
+        protein:number(ui.foodProtein.value),
+
+        carbs:number(ui.foodCarbs.value),
+
+        fat:number(ui.foodFat.value)
+
+    };
+
+    if(!food.name){
+
+        alert("Introduce un nombre.");
 
         return;
 
     }
 
-    const duplicated = state.foods.find(f=>
+    const index = state.foods.findIndex(
 
-        normalize(f.name) === normalize(food.name)
-
-        &&
-
-        f.id !== food.id
+        f=>f.id===food.id
 
     );
 
-    if(duplicated){
-
-        alert("Ya existe un alimento con ese nombre.");
-
-        return;
-
-    }
-
-    if(state.editingFood){
-
-        const index = state.foods.findIndex(
-
-            f=>f.id===food.id
-
-        );
-
-        if(index !== -1){
-
-            state.foods[index] = food;
-
-        }
-
-    }else{
+    if(index===-1){
 
         state.foods.push(food);
 
-    }
+    }else{
 
-    updateMealsFromFood(food);
+        state.foods[index]=food;
+
+    }
 
     await saveFoods();
 
-    await saveMeals();
-
-    renderFoods(ui.searchFood.value);
-
-    renderMeals();
-
-    refreshDashboard();
+    renderFoods();
 
     closeEditFood();
 
 }
 
 /* ==========================================================
-   CERRAR
+   ELIMINAR
 ========================================================== */
 
-function closeEditFood(){
+async function deleteFood(id){
 
-    state.editingFood = null;
+    if(!confirm("¿Eliminar alimento?")){
 
-    ui.editFoodModal.classList.remove("show");
+        return;
 
-    unlockScroll();
+    }
+
+    state.foods = state.foods.filter(
+
+        food=>food.id!==id
+
+    );
+
+    await saveFoods();
+
+    renderFoods();
 
 }
 
@@ -1494,17 +1226,19 @@ function closeEditFood(){
    BOTONES
 ========================================================== */
 
-document.getElementById("saveEditFood").onclick =
+$("newFoodBtn").onclick = newFood;
+
+$("saveEditFood").onclick =
 
     saveEditedFood;
 
-document.getElementById("cancelEditFood").onclick =
+$("cancelEditFood").onclick =
 
     closeEditFood;
 
-ui.editFoodModal.onclick = e=>{
+ui.editFoodModal.onclick=e=>{
 
-    if(e.target === ui.editFoodModal){
+    if(e.target===ui.editFoodModal){
 
         closeEditFood();
 
@@ -1513,44 +1247,10 @@ ui.editFoodModal.onclick = e=>{
 };
 
 /* ==========================================================
-   NUEVO ALIMENTO
-========================================================== */
-
-document.getElementById("newFoodBtn").onclick =
-
-    ()=>{
-
-        state.editingFood = null;
-
-        ui.foodName.value = "";
-
-        ui.foodBrand.value = "";
-
-        ui.foodCategory.value = "Otros";
-
-        ui.foodBase.value = 100;
-
-        ui.foodUnit.value = "g";
-
-        ui.foodKcal.value = "";
-
-        ui.foodProtein.value = "";
-
-        ui.foodCarbs.value = "";
-
-        ui.foodFat.value = "";
-
-        lockScroll();
-
-        ui.editFoodModal.classList.add("show");
-
-    };
-    
-    /* ==========================================================
    MI NUTRICIÓN NEXT
    app.js
    PARTE 6/8
-   Importación inteligente
+   Importación desde ChatGPT / JSON
 ========================================================== */
 
 /* ==========================================================
@@ -1559,10 +1259,7 @@ document.getElementById("newFoodBtn").onclick =
 
 function detectImport(text){
 
-    text = text
-        .replace(/```json/g,"")
-        .replace(/```/g,"")
-        .trim();
+    text = text.trim();
 
     if(!text){
 
@@ -1576,31 +1273,11 @@ function detectImport(text){
 
         return "json";
 
-    }catch{}
-
-    const t = normalize(text);
-
-    if(
-
-        t.includes("nombre:") ||
-
-        t.includes("proteinas") ||
-
-        t.includes("proteínas") ||
-
-        t.includes("hidratos") ||
-
-        t.includes("grasas") ||
-
-        t.includes("kcal")
-
-    ){
-
-        return "chatgpt";
-
     }
 
-    return "unknown";
+    catch{}
+
+    return "text";
 
 }
 
@@ -1610,61 +1287,33 @@ function detectImport(text){
 
 async function importJSON(text){
 
-    let data;
+    const food = JSON.parse(text);
 
-    try{
+    if(!food.id){
 
-        data = JSON.parse(text);
-
-    }catch{
-
-        alert("JSON no válido.");
-
-        return;
+        food.id = createId();
 
     }
 
-    const food = {
+    const exists = state.foods.find(
 
-        id: data.id || createId(),
+        f=>normalize(f.name)===normalize(food.name)
 
-        emoji: data.emoji || "🍽️",
+    );
 
-        name: data.nombre || data.name || "",
+    if(exists){
 
-        brand: data.marca || data.brand || "",
+        Object.assign(exists,food);
 
-        category: data.categoria || data.category || "Otros",
+    }
 
-        base: number(data.base || 100),
-
-        unit: (data.unidad || data.unit || "g"),
-
-        kcal: number(data.kcal),
-
-        protein: number(data.proteinas || data.protein),
-
-        carbs: number(data.hidratos || data.carbs),
-
-        fat: number(data.grasas || data.fat)
-
-    };
-
-    const existing = existsFood(food.name);
-
-    if(existing){
-
-        Object.assign(existing,food);
-
-    }else{
+    else{
 
         state.foods.push(food);
 
     }
 
     await saveFoods();
-
-    renderFoods();
 
 }
 
@@ -1674,15 +1323,13 @@ async function importJSON(text){
 
 async function importChatGPT(text){
 
-    text = text
-        .replace(/```/g,"")
-        .trim();
-
-    const food = {
+    const food={
 
         id:createId(),
 
         emoji:"🍽️",
+
+        name:"",
 
         brand:"",
 
@@ -1702,114 +1349,101 @@ async function importChatGPT(text){
 
     };
 
-    const lines = text
-        .split("\n")
-        .map(l=>l.trim())
-        .filter(Boolean);
+    text
 
-    food.name = lines[0];
+    .split("\n")
 
-    lines.forEach(line=>{
+    .map(line=>line.trim())
 
-        if(/^marca/i.test(line)){
+    .filter(Boolean)
 
-            food.brand = line.split(":")[1]?.trim() || "";
+    .forEach((line,index)=>{
 
-        }
+        if(index===0){
 
-        if(/^categor/i.test(line)){
+            food.name=line;
 
-            food.category = line.split(":")[1]?.trim() || "Otros";
+            return;
 
         }
 
-        if(/^base/i.test(line)){
+        const value=line.match(
 
-            const m = line.match(/([\d.,]+)/);
+            /([\d.,]+)/
 
-            if(m){
+        );
 
-                food.base = number(m[1]);
+        if(!value){
 
-            }
-
-            food.unit = line.includes("ml") ? "ml" : "g";
+            return;
 
         }
+
+        const n=number(value[1]);
 
         if(/kcal/i.test(line)){
 
-            const m = line.match(/([\d.,]+)/);
-
-            if(m){
-
-                food.kcal = number(m[1]);
-
-            }
+            food.kcal=n;
 
         }
 
-        if(/prote/i.test(line)){
+        else if(/prote/i.test(line)){
 
-            const m = line.match(/([\d.,]+)/);
-
-            if(m){
-
-                food.protein = number(m[1]);
-
-            }
+            food.protein=n;
 
         }
 
-        if(/hidr/i.test(line) || /\bHC\b/i.test(line)){
+        else if(/hidr|hc/i.test(line)){
 
-            const m = line.match(/([\d.,]+)/);
-
-            if(m){
-
-                food.carbs = number(m[1]);
-
-            }
+            food.carbs=n;
 
         }
 
-        if(/gras/i.test(line) || /\bG\b/i.test(line)){
+        else if(/gras/i.test(line)){
 
-            const m = line.match(/([\d.,]+)/);
+            food.fat=n;
 
-            if(m){
+        }
 
-                food.fat = number(m[1]);
+        else if(/base|100/i.test(line)){
 
-            }
+            food.base=n;
+
+            food.unit=
+
+            /ml/i.test(line)
+
+            ?"ml"
+
+            :"g";
 
         }
 
     });
 
-    if(!food.name){
+    const exists=state.foods.find(
 
-        alert("No se pudo detectar el alimento.");
+        f=>normalize(f.name)
 
-        return;
+        ===
+
+        normalize(food.name)
+
+    );
+
+    if(exists){
+
+        Object.assign(exists,food);
 
     }
 
-    const existing = existsFood(food.name);
-
-    if(existing){
-
-        Object.assign(existing,food);
-
-    }else{
+    else{
 
         state.foods.push(food);
 
     }
 
     await saveFoods();
-
-    renderFoods();
 
 }
 
@@ -1819,61 +1453,77 @@ async function importChatGPT(text){
 
 async function importFood(){
 
-    const text = ui.jsonInput.value.trim();
+    const text=
 
-    switch(detectImport(text)){
+        ui.jsonInput.value.trim();
 
-        case "json":
+    const type=
 
-            await importJSON(text);
+        detectImport(text);
 
-            break;
+    if(type==="empty"){
 
-        case "chatgpt":
+        alert("No hay datos.");
 
-            await importChatGPT(text);
-
-            break;
-
-        case "empty":
-
-            alert("No hay datos para importar.");
-
-            return;
-
-        default:
-
-            alert("Formato no reconocido.");
-
-            return;
+        return;
 
     }
 
-    ui.jsonInput.value = "";
+    if(type==="json"){
 
-    ui.jsonStatus.textContent = "";
+        await importJSON(text);
+
+    }
+
+    else{
+
+        await importChatGPT(text);
+
+    }
+
+    ui.jsonInput.value="";
 
     ui.newFoodModal.classList.remove("show");
+
+    renderFoods();
 
 }
 
 /* ==========================================================
-   EVENTOS
+   BOTONES
 ========================================================== */
 
-document.getElementById("saveFood").onclick =
+$("saveFood").onclick=
 
     importFood;
 
-document.getElementById("cancelFood").onclick =
+$("cancelFood").onclick=()=>{
 
-    ()=>{
+    ui.newFoodModal.classList.remove("show");
 
-        ui.newFoodModal.classList.remove("show");
+};
 
-    };
+$("pasteFoodBtn").onclick=()=>{
 
-ui.newFoodModal.onclick = e=>{
+    ui.jsonInput.focus();
+
+};
+
+$("manualFoodBtn").onclick=()=>{
+
+    ui.newFoodModal.classList.remove("show");
+
+    newFood();
+
+};
+
+$("jsonFoodBtn").onclick=()=>{
+
+    ui.jsonInput.focus();
+
+};
+
+ui.newFoodModal.onclick=e=>{
 
     if(e.target===ui.newFoodModal){
 
@@ -1887,37 +1537,22 @@ ui.newFoodModal.onclick = e=>{
    MI NUTRICIÓN NEXT
    app.js
    PARTE 7/8
-   Eventos + Resumen + Inicialización
+   Resumen + Eventos + Inicialización
 ========================================================== */
 
 /* ==========================================================
-   RESUMEN DEL DÍA
+   RESUMEN
 ========================================================== */
 
 function buildSummary(){
 
     const totals = calculateTotals();
 
-    const goal = state.settings.kcalGoal || 2200;
-
-    const names = {
-
-        desayuno:"🍳 Desayuno",
-
-        comida:"🍝 Comida",
-
-        merienda:"🥪 Merienda",
-
-        cena:"🌙 Cena"
-
-    };
-
     let text =
 
 `${formatDate(new Date(state.currentDate))}
 
-Objetivo: ${goal} kcal
-Consumidas: ${Math.round(totals.kcal)} kcal
+Calorías: ${Math.round(totals.kcal)} / ${state.settings.kcalGoal} kcal
 
 Proteínas: ${totals.protein.toFixed(1)} g
 Hidratos: ${totals.carbs.toFixed(1)} g
@@ -1925,25 +1560,25 @@ Grasas: ${totals.fat.toFixed(1)} g`;
 
     Object.keys(state.meals).forEach(meal=>{
 
-        if(state.meals[meal].length===0){
+        if(!state.meals[meal].length){
 
             return;
 
         }
 
-        text += `\n\n${names[meal]}\n`;
+        text += `\n\n${meal.toUpperCase()}\n`;
 
         state.meals[meal].forEach(food=>{
 
             text +=
 
-`• ${food.name} (${food.grams} ${food.unit})\n`;
+`• ${food.name} (${food.grams}${food.unit}) - ${food.kcal} kcal\n`;
 
         });
 
     });
 
-    return text.trim();
+    return text;
 
 }
 
@@ -1967,19 +1602,21 @@ async function copySummary(){
 
     catch{
 
-        alert("No se pudo copiar el resumen.");
+        alert("No se pudo copiar.");
 
     }
 
 }
 
 /* ==========================================================
-   EXPORTAR COPIA
+   EXPORTAR
 ========================================================== */
 
 async function exportData(){
 
-    const backup = await DB.exportBackup();
+    const backup =
+
+        await DB.exportBackup();
 
     const blob = new Blob(
 
@@ -2022,72 +1659,28 @@ async function exportData(){
 }
 
 /* ==========================================================
-   BOTONES +
+   IMPORTAR COPIA
 ========================================================== */
 
-document
+async function importBackup(file){
 
-.querySelectorAll(".add")
+    const text = await file.text();
 
-.forEach((button,index)=>{
+    const json = JSON.parse(text);
 
-    const meals=[
+    await DB.importBackup(json);
 
-        "desayuno",
+    await loadApp();
 
-        "comida",
+    refresh();
 
-        "merienda",
-
-        "cena"
-
-    ];
-
-    button.onclick=()=>{
-
-        openLibrary(
-
-            meals[index]
-
-        );
-
-    };
-
-});
+}
 
 /* ==========================================================
-   MODALES
+   EVENTOS
 ========================================================== */
 
-document
-
-.getElementById("closeFoodModal")
-
-.onclick = closeLibrary;
-
-ui.modal.onclick = e=>{
-
-    if(e.target===ui.modal){
-
-        closeLibrary();
-
-    }
-
-};
-
-ui.gramsModal.onclick = e=>{
-
-    if(e.target===ui.gramsModal){
-
-        closeGrams();
-
-    }
-
-};
-
-/* ==========================================================
-   ESCAPE
-========================================================== */
+ui.ring.onclick = copySummary;
 
 window.addEventListener(
 
@@ -2095,25 +1688,19 @@ window.addEventListener(
 
     e=>{
 
-        if(e.key!=="Escape"){
+        if(e.key==="Escape"){
 
-            return;
+            closeLibrary();
+
+            closeGrams();
+
+            closeEditFood();
 
         }
-
-        closeLibrary();
-
-        closeGrams();
-
-        closeEditFood();
 
     }
 
 );
-
-/* ==========================================================
-   ACTUALIZAR FECHA
-========================================================== */
 
 setInterval(
 
@@ -2130,7 +1717,7 @@ setInterval(
 );
 
 /* ==========================================================
-   INICIALIZAR
+   INICIO
 ========================================================== */
 
 async function init(){
@@ -2139,13 +1726,11 @@ async function init(){
 
     refresh();
 
-    ui.ring.onclick = copySummary;
-
     console.log(
 
-        "%cAplicación iniciada",
+        "%cMi Nutrición NEXT",
 
-        "color:#38d46a;font-weight:bold;"
+        "color:#34c759;font-size:18px;font-weight:bold;"
 
     );
 
@@ -2181,80 +1766,42 @@ async function loadDay(date){
 }
 
 /* ==========================================================
-   DÍA ANTERIOR
+   IR A HOY
 ========================================================== */
 
-async function previousDay(){
-
-    const d = new Date(state.currentDate);
-
-    d.setDate(
-
-        d.getDate() - 1
-
-    );
+async function goToday(){
 
     await loadDay(
 
-        DB.todayKey.call({
-
-            getFullYear:()=>d.getFullYear()
-
-        })
+        DB.todayKey()
 
     );
 
 }
 
 /* ==========================================================
-   DÍA SIGUIENTE
+   REINICIAR DÍA
 ========================================================== */
 
-async function nextDay(){
+async function clearCurrentDay(){
 
-    const d = new Date(state.currentDate);
+    if(
 
-    d.setDate(
+        !confirm(
 
-        d.getDate() + 1
+            "¿Eliminar todas las comidas de hoy?"
 
-    );
+        )
 
-    const date =
+    ){
 
-        d.toISOString()
+        return;
 
-        .slice(0,10);
+    }
 
-    await loadDay(date);
+    state.meals = DB.emptyDay();
 
-}
-
-/* ==========================================================
-   SINCRONIZAR
-========================================================== */
-
-async function sync(){
-
-    state.foods =
-
-        (await DB.get("foods")) ||
-
-        [];
-
-    state.settings =
-
-        (await DB.get("settings")) ||
-
-        state.settings;
-
-    state.meals =
-
-        await DB.getDay(
-
-            state.currentDate
-
-        );
+    await saveMeals();
 
     refresh();
 
@@ -2308,19 +1855,25 @@ async function recalculateMeals(){
 
             item.protein = Number(
 
-                (food.protein * factor).toFixed(1)
+                (food.protein * factor)
+
+                .toFixed(1)
 
             );
 
             item.carbs = Number(
 
-                (food.carbs * factor).toFixed(1)
+                (food.carbs * factor)
+
+                .toFixed(1)
 
             );
 
             item.fat = Number(
 
-                (food.fat * factor).toFixed(1)
+                (food.fat * factor)
+
+                .toFixed(1)
 
             );
 
@@ -2330,31 +1883,27 @@ async function recalculateMeals(){
 
     await saveMeals();
 
+    refresh();
+
 }
 
 /* ==========================================================
-   REINICIAR DÍA
+   SINCRONIZAR
 ========================================================== */
 
-async function resetToday(){
+async function sync(){
 
-    if(
+    const data = await DB.load();
 
-        !confirm(
+    state.foods = data.foods;
 
-            "¿Eliminar todas las comidas del día?"
+    state.settings = data.settings;
 
-        )
+    state.meals = await DB.getDay(
 
-    ){
+        state.currentDate
 
-        return;
-
-    }
-
-    state.meals = DB.emptyDay();
-
-    await saveMeals();
+    );
 
     refresh();
 
@@ -2364,21 +1913,17 @@ async function resetToday(){
    API PÚBLICA
 ========================================================== */
 
-window.miNutricion = {
-
-    version: "NEXT",
+window.miNutricion={
 
     state,
 
     refresh,
 
-    sync,
-
     loadDay,
 
-    previousDay,
+    goToday,
 
-    nextDay,
+    sync,
 
     buildSummary,
 
@@ -2386,25 +1931,21 @@ window.miNutricion = {
 
     exportData,
 
-    resetToday,
+    clearCurrentDay,
 
     recalculateMeals
 
 };
 
 /* ==========================================================
-   STORAGE
+   CAMBIOS EN OTRAS PESTAÑAS
 ========================================================== */
 
 window.addEventListener(
 
     "storage",
 
-    ()=>{
-
-        sync();
-
-    }
+    sync
 
 );
 
@@ -2414,19 +1955,19 @@ window.addEventListener(
 
 console.table({
 
-    Version: "NEXT",
+    Aplicacion:"Mi Nutrición NEXT",
 
-    Fecha: state.currentDate,
+    Version:"5.0",
 
-    Objetivo: state.settings.kcalGoal
+    Fecha:state.currentDate
 
 });
 
 console.log(
 
-    "%c🍎 Mi Nutrición NEXT lista",
+    "%cAplicación lista",
 
-    "color:#38d46a;font-size:18px;font-weight:bold;"
+    "color:#34c759;font-size:18px;font-weight:bold;"
 
 );
 
