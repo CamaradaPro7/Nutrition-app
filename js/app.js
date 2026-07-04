@@ -1226,7 +1226,21 @@ async function deleteFood(id){
    BOTONES
 ========================================================== */
 
-$("newFoodBtn").onclick = newFood;
+$("newFoodBtn").onclick = ()=>{
+
+    ui.modal.classList.remove("show");
+
+    ui.newFoodModal.classList.add("show");
+
+    ui.jsonInput.value = "";
+
+    setTimeout(()=>{
+
+        ui.jsonInput.focus();
+
+    },100);
+
+};
 
 $("saveEditFood").onclick =
 
