@@ -7,13 +7,17 @@
 
 <meta
 name="viewport"
-content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>Mi Nutrición V4</title>
+<title>Mi Nutrición V5</title>
 
 <meta
 name="theme-color"
 content="#0d1117">
+
+<meta
+name="description"
+content="Mi Nutrición V5 - Control diario de alimentación y macronutrientes">
 
 <meta
 name="apple-mobile-web-app-capable"
@@ -28,8 +32,34 @@ name="apple-mobile-web-app-title"
 content="Mi Nutrición">
 
 <meta
+name="mobile-web-app-capable"
+content="yes">
+
+<meta
 name="format-detection"
 content="telephone=no">
+
+<meta
+name="color-scheme"
+content="dark">
+
+<link
+rel="manifest"
+href="manifest.json">
+
+<link
+rel="apple-touch-icon"
+href="icons/icon-192.png">
+
+<link
+rel="icon"
+type="image/png"
+href="icons/icon-192.png">
+
+<link
+rel="preload"
+href="css/styles.css"
+as="style">
 
 <link
 rel="stylesheet"
@@ -39,7 +69,7 @@ href="css/styles.css">
 
 <body>
 
-<div class="app">
+<main class="app">
 
 <header class="header">
 
@@ -57,11 +87,18 @@ Cargando...
 
 </header>
 
+<section
+class="dashboard"
+aria-label="Resumen diario">
+
 <div class="ring">
 
 <div
 class="ring-progress"
-id="ringProgress">
+id="ringProgress"
+role="button"
+tabindex="0"
+aria-label="Copiar resumen diario">
 
 <div class="ring-center">
 
@@ -117,10 +154,15 @@ de 2200 kcal
 
 </div>
 
-<section id="meals">
+</section>
 
-<div
+<section
+id="meals"
+aria-label="Comidas">
+
+<section
 class="meal"
+id="meal-desayuno"
 data-meal="desayuno">
 
 <div class="meal-header">
@@ -131,8 +173,11 @@ data-meal="desayuno">
 
 <button
 class="add"
-type="button">
+type="button"
+aria-label="Añadir alimento al desayuno">
+
 +
+
 </button>
 
 </div>
@@ -140,17 +185,20 @@ type="button">
 <div class="meal-body">
 
 <p class="emptyMeal">
+
 Sin alimentos
+
 </p>
 
 <div class="meal-list"></div>
 
 </div>
 
-</div>
+</section>
 
-<div
+<section
 class="meal"
+id="meal-comida"
 data-meal="comida">
 
 <div class="meal-header">
@@ -161,8 +209,11 @@ data-meal="comida">
 
 <button
 class="add"
-type="button">
+type="button"
+aria-label="Añadir alimento a la comida">
+
 +
+
 </button>
 
 </div>
@@ -170,17 +221,20 @@ type="button">
 <div class="meal-body">
 
 <p class="emptyMeal">
+
 Sin alimentos
+
 </p>
 
 <div class="meal-list"></div>
 
 </div>
 
-</div>
+</section>
 
-<div
+<section
 class="meal"
+id="meal-merienda"
 data-meal="merienda">
 
 <div class="meal-header">
@@ -191,8 +245,11 @@ data-meal="merienda">
 
 <button
 class="add"
-type="button">
+type="button"
+aria-label="Añadir alimento a la merienda">
+
 +
+
 </button>
 
 </div>
@@ -200,17 +257,20 @@ type="button">
 <div class="meal-body">
 
 <p class="emptyMeal">
+
 Sin alimentos
+
 </p>
 
 <div class="meal-list"></div>
 
 </div>
 
-</div>
+</section>
 
-<div
+<section
 class="meal"
+id="meal-cena"
 data-meal="cena">
 
 <div class="meal-header">
@@ -221,8 +281,11 @@ data-meal="cena">
 
 <button
 class="add"
-type="button">
+type="button"
+aria-label="Añadir alimento a la cena">
+
 +
+
 </button>
 
 </div>
@@ -230,44 +293,56 @@ type="button">
 <div class="meal-body">
 
 <p class="emptyMeal">
+
 Sin alimentos
+
 </p>
 
 <div class="meal-list"></div>
 
 </div>
 
-</div>
+</section>
 
 </section>
 
-</div>
+</main>
 
-<!-- =========================
+<!-- =====================================================
 BIBLIOTECA
-========================= -->
+===================================================== -->
 
 <div
 id="modal"
-class="modal">
+class="modal"
+role="dialog"
+aria-modal="true"
+aria-labelledby="libraryTitle">
 
 <div class="modal-content">
 
 <button
 id="closeFoodModal"
 class="close-modal"
-type="button">
+type="button"
+aria-label="Cerrar biblioteca">
+
 ✕
+
 </button>
 
-<h2 class="modal-title">
+<h2
+id="libraryTitle"
+class="modal-title">
+
 📚 Biblioteca
+
 </h2>
 
 <input
 id="searchFood"
 class="search"
-type="text"
+type="search"
 autocomplete="off"
 placeholder="Buscar alimento...">
 
@@ -286,13 +361,15 @@ type="button">
 
 </div>
 
-<!-- =========================
+<!-- =====================================================
 GRAMOS
-========================= -->
+===================================================== -->
 
 <div
 id="gramsModal"
-class="modal">
+class="modal"
+role="dialog"
+aria-modal="true">
 
 <div class="modal-content">
 
@@ -312,8 +389,7 @@ inputmode="decimal"
 min="1"
 value="100">
 
-<div
-style="display:flex;gap:12px;margin-top:20px;">
+<div class="modal-buttons">
 
 <button
 id="cancelGrams"
@@ -339,13 +415,15 @@ Añadir
 
 </div>
 
-<!-- =========================
+<!-- =====================================================
 IMPORTAR
-========================= -->
+===================================================== -->
 
 <div
 id="newFoodModal"
-class="modal">
+class="modal"
+role="dialog"
+aria-modal="true">
 
 <div class="modal-content">
 
@@ -365,10 +443,9 @@ placeholder="Pega aquí un alimento, una lista o un JSON..."></textarea>
 
 <div
 id="jsonStatus"
-style="margin-top:12px;min-height:22px;color:#8d97a6;font-size:14px;font-weight:600;"></div>
+class="json-status"></div>
 
-<div
-style="display:flex;gap:12px;margin-top:20px;">
+<div class="modal-buttons">
 
 <button
 id="cancelFood"
@@ -394,13 +471,15 @@ type="button">
 
 </div>
 
-<!-- =========================
+<!-- =====================================================
 EDITAR
-========================= -->
+===================================================== -->
 
 <div
 id="editFoodModal"
-class="modal">
+class="modal"
+role="dialog"
+aria-modal="true">
 
 <div class="modal-content">
 
@@ -425,8 +504,7 @@ id="foodCategory"
 class="search"
 placeholder="Categoría">
 
-<div
-style="display:flex;gap:12px;">
+<div class="modal-grid">
 
 <input
 id="foodBase"
@@ -465,8 +543,7 @@ class="search"
 type="number"
 placeholder="Grasas">
 
-<div
-style="display:flex;gap:12px;margin-top:20px;">
+<div class="modal-buttons">
 
 <button
 id="cancelEditFood"
@@ -492,8 +569,9 @@ type="button">
 
 </div>
 
-<script src="js/db.js"></script>
-<script src="js/app.js"></script>
+<script defer src="js/db.js"></script>
+<script defer src="js/app.js"></script>
 
 </body>
+
 </html>
