@@ -2165,6 +2165,14 @@ document.addEventListener(
 
 window.APP_VERSION = "3.0.0";
 
+alert(location.href);
+
+alert(
+  "URL:\n" + location.href +
+  "\n\nBiblioteca: " + foods.length +
+  "\nDesayuno: " + meals.desayuno.length
+);
+
 /* =====================================================
    MI NUTRICIÓN V3
    app.js
