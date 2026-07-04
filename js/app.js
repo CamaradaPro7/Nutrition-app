@@ -1578,6 +1578,182 @@ async function addFoodToMeal(){
 }
 
 /* ==========================================================
+   EDITAR ALIMENTO DEL DÍA
+========================================================== */
+
+state.editMeal={
+
+    meal:null,
+
+    index:-1
+
+};
+
+function openEditMeal(meal,index){
+
+    const food=state.meals[meal][index];
+
+    if(!food){
+
+        return;
+
+    }
+
+    state.editMeal.meal=meal;
+
+    state.editMeal.index=index;
+
+    $("editMealName").textContent=
+
+        `${food.emoji||"🍽️"} ${food.name}`;
+
+    $("editMealGrams").value=
+
+        food.grams;
+
+    lockScroll();
+
+    $("editMealModal").classList.add("show");
+
+    setTimeout(()=>{
+
+        $("editMealGrams").focus();
+
+        $("editMealGrams").select();
+
+    },100);
+
+}
+
+function closeEditMeal(){
+
+    $("editMealModal").classList.remove("show");
+
+    unlockScroll();
+
+}
+
+async function saveMealEdit(){
+
+    const meal=
+
+        state.editMeal.meal;
+
+    const index=
+
+        state.editMeal.index;
+
+    const item=
+
+        state.meals[meal][index];
+
+    const grams=
+
+        number(
+
+            $("editMealGrams").value
+
+        );
+
+    if(grams<=0){
+
+        alert("Cantidad no válida.");
+
+        return;
+
+    }
+
+    const food=
+
+        state.foods.find(
+
+            f=>f.id===item.foodId
+
+        );
+
+    if(!food){
+
+        alert("No se encontró el alimento.");
+
+        return;
+
+    }
+
+    const factor=
+
+        grams/(food.base||100);
+
+    item.grams=grams;
+
+    item.kcal=Math.round(
+
+        food.kcal*factor
+
+    );
+
+    item.protein=Number(
+
+        (food.protein*factor).toFixed(1)
+
+    );
+
+    item.carbs=Number(
+
+        (food.carbs*factor).toFixed(1)
+
+    );
+
+    item.fat=Number(
+
+        (food.fat*factor).toFixed(1)
+
+    );
+
+    await saveMeals();
+
+    refresh();
+
+    closeEditMeal();
+
+}
+
+async function deleteMealItem(){
+
+    const meal=
+
+        state.editMeal.meal;
+
+    const index=
+
+        state.editMeal.index;
+
+    if(!confirm(
+
+        "¿Eliminar este alimento?"
+
+    )){
+
+        return;
+
+    }
+
+    state.meals[meal].splice(
+
+        index,
+
+        1
+
+    );
+
+    await saveMeals();
+
+    refresh();
+
+    closeEditMeal();
+
+}
+
+/* ==========================================================
    RENDER COMIDAS
 ========================================================== */
 
@@ -1657,6 +1833,20 @@ ${food.kcal} kcal
 </span>
 
 `;
+
+row.style.cursor="pointer";
+
+row.onclick=()=>{
+
+    openEditMeal(
+
+        meal,
+
+        index
+
+    );
+
+};
 
                 preview.appendChild(row);
 
