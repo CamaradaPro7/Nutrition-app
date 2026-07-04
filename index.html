@@ -7,17 +7,13 @@
 
 <meta
 name="viewport"
-content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-<title>Mi Nutrición V5</title>
+<title>Mi Nutrición Next</title>
 
 <meta
 name="theme-color"
-content="#0d1117">
-
-<meta
-name="description"
-content="Mi Nutrición V5 - Control diario de alimentación y macronutrientes">
+content="#ffffff">
 
 <meta
 name="apple-mobile-web-app-capable"
@@ -25,41 +21,15 @@ content="yes">
 
 <meta
 name="apple-mobile-web-app-status-bar-style"
-content="black-translucent">
+content="default">
 
 <meta
 name="apple-mobile-web-app-title"
 content="Mi Nutrición">
 
 <meta
-name="mobile-web-app-capable"
-content="yes">
-
-<meta
 name="format-detection"
 content="telephone=no">
-
-<meta
-name="color-scheme"
-content="dark">
-
-<link
-rel="manifest"
-href="manifest.json">
-
-<link
-rel="apple-touch-icon"
-href="icons/icon-192.png">
-
-<link
-rel="icon"
-type="image/png"
-href="icons/icon-192.png">
-
-<link
-rel="preload"
-href="css/styles.css"
-as="style">
 
 <link
 rel="stylesheet"
@@ -69,43 +39,44 @@ href="css/styles.css">
 
 <body>
 
-<main class="app">
+<div class="app">
 
 <header class="header">
 
-<div class="header-center">
-
 <h1 id="greeting">
+
 Buenos días
+
 </h1>
 
 <p id="fecha">
-Cargando...
-</p>
 
-</div>
+Sábado, 4 de julio de 2026
+
+</p>
 
 </header>
 
-<section
-class="dashboard"
-aria-label="Resumen diario">
+<section class="dashboard">
 
 <div class="ring">
 
 <div
 class="ring-progress"
-id="ringProgress"
-role="button"
-tabindex="0"
-aria-label="Copiar resumen diario">
+id="ringProgress">
 
 <div class="ring-center">
 
-<span id="totalKcal">0</span>
+<span id="totalKcal">
+
+0
+
+</span>
 
 <small>
+
 de 2200 kcal
+
 </small>
 
 </div>
@@ -119,11 +90,15 @@ de 2200 kcal
 <div class="macro">
 
 <span>
+
 🥩 Proteínas
+
 </span>
 
 <strong id="protein">
+
 0 g
+
 </strong>
 
 </div>
@@ -131,11 +106,15 @@ de 2200 kcal
 <div class="macro">
 
 <span>
+
 🍚 Hidratos
+
 </span>
 
 <strong id="carbs">
+
 0 g
+
 </strong>
 
 </div>
@@ -143,11 +122,15 @@ de 2200 kcal
 <div class="macro">
 
 <span>
+
 🥑 Grasas
+
 </span>
 
 <strong id="fat">
+
 0 g
+
 </strong>
 
 </div>
@@ -158,27 +141,19 @@ de 2200 kcal
 
 <section
 id="meals"
-aria-label="Comidas">
+class="meals">
 
-<section
+<article
 class="meal"
-id="meal-desayuno"
 data-meal="desayuno">
 
 <div class="meal-header">
 
 <h2>
+
 🍳 Desayuno
+
 </h2>
-
-<button
-class="add"
-type="button"
-aria-label="Añadir alimento al desayuno">
-
-+
-
-</button>
 
 </div>
 
@@ -190,31 +165,29 @@ Sin alimentos
 
 </p>
 
-<div class="meal-list"></div>
+<div class="meal-preview"></div>
+
+<div class="meal-total">
+
+0 kcal
 
 </div>
 
-</section>
+</div>
 
-<section
+</article>
+
+<article
 class="meal"
-id="meal-comida"
 data-meal="comida">
 
 <div class="meal-header">
 
 <h2>
+
 🍝 Comida
+
 </h2>
-
-<button
-class="add"
-type="button"
-aria-label="Añadir alimento a la comida">
-
-+
-
-</button>
 
 </div>
 
@@ -226,31 +199,29 @@ Sin alimentos
 
 </p>
 
-<div class="meal-list"></div>
+<div class="meal-preview"></div>
+
+<div class="meal-total">
+
+0 kcal
 
 </div>
 
-</section>
+</div>
 
-<section
+</article>
+
+<article
 class="meal"
-id="meal-merienda"
 data-meal="merienda">
 
 <div class="meal-header">
 
 <h2>
+
 🥪 Merienda
+
 </h2>
-
-<button
-class="add"
-type="button"
-aria-label="Añadir alimento a la merienda">
-
-+
-
-</button>
 
 </div>
 
@@ -262,31 +233,29 @@ Sin alimentos
 
 </p>
 
-<div class="meal-list"></div>
+<div class="meal-preview"></div>
+
+<div class="meal-total">
+
+0 kcal
 
 </div>
 
-</section>
+</div>
 
-<section
+</article>
+
+<article
 class="meal"
-id="meal-cena"
 data-meal="cena">
 
 <div class="meal-header">
 
 <h2>
+
 🌙 Cena
+
 </h2>
-
-<button
-class="add"
-type="button"
-aria-label="Añadir alimento a la cena">
-
-+
-
-</button>
 
 </div>
 
@@ -298,46 +267,50 @@ Sin alimentos
 
 </p>
 
-<div class="meal-list"></div>
+<div class="meal-preview"></div>
+
+<div class="meal-total">
+
+0 kcal
 
 </div>
 
-</section>
+</div>
+
+</article>
 
 </section>
 
-</main>
+</div>
 
-<!-- =====================================================
-BIBLIOTECA
-===================================================== -->
+<!-- ======================================================
+     BIBLIOTECA
+====================================================== -->
 
 <div
 id="modal"
-class="modal"
-role="dialog"
-aria-modal="true"
-aria-labelledby="libraryTitle">
+class="modal">
 
-<div class="modal-content">
+<div class="sheet">
+
+<div class="sheet-header">
+
+<h2 id="sheetTitle">
+
+🍳 Desayuno
+
+</h2>
 
 <button
 id="closeFoodModal"
-class="close-modal"
-type="button"
-aria-label="Cerrar biblioteca">
+class="close-btn"
+type="button">
 
 ✕
 
 </button>
 
-<h2
-id="libraryTitle"
-class="modal-title">
-
-📚 Biblioteca
-
-</h2>
+</div>
 
 <input
 id="searchFood"
@@ -346,50 +319,54 @@ type="search"
 autocomplete="off"
 placeholder="Buscar alimento...">
 
+<div
+id="foodResults"
+class="food-results"></div>
+
 <button
 id="newFoodBtn"
-class="new-food-btn"
+class="sheet-button"
 type="button">
 
 ➕ Añadir alimento
 
 </button>
 
-<div id="foodResults"></div>
-
 </div>
 
 </div>
 
-<!-- =====================================================
-GRAMOS
-===================================================== -->
+<!-- ======================================================
+     CANTIDAD
+====================================================== -->
 
 <div
 id="gramsModal"
-class="modal"
-role="dialog"
-aria-modal="true">
+class="modal">
 
-<div class="modal-content">
+<div class="sheet sheet-small">
 
-<h2 class="modal-title">
+<h2>
 
 Cantidad
 
 </h2>
 
-<p id="selectedFood"></p>
+<p
+id="selectedFood"
+class="selected-food">
+
+</p>
 
 <input
 id="gramsInput"
 class="search"
 type="number"
 inputmode="decimal"
-min="1"
-value="100">
+value="100"
+min="1">
 
-<div class="modal-buttons">
+<div class="actions">
 
 <button
 id="cancelGrams"
@@ -415,37 +392,89 @@ Añadir
 
 </div>
 
-<!-- =====================================================
-IMPORTAR
-===================================================== -->
+<!-- ======================================================
+     AÑADIR ALIMENTO
+====================================================== -->
 
 <div
 id="newFoodModal"
-class="modal"
-role="dialog"
-aria-modal="true">
+class="modal">
 
-<div class="modal-content">
+<div class="sheet">
 
-<h2 class="modal-title">
+<h2>
 
-📋 Añadir alimento
+Añadir alimento
 
 </h2>
 
+<div class="import-options">
+
+<button
+id="pasteFoodBtn"
+class="option-card"
+type="button">
+
+📋
+
+<strong>
+
+Pegar texto
+
+</strong>
+
+<small>
+
+Recomendado
+
+</small>
+
+</button>
+
+<button
+id="manualFoodBtn"
+class="option-card"
+type="button">
+
+📝
+
+<strong>
+
+Manual
+
+</strong>
+
+</button>
+
+<button
+id="jsonFoodBtn"
+class="option-card"
+type="button">
+
+📦
+
+<strong>
+
+JSON
+
+</strong>
+
+</button>
+
+</div>
+
 <textarea
-
 id="jsonInput"
-
 class="json-box"
-
-placeholder="Pega aquí un alimento, una lista o un JSON..."></textarea>
+placeholder="Pega aquí el texto generado por ChatGPT..."></textarea>
 
 <div
 id="jsonStatus"
-class="json-status"></div>
+class="json-status">
 
-<div class="modal-buttons">
+</div>
+
+<div class="actions">
 
 <button
 id="cancelFood"
@@ -461,7 +490,7 @@ id="saveFood"
 class="primary-btn"
 type="button">
 
-📥 Importar
+Guardar
 
 </button>
 
@@ -471,21 +500,19 @@ type="button">
 
 </div>
 
-<!-- =====================================================
-EDITAR
-===================================================== -->
+<!-- ======================================================
+     EDITAR ALIMENTO
+====================================================== -->
 
 <div
 id="editFoodModal"
-class="modal"
-role="dialog"
-aria-modal="true">
+class="modal">
 
-<div class="modal-content">
+<div class="sheet">
 
-<h2 class="modal-title">
+<h2>
 
-✏️ Editar alimento
+Editar alimento
 
 </h2>
 
@@ -504,7 +531,7 @@ id="foodCategory"
 class="search"
 placeholder="Categoría">
 
-<div class="modal-grid">
+<div class="row">
 
 <input
 id="foodBase"
@@ -543,7 +570,7 @@ class="search"
 type="number"
 placeholder="Grasas">
 
-<div class="modal-buttons">
+<div class="actions">
 
 <button
 id="cancelEditFood"
@@ -559,7 +586,7 @@ id="saveEditFood"
 class="primary-btn"
 type="button">
 
-💾 Guardar
+Guardar
 
 </button>
 
@@ -569,8 +596,8 @@ type="button">
 
 </div>
 
-<script defer src="js/db.js"></script>
-<script defer src="js/app.js"></script>
+<script src="js/db.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 
