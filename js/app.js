@@ -2029,7 +2029,11 @@ function unlockScroll(){
 
 function init(){
     
-    alert(Object.keys(localStorage).join("\n"));
+    alert(
+localStorage.getItem("foodLibrary")?.substring(0,300) +
+"\n\n---\n\n" +
+localStorage.getItem("miNutricion")
+);
 
     refreshDashboard();
 
