@@ -560,6 +560,69 @@ Guardar
 
 </div>
 
+<!-- ======================================================
+     EDITAR COMIDA
+====================================================== -->
+
+<div id="editMealModal" class="modal">
+
+    <div class="sheet sheet-small">
+
+        <div class="sheet-header">
+
+            <h2>Editar alimento</h2>
+
+            <button
+                id="closeEditMeal"
+                class="close-btn"
+                type="button">
+
+                ✕
+
+            </button>
+
+        </div>
+
+        <p id="editMealName"></p>
+
+        <label>
+
+            Cantidad (g)
+
+        </label>
+
+        <input
+            id="editMealGrams"
+            class="search"
+            type="number"
+            inputmode="decimal">
+
+        <div class="actions">
+
+            <button
+                id="deleteMealFood"
+                class="secondary-btn"
+                type="button">
+
+                🗑️ Eliminar
+
+            </button>
+
+            <button
+                id="saveMealFood"
+                class="primary-btn"
+                type="button">
+
+                Guardar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 <script src="js/db.js"></script>
 <script src="js/app.js"></script>
 
