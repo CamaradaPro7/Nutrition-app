@@ -1,84 +1,40 @@
 const DB_NAME = "MiNutricionDB";
-const DB_VERSION = 1;
+const STORE = "datos";
 
 let db;
 
-function openDB() {
+async function openDB() {
     return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, 1);
 
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-        request.onupgradeneeded = e => {
-
-            db = e.target.result;
-
-            if (!db.objectStoreNames.contains("data")) {
-                db.createObjectStore("data");
-            }
-
+        req.onupgradeneeded = () => {
+            db = req.result;
+            db.createObjectStore(STORE);
         };
 
-        request.onsuccess = e => {
-            db = e.target.result;
+        req.onsuccess = () => {
+            db = req.result;
             resolve();
         };
 
-        request.onerror = reject;
-
+        req.onerror = () => reject(req.error);
     });
 }
 
-async function get(key) {
-
-    await openDB();
-
-    return new Promise(resolve => {
-
-        const tx = db.transaction("data", "readonly");
-        const store = tx.objectStore("data");
-
+async function dbGet(key) {
+    return new Promise((resolve) => {
+        const tx = db.transaction(STORE, "readonly");
+        const store = tx.objectStore(STORE);
         const req = store.get(key);
-
         req.onsuccess = () => resolve(req.result);
-
         req.onerror = () => resolve(null);
-
     });
-
 }
 
-async function set(key, value) {
-
-    await openDB();
-
-    return new Promise(resolve => {
-
-        const tx = db.transaction("data", "readwrite");
-
-        tx.objectStore("data").put(value, key);
-
-        tx.oncomplete = resolve;
-
+async function dbSet(key, value) {
+    return new Promise((resolve) => {
+        const tx = db.transaction(STORE, "readwrite");
+        tx.objectStore(STORE).put(value, key);
+        tx.oncomplete = () => resolve();
     });
-
 }
-
-window.DB = {
-
-    getFoods: () => get("foods"),
-
-    saveFoods: data => set("foods", data),
-
-    getMeals: () => get("meals"),
-
-    saveMeals: data => set("meals", data),
-
-    getSettings: () => get("settings"),
-
-    saveSettings: data => set("settings", data)
-
-};
-
-openDB().then(() => {
-    console.log("✅ IndexedDB lista");
-});
