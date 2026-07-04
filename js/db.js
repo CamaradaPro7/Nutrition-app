@@ -78,3 +78,7 @@ window.DB = {
     saveSettings: data => set("settings", data)
 
 };
+
+openDB().then(() => {
+    console.log("✅ IndexedDB lista");
+});
