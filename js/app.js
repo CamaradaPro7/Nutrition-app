@@ -1,13 +1,13 @@
 /* ==========================================================
    MI NUTRICIÓN NEXT
-   app.js V5.1
-   PARTE 1/10
+   app.js V5.2
+   PARTE 1/8
 ========================================================== */
 
 "use strict";
 
 /* ==========================================================
-   ESTADO
+   ESTADO GLOBAL
 ========================================================== */
 
 const state={
@@ -28,6 +28,8 @@ const state={
 
     editingFood:null,
 
+    editingMeal:null,
+
     previewFood:null,
 
     lastScroll:0
@@ -35,16 +37,24 @@ const state={
 };
 
 /* ==========================================================
-   SELECTORES
+   ATAJOS
 ========================================================== */
 
 const $=id=>document.getElementById(id);
+
+const $$=selector=>
+
+    [...document.querySelectorAll(selector)];
+
+/* ==========================================================
+   UI
+========================================================== */
 
 const ui={
 
     greeting:$("greeting"),
 
-    fecha:$("fecha"),
+    date:$("fecha"),
 
     totalKcal:$("totalKcal"),
 
@@ -58,17 +68,17 @@ const ui={
 
     meals:$("meals"),
 
-    modal:$("modal"),
+    library:$("modal"),
 
     sheetTitle:$("sheetTitle"),
 
-    searchFood:$("searchFood"),
+    search:$("searchFood"),
 
-    foodResults:$("foodResults"),
+    results:$("foodResults"),
 
-    newFoodBtn:$("newFoodBtn"),
+    newFood:$("newFoodBtn"),
 
-    closeFoodModal:$("closeFoodModal"),
+    closeLibrary:$("closeFoodModal"),
 
     gramsModal:$("gramsModal"),
 
@@ -80,13 +90,13 @@ const ui={
 
     cancelGrams:$("cancelGrams"),
 
-    newFoodModal:$("newFoodModal"),
+    importModal:$("newFoodModal"),
 
-    jsonInput:$("jsonInput"),
+    importInput:$("jsonInput"),
 
-    saveFood:$("saveFood"),
+    importSave:$("saveFood"),
 
-    manualFoodBtn:$("manualFoodBtn"),
+    importManual:$("manualFoodBtn"),
 
     editFoodModal:$("editFoodModal"),
 
@@ -108,9 +118,23 @@ const ui={
 
     foodFat:$("foodFat"),
 
-    saveEditFood:$("saveEditFood"),
+    saveFoodEdit:$("saveEditFood"),
 
-    cancelEditFood:$("cancelEditFood")
+    cancelFoodEdit:$("cancelEditFood"),
+
+    closeImport:$("closeNewFood"),
+
+    editMealModal:$("editMealModal"),
+
+    editMealName:$("editMealName"),
+
+    editMealGrams:$("editMealGrams"),
+
+    saveMeal:$("saveMealFood"),
+
+    deleteMeal:$("deleteMealFood"),
+
+    closeMeal:$("closeEditMeal")
 
 };
 
@@ -122,20 +146,26 @@ async function loadApp(){
 
     const data=await DB.load();
 
-    state.foods=data.foods;
+    state.foods=data.foods||[];
 
-    state.settings=data.settings;
+    state.settings=data.settings||{
 
-    state.meals=await DB.getDay(
+        kcalGoal:2200
 
-        state.currentDate
+    };
 
-    );
+    state.meals=
+
+        await DB.getDay(
+
+            state.currentDate
+
+        );
 
 }
 
 /* ==========================================================
-   GUARDAR
+   GUARDADO
 ========================================================== */
 
 async function saveFoods(){
@@ -190,7 +220,7 @@ function number(value){
 
 }
 
-function createId(){
+function uid(){
 
     return Date.now()
 
@@ -204,39 +234,23 @@ function createId(){
 
 }
 
-function formatDate(date){
+function foodById(id){
 
-    const text=date.toLocaleDateString(
+    return state.foods.find(
 
-        "es-ES",
-
-        {
-
-            weekday:"long",
-
-            day:"numeric",
-
-            month:"long",
-
-            year:"numeric"
-
-        }
+        food=>food.id===id
 
     );
-
-    return text.charAt(0).toUpperCase()
-
-        +
-
-        text.slice(1);
 
 }
 
 function existsFood(name){
 
-    return state.foods.find(f=>
+    return state.foods.find(
 
-        normalize(f.name)===
+        food=>
+
+        normalize(food.name)===
 
         normalize(name)
 
@@ -281,15 +295,67 @@ function unlockScroll(){
 }
 
 /* ==========================================================
+   MODALES
+========================================================== */
+
+function closeAllModals(){
+
+    ui.library.classList.remove("show");
+
+    ui.gramsModal.classList.remove("show");
+
+    ui.importModal.classList.remove("show");
+
+    ui.editFoodModal.classList.remove("show");
+
+    if(ui.editMealModal){
+
+        ui.editMealModal.classList.remove("show");
+
+    }
+
+    unlockScroll();
+
+}
+
+/* ==========================================================
    MI NUTRICIÓN NEXT
-   app.js V5.1
-   PARTE 2/10
-   Dashboard
+   app.js V5.2
+   PARTE 2/8
+   Dashboard + Informe ChatGPT
 ========================================================== */
 
 /* ==========================================================
-   SALUDO
+   FECHA
 ========================================================== */
+
+function formatDate(date){
+
+    const text=date.toLocaleDateString(
+
+        "es-ES",
+
+        {
+
+            weekday:"long",
+
+            day:"numeric",
+
+            month:"long",
+
+            year:"numeric"
+
+        }
+
+    );
+
+    return text.charAt(0).toUpperCase()
+
+        +
+
+        text.slice(1);
+
+}
 
 function updateGreeting(){
 
@@ -301,7 +367,9 @@ function updateGreeting(){
 
         greeting="Buenos días";
 
-    }else if(hour>=14 && hour<21){
+    }
+
+    else if(hour<21){
 
         greeting="Buenas tardes";
 
@@ -309,15 +377,7 @@ function updateGreeting(){
 
     ui.greeting.textContent=greeting;
 
-}
-
-/* ==========================================================
-   FECHA
-========================================================== */
-
-function updateDate(){
-
-    ui.fecha.textContent=
+    ui.date.textContent=
 
         formatDate(
 
@@ -345,17 +405,19 @@ function calculateTotals(){
 
     };
 
-    Object.values(state.meals).forEach(meal=>{
+    Object.values(state.meals)
+
+    .forEach(meal=>{
 
         meal.forEach(food=>{
 
-            totals.kcal+=food.kcal||0;
+            totals.kcal+=food.kcal;
 
-            totals.protein+=food.protein||0;
+            totals.protein+=food.protein;
 
-            totals.carbs+=food.carbs||0;
+            totals.carbs+=food.carbs;
 
-            totals.fat+=food.fat||0;
+            totals.fat+=food.fat;
 
         });
 
@@ -366,114 +428,92 @@ function calculateTotals(){
 }
 
 /* ==========================================================
-   ANILLO
-========================================================== */
-
-function updateRing(){
-
-    const totals=calculateTotals();
-
-    const goal=
-
-        state.settings.kcalGoal||2200;
-
-    const percent=Math.min(
-
-        totals.kcal/goal,
-
-        1
-
-    );
-
-    const degrees=percent*360;
-
-    ui.ring.style.setProperty(
-
-        "--progress",
-
-        `${degrees}deg`
-
-    );
-
-    ui.ring.classList.remove(
-
-        "green",
-
-        "yellow",
-
-        "red"
-
-    );
-
-    if(percent<0.8){
-
-        ui.ring.classList.add("green");
-
-    }else if(percent<1){
-
-        ui.ring.classList.add("yellow");
-
-    }else{
-
-        ui.ring.classList.add("red");
-
-    }
-
-}
-
-/* ==========================================================
    DASHBOARD
 ========================================================== */
 
 function refreshDashboard(){
 
-    const totals=
+    const t=
 
         calculateTotals();
 
-    updateGreeting();
-
-    updateDate();
-
-    updateRing();
-
     ui.totalKcal.textContent=
 
-        Math.round(totals.kcal);
+        Math.round(t.kcal);
 
     ui.protein.textContent=
 
-        `${totals.protein.toFixed(1)} g`;
+        `${t.protein.toFixed(1)} g`;
 
     ui.carbs.textContent=
 
-        `${totals.carbs.toFixed(1)} g`;
+        `${t.carbs.toFixed(1)} g`;
 
     ui.fat.textContent=
 
-        `${totals.fat.toFixed(1)} g`;
+        `${t.fat.toFixed(1)} g`;
 
-    const label=
+    const percent=Math.min(
 
-        ui.ring.querySelector("small");
+        t.kcal/
 
-    if(label){
+        state.settings.kcalGoal,
 
-        label.textContent=
+        1
 
-        `de ${state.settings.kcalGoal} kcal`;
+    );
+
+    ui.ring.style.setProperty(
+
+        "--progress",
+
+        `${percent*360}deg`
+
+    );
+
+    ui.ring.className=
+
+        "ring-progress";
+
+    if(percent<0.8){
+
+        ui.ring.classList.add(
+
+            "green"
+
+        );
+
+    }
+
+    else if(percent<1){
+
+        ui.ring.classList.add(
+
+            "yellow"
+
+        );
+
+    }
+
+    else{
+
+        ui.ring.classList.add(
+
+            "red"
+
+        );
 
     }
 
 }
 
 /* ==========================================================
-   RESUMEN
+   INFORME CHATGPT
 ========================================================== */
 
 function buildSummary(){
 
-    const totals=
+    const t=
 
         calculateTotals();
 
@@ -481,13 +521,25 @@ function buildSummary(){
 
 `${formatDate(new Date(state.currentDate))}
 
-Calorías: ${Math.round(totals.kcal)} / ${state.settings.kcalGoal} kcal
+Calorías: ${Math.round(t.kcal)} / ${state.settings.kcalGoal} kcal
 
-Proteínas: ${totals.protein.toFixed(1)} g
-Hidratos: ${totals.carbs.toFixed(1)} g
-Grasas: ${totals.fat.toFixed(1)} g`;
+Proteínas: ${t.protein.toFixed(1)} g
+Hidratos: ${t.carbs.toFixed(1)} g
+Grasas: ${t.fat.toFixed(1)} g`;
 
-    Object.keys(state.meals).forEach(meal=>{
+    const meals=[
+
+        "desayuno",
+
+        "comida",
+
+        "merienda",
+
+        "cena"
+
+    ];
+
+    meals.forEach(meal=>{
 
         if(!state.meals[meal].length){
 
@@ -499,7 +551,9 @@ Grasas: ${totals.fat.toFixed(1)} g`;
 
         state.meals[meal].forEach(food=>{
 
-            text+=`• ${food.name} (${food.grams}${food.unit}) - ${food.kcal} kcal\n`;
+            text+=
+
+`• ${food.name} (${food.grams}${food.unit}) - ${food.kcal} kcal\n`;
 
         });
 
@@ -510,7 +564,7 @@ Grasas: ${totals.fat.toFixed(1)} g`;
 }
 
 /* ==========================================================
-   COPIAR RESUMEN
+   COPIAR INFORME
 ========================================================== */
 
 async function copySummary(){
@@ -523,15 +577,109 @@ async function copySummary(){
 
         );
 
-        alert("Resumen copiado.");
-
     }
 
     catch{
 
-        alert("No se pudo copiar el resumen.");
+        const area=
+
+            document.createElement(
+
+                "textarea"
+
+            );
+
+        area.value=
+
+            buildSummary();
+
+        document.body.appendChild(
+
+            area
+
+        );
+
+        area.select();
+
+        document.execCommand(
+
+            "copy"
+
+        );
+
+        area.remove();
 
     }
+
+    toast(
+
+        "📋 Informe copiado"
+
+    );
+
+}
+
+/* ==========================================================
+   TOAST
+========================================================== */
+
+let toastTimer=null;
+
+function toast(text){
+
+    let el=
+
+        $("toast");
+
+    if(!el){
+
+        el=document.createElement(
+
+            "div"
+
+        );
+
+        el.id="toast";
+
+        el.style.cssText=`
+
+position:fixed;
+left:50%;
+bottom:30px;
+transform:translateX(-50%);
+background:#222;
+color:#fff;
+padding:14px 22px;
+border-radius:16px;
+font-weight:700;
+z-index:9999;
+opacity:0;
+transition:.25s;
+`;
+
+        document.body.appendChild(
+
+            el
+
+        );
+
+    }
+
+    el.textContent=text;
+
+    el.style.opacity=1;
+
+    clearTimeout(
+
+        toastTimer
+
+    );
+
+    toastTimer=setTimeout(()=>{
+
+        el.style.opacity=0;
+
+    },1800);
 
 }
 
@@ -541,13 +689,15 @@ async function copySummary(){
 
 function refresh(){
 
+    updateGreeting();
+
     refreshDashboard();
 
     renderMeals();
 
     renderFoods(
 
-        ui.searchFood.value
+        ui.search.value
 
     );
 
@@ -555,13 +705,13 @@ function refresh(){
 
 /* ==========================================================
    MI NUTRICIÓN NEXT
-   app.js V5.1
-   PARTE 3/10
+   app.js V5.2
+   PARTE 3/8
    Biblioteca
 ========================================================== */
 
 /* ==========================================================
-   ABRIR BIBLIOTECA
+   ABRIR / CERRAR
 ========================================================== */
 
 function openLibrary(meal){
@@ -580,27 +730,21 @@ function openLibrary(meal){
 
     };
 
-    ui.sheetTitle.textContent=
+    ui.sheetTitle.textContent=titles[meal];
 
-        titles[meal];
-
-    ui.searchFood.value="";
+    ui.search.value="";
 
     renderFoods();
 
     lockScroll();
 
-    ui.modal.classList.add("show");
+    ui.library.classList.add("show");
 
 }
 
-/* ==========================================================
-   CERRAR BIBLIOTECA
-========================================================== */
-
 function closeLibrary(){
 
-    ui.modal.classList.remove("show");
+    ui.library.classList.remove("show");
 
     unlockScroll();
 
@@ -612,7 +756,7 @@ function closeLibrary(){
 
 function renderFoods(filter=""){
 
-    ui.foodResults.innerHTML="";
+    ui.results.innerHTML="";
 
     const text=normalize(filter);
 
@@ -620,15 +764,11 @@ function renderFoods(filter=""){
 
         .filter(food=>
 
-            normalize(food.name)
-
-            .includes(text)
+            normalize(food.name).includes(text)
 
             ||
 
-            normalize(food.brand||"")
-
-            .includes(text)
+            normalize(food.brand||"").includes(text)
 
         )
 
@@ -646,7 +786,7 @@ function renderFoods(filter=""){
 
     if(!foods.length){
 
-        ui.foodResults.innerHTML=
+        ui.results.innerHTML=
 
         `<p class="emptyMeal">
 
@@ -660,13 +800,9 @@ Sin alimentos
 
     foods.forEach(food=>{
 
-        const card=
+        const card=document.createElement("div");
 
-            document.createElement("div");
-
-        card.className=
-
-            "food-item fade-in";
+        card.className="food-item fade-in";
 
         card.innerHTML=`
 
@@ -694,19 +830,143 @@ ${food.kcal} kcal · ${food.base}${food.unit}
 
 `;
 
+        /* Pulsación normal */
+
         card.onclick=()=>{
 
             openGrams(food);
 
         };
 
-        ui.foodResults.appendChild(
+        /* Pulsación larga */
 
-            card
+        let timer=null;
+
+        const start=()=>{
+
+            timer=setTimeout(()=>{
+
+                openFoodMenu(food);
+
+            },600);
+
+        };
+
+        const stop=()=>{
+
+            clearTimeout(timer);
+
+        };
+
+        card.addEventListener(
+
+            "mousedown",
+
+            start
 
         );
 
+        card.addEventListener(
+
+            "touchstart",
+
+            start,
+
+            {passive:true}
+
+        );
+
+        [
+
+            "mouseup",
+
+            "mouseleave",
+
+            "touchend",
+
+            "touchcancel"
+
+        ].forEach(evt=>
+
+            card.addEventListener(
+
+                evt,
+
+                stop
+
+            )
+
+        );
+
+        ui.results.appendChild(card);
+
     });
+
+}
+
+/* ==========================================================
+   MENÚ CONTEXTUAL
+========================================================== */
+
+function openFoodMenu(food){
+
+    const action=prompt(
+
+`"${food.name}"
+
+1 = Editar
+
+2 = Eliminar`
+
+    );
+
+    if(action==="1"){
+
+        editFood(food);
+
+        return;
+
+    }
+
+    if(action==="2"){
+
+        deleteFood(food.id);
+
+    }
+
+}
+
+/* ==========================================================
+   ELIMINAR
+========================================================== */
+
+async function deleteFood(id){
+
+    if(!confirm(
+
+        "¿Eliminar este alimento de la biblioteca?"
+
+    )){
+
+        return;
+
+    }
+
+    state.foods=
+
+        state.foods.filter(
+
+            f=>f.id!==id
+
+        );
+
+    await saveFoods();
+
+    renderFoods(
+
+        ui.search.value
+
+    );
 
 }
 
@@ -714,53 +974,43 @@ ${food.kcal} kcal · ${food.base}${food.unit}
    BUSCADOR
 ========================================================== */
 
-ui.searchFood.addEventListener(
+ui.search.oninput=()=>{
 
-    "input",
+    renderFoods(
 
-    ()=>{
+        ui.search.value
 
-        renderFoods(
-
-            ui.searchFood.value
-
-        );
-
-    }
-
-);
-
-/* ==========================================================
-   NUEVO ALIMENTO
-========================================================== */
-
-ui.newFoodBtn.onclick=()=>{
-
-    ui.modal.classList.remove("show");
-
-    ui.newFoodModal.classList.add("show");
-
-    ui.jsonInput.value="";
-
-    setTimeout(()=>{
-
-        ui.jsonInput.focus();
-
-    },150);
+    );
 
 };
 
 /* ==========================================================
-   CERRAR MODAL
+   EVENTOS
 ========================================================== */
 
-ui.closeFoodModal.onclick=
+ui.newFood.onclick=()=>{
+
+    ui.library.classList.remove("show");
+
+    ui.importModal.classList.add("show");
+
+    ui.importInput.value="";
+
+    setTimeout(()=>{
+
+        ui.importInput.focus();
+
+    },120);
+
+};
+
+ui.closeLibrary.onclick=
 
     closeLibrary;
 
-ui.modal.onclick=e=>{
+ui.library.onclick=e=>{
 
-    if(e.target===ui.modal){
+    if(e.target===ui.library){
 
         closeLibrary();
 
@@ -770,8 +1020,8 @@ ui.modal.onclick=e=>{
 
 /* ==========================================================
    MI NUTRICIÓN NEXT
-   app.js V5.1
-   PARTE 4/10
+   app.js V5.2
+   PARTE 4/8
    Importador ChatGPT
 ========================================================== */
 
@@ -818,7 +1068,7 @@ function parseChatGPTFood(text){
 
     const food={
 
-        id:createId(),
+        id:uid(),
 
         emoji:"🍽️",
 
@@ -846,7 +1096,7 @@ function parseChatGPTFood(text){
 
         .split("\n")
 
-        .map(l=>l.trim())
+        .map(x=>x.trim())
 
         .filter(Boolean);
 
@@ -858,19 +1108,19 @@ function parseChatGPTFood(text){
 
     lines.forEach(line=>{
 
-        const value=line.match(
+        const m=line.match(
 
             /(\d+[.,]?\d*)/
 
         );
 
-        if(!value){
+        if(!m){
 
             return;
 
         }
 
-        const n=number(value[1]);
+        const value=number(m[1]);
 
         if(/100\s*ml/i.test(line)){
 
@@ -888,27 +1138,27 @@ function parseChatGPTFood(text){
 
         }
 
-        if(/energ|kcal|calor/i.test(line)){
+        if(/kcal|energ|calor/i.test(line)){
 
-            food.kcal=n;
+            food.kcal=value;
 
         }
 
         if(/prote/i.test(line)){
 
-            food.protein=n;
+            food.protein=value;
 
         }
 
-        if(/hidr|carbo|hc/i.test(line)){
+        if(/hidr|carbo/i.test(line)){
 
-            food.carbs=n;
+            food.carbs=value;
 
         }
 
         if(/gras/i.test(line)){
 
-            food.fat=n;
+            food.fat=value;
 
         }
 
@@ -919,128 +1169,14 @@ function parseChatGPTFood(text){
 }
 
 /* ==========================================================
-   IMPORTAR CHATGPT
-========================================================== */
-
-async function importChatGPT(text){
-
-    const food=parseChatGPTFood(text);
-
-    if(!food.name){
-
-        alert(
-
-            "No se pudo detectar el alimento."
-
-        );
-
-        return;
-
-    }
-
-    state.previewFood=food;
-
-    const existing=existsFood(
-
-        food.name
-
-    );
-
-    if(existing){
-
-        Object.assign(
-
-            existing,
-
-            food
-
-        );
-
-    }
-
-    else{
-
-        state.foods.push(food);
-
-    }
-
-    await saveFoods();
-
-    renderFoods();
-
-    ui.newFoodModal.classList.remove(
-
-        "show"
-
-    );
-
-    ui.modal.classList.add(
-
-        "show"
-
-    );
-
-    alert(
-
-        `✅ ${food.name} añadido a la biblioteca.`
-
-    );
-
-}
-
-/* ==========================================================
-   IMPORTAR JSON
-========================================================== */
-
-async function importJSON(text){
-
-    const food=JSON.parse(text);
-
-    if(!food.id){
-
-        food.id=createId();
-
-    }
-
-    const existing=existsFood(
-
-        food.name
-
-    );
-
-    if(existing){
-
-        Object.assign(
-
-            existing,
-
-            food
-
-        );
-
-    }
-
-    else{
-
-        state.foods.push(food);
-
-    }
-
-    await saveFoods();
-
-    renderFoods();
-
-}
-
-/* ==========================================================
-   GUARDAR
+   IMPORTAR
 ========================================================== */
 
 async function importFood(){
 
     const text=
 
-        ui.jsonInput.value.trim();
+        ui.importInput.value.trim();
 
     const type=
 
@@ -1048,7 +1184,7 @@ async function importFood(){
 
     if(type==="empty"){
 
-        alert(
+        toast(
 
             "Pega primero el texto."
 
@@ -1058,19 +1194,85 @@ async function importFood(){
 
     }
 
+    let food;
+
     if(type==="json"){
 
-        await importJSON(text);
+        food=
+
+            JSON.parse(text);
+
+        if(!food.id){
+
+            food.id=uid();
+
+        }
 
     }
 
     else{
 
-        await importChatGPT(text);
+        food=
+
+            parseChatGPTFood(text);
 
     }
 
-    ui.jsonInput.value="";
+    const existing=
+
+        existsFood(food.name);
+
+    if(existing){
+
+        Object.assign(
+
+            existing,
+
+            food
+
+        );
+
+        state.selectedFood=
+
+            existing;
+
+    }
+
+    else{
+
+        state.foods.push(food);
+
+        state.selectedFood=
+
+            food;
+
+    }
+
+    await saveFoods();
+
+    ui.importInput.value="";
+
+    ui.importModal.classList.remove(
+
+        "show"
+
+    );
+
+    renderFoods();
+
+    toast(
+
+        "Alimento guardado"
+
+    );
+
+    /* Abrir directamente la cantidad */
+
+    openGrams(
+
+        state.selectedFood
+
+    );
 
 }
 
@@ -1078,39 +1280,59 @@ async function importFood(){
    EVENTOS
 ========================================================== */
 
-ui.saveFood.onclick=
+ui.importSave.onclick=
 
     importFood;
 
-ui.manualFoodBtn.onclick=()=>{
+ui.importManual.onclick=()=>{
 
-    ui.newFoodModal.classList.remove("show");
+    ui.importModal.classList.remove(
+
+        "show"
+
+    );
 
     newFood();
 
 };
 
-ui.newFoodModal.onclick=e=>{
+ui.closeImport.onclick=()=>{
 
-    if(e.target===ui.newFoodModal){
+    ui.importModal.classList.remove(
 
-        ui.newFoodModal.classList.remove("show");
+        "show"
 
-        ui.modal.classList.add("show");
+    );
+
+    ui.library.classList.add(
+
+        "show"
+
+    );
+
+};
+
+ui.importModal.onclick=e=>{
+
+    if(e.target===ui.importModal){
+
+        ui.importModal.classList.remove(
+
+            "show"
+
+        );
+
+        ui.library.classList.add(
+
+            "show"
+
+        );
 
     }
 
 };
 
-$("closeNewFood").onclick=()=>{
-
-    ui.newFoodModal.classList.remove("show");
-
-    ui.modal.classList.add("show");
-
-};
-
-ui.jsonInput.addEventListener(
+ui.importInput.addEventListener(
 
     "keydown",
 
@@ -1136,9 +1358,9 @@ ui.jsonInput.addEventListener(
 
 /* ==========================================================
    MI NUTRICIÓN NEXT
-   app.js V5.1
-   PARTE 5/10
-   Editor manual de alimentos
+   app.js V5.2
+   PARTE 5/8
+   Editor manual
 ========================================================== */
 
 /* ==========================================================
@@ -1174,7 +1396,7 @@ function newFood(){
 }
 
 /* ==========================================================
-   EDITAR ALIMENTO
+   EDITAR
 ========================================================== */
 
 function editFood(food){
@@ -1191,13 +1413,13 @@ function editFood(food){
 
     ui.foodUnit.value=food.unit||"g";
 
-    ui.foodKcal.value=food.kcal||0;
+    ui.foodKcal.value=food.kcal;
 
-    ui.foodProtein.value=food.protein||0;
+    ui.foodProtein.value=food.protein;
 
-    ui.foodCarbs.value=food.carbs||0;
+    ui.foodCarbs.value=food.carbs;
 
-    ui.foodFat.value=food.fat||0;
+    ui.foodFat.value=food.fat;
 
     lockScroll();
 
@@ -1206,30 +1428,28 @@ function editFood(food){
 }
 
 /* ==========================================================
-   CERRAR EDITOR
+   CERRAR
 ========================================================== */
 
-function closeEditFood(){
+function closeFoodEditor(){
 
     ui.editFoodModal.classList.remove("show");
 
-    unlockScroll();
-
-    ui.modal.classList.add("show");
+    ui.library.classList.add("show");
 
 }
 
 /* ==========================================================
-   GUARDAR ALIMENTO
+   GUARDAR
 ========================================================== */
 
-async function saveEditedFood(){
+async function saveFoodEditor(){
 
     const food={
 
         id:state.editingFood
             ? state.editingFood.id
-            : createId(),
+            : uid(),
 
         emoji:state.editingFood?.emoji||"🍽️",
 
@@ -1255,23 +1475,27 @@ async function saveEditedFood(){
 
     if(!food.name){
 
-        alert("Introduce un nombre.");
+        toast("Introduce un nombre.");
 
         return;
 
     }
 
-    const index=state.foods.findIndex(
+    const index=
 
-        f=>f.id===food.id
+        state.foods.findIndex(
 
-    );
+            f=>f.id===food.id
+
+        );
 
     if(index===-1){
 
         state.foods.push(food);
 
-    }else{
+    }
+
+    else{
 
         state.foods[index]=food;
 
@@ -1279,33 +1503,45 @@ async function saveEditedFood(){
 
     await saveFoods();
 
-    renderFoods(ui.searchFood.value);
+    renderFoods(ui.search.value);
 
-    closeEditFood();
+    closeFoodEditor();
+
+    toast("Alimento guardado.");
 
 }
 
 /* ==========================================================
-   ELIMINAR ALIMENTO
+   ELIMINAR
 ========================================================== */
 
-async function deleteFood(id){
+async function removeEditingFood(){
 
-    if(!confirm("¿Eliminar este alimento?")){
+    if(!state.editingFood){
 
         return;
 
     }
 
-    state.foods=state.foods.filter(
+    state.foods=
 
-        food=>food.id!==id
+        state.foods.filter(
 
-    );
+            food=>
+
+            food.id!==state.editingFood.id
+
+        );
 
     await saveFoods();
 
-    renderFoods(ui.searchFood.value);
+    state.editingFood=null;
+
+    renderFoods(ui.search.value);
+
+    closeFoodEditor();
+
+    toast("Alimento eliminado.");
 
 }
 
@@ -1313,19 +1549,19 @@ async function deleteFood(id){
    EVENTOS
 ========================================================== */
 
-ui.saveEditFood.onclick=
+ui.saveFoodEdit.onclick=
 
-    saveEditedFood;
+    saveFoodEditor;
 
-ui.cancelEditFood.onclick=
+ui.cancelFoodEdit.onclick=
 
-    closeEditFood;
+    closeFoodEditor;
 
 ui.editFoodModal.onclick=e=>{
 
     if(e.target===ui.editFoodModal){
 
-        closeEditFood();
+        closeFoodEditor();
 
     }
 
@@ -1341,6 +1577,7 @@ ui.editFoodModal.onclick=e=>{
     ui.foodProtein,
     ui.foodCarbs,
     ui.foodFat
+
 ].forEach(input=>{
 
     input.addEventListener(
@@ -1351,7 +1588,7 @@ ui.editFoodModal.onclick=e=>{
 
             if(e.key==="Enter"){
 
-                saveEditedFood();
+                saveFoodEditor();
 
             }
 
@@ -1363,9 +1600,9 @@ ui.editFoodModal.onclick=e=>{
 
 /* ==========================================================
    MI NUTRICIÓN NEXT
-   app.js V5.1
-   PARTE 6/10
-   Comidas
+   app.js V5.2
+   PARTE 6/8
+   Gestión de comidas
 ========================================================== */
 
 /* ==========================================================
@@ -1376,6 +1613,8 @@ function openGrams(food){
 
     state.selectedFood=food;
 
+    state.editingMeal=null;
+
     ui.selectedFood.textContent=
 
         `${food.emoji||"🍽️"} ${food.name}`;
@@ -1384,9 +1623,11 @@ function openGrams(food){
 
         food.base||100;
 
-    ui.modal.classList.remove("show");
+    ui.library.classList.remove("show");
 
     ui.gramsModal.classList.add("show");
+
+    lockScroll();
 
     setTimeout(()=>{
 
@@ -1394,186 +1635,7 @@ function openGrams(food){
 
         ui.gramsInput.select();
 
-    },150);
-
-}
-
-/* ==========================================================
-   CERRAR CANTIDAD
-========================================================== */
-
-function closeGrams(){
-
-    ui.gramsModal.classList.remove("show");
-
-    ui.modal.classList.add("show");
-
-}
-
-/* ==========================================================
-   CREAR ALIMENTO DE LA COMIDA
-========================================================== */
-
-function buildMealFood(food,grams){
-
-    const factor=
-
-        grams/(food.base||100);
-
-    return{
-
-        id:createId(),
-
-        foodId:food.id,
-
-        emoji:food.emoji,
-
-        name:food.name,
-
-        brand:food.brand,
-
-        category:food.category,
-
-        grams,
-
-        unit:food.unit,
-
-        base:food.base,
-
-        kcal:Math.round(food.kcal*factor),
-
-        protein:Number(
-
-            (food.protein*factor).toFixed(1)
-
-        ),
-
-        carbs:Number(
-
-            (food.carbs*factor).toFixed(1)
-
-        ),
-
-        fat:Number(
-
-            (food.fat*factor).toFixed(1)
-
-        )
-
-    };
-
-}
-
-function editMealFood(meal,index){
-
-    const food=state.meals[meal][index];
-
-    state.editingFood={
-        meal,
-        index
-    };
-
-    ui.selectedFood.textContent=food.name;
-    ui.gramsInput.value=food.grams;
-
-    ui.modal.classList.remove("show");
-    ui.gramsModal.classList.add("show");
-
-    setTimeout(()=>{
-        ui.gramsInput.focus();
-        ui.gramsInput.select();
-    },150);
-
-}
-
-/* ==========================================================
-   AÑADIR A LA COMIDA
-========================================================== */
-
-async function addFoodToMeal(){
-
-    if(!state.selectedFood){
-
-        return;
-
-    }
-
-    const grams=
-
-        number(ui.gramsInput.value);
-
-    if(grams<=0){
-
-        alert("Cantidad no válida.");
-
-        return;
-
-    }
-    
-    if(state.editingFood){
-
-    const grams=number(ui.gramsInput.value);
-
-    const item=
-        state.meals[
-            state.editingFood.meal
-        ][
-            state.editingFood.index
-        ];
-
-    const food=
-        state.foods.find(
-            f=>f.id===item.foodId
-        );
-
-    const updated=
-        buildMealFood(food,grams);
-
-    updated.id=item.id;
-
-    state.meals[
-        state.editingFood.meal
-    ][
-        state.editingFood.index
-    ]=updated;
-
-    state.editingFood=null;
-
-    await saveMeals();
-
-    refresh();
-
-    ui.gramsModal.classList.remove("show");
-
-    unlockScroll();
-
-    return;
-
-}
-
-    const item=
-
-        buildMealFood(
-
-            state.selectedFood,
-
-            grams
-
-        );
-
-    state.meals
-
-        [state.currentMeal]
-
-        .push(item);
-
-    await saveMeals();
-
-    refresh();
-
-    ui.gramsModal.classList.remove("show");
-
-    unlockScroll();
+    },120);
 
 }
 
@@ -1581,99 +1643,175 @@ async function addFoodToMeal(){
    EDITAR ALIMENTO DEL DÍA
 ========================================================== */
 
-state.editMeal={
-
-    meal:null,
-
-    index:-1
-
-};
-
-function openEditMeal(meal,index){
-
-    const food=state.meals[meal][index];
-
-    if(!food){
-
-        return;
-
-    }
-
-    state.editMeal.meal=meal;
-
-    state.editMeal.index=index;
-
-    $("editMealName").textContent=
-
-        `${food.emoji||"🍽️"} ${food.name}`;
-
-    $("editMealGrams").value=
-
-        food.grams;
-
-    lockScroll();
-
-    $("editMealModal").classList.add("show");
-
-    setTimeout(()=>{
-
-        $("editMealGrams").focus();
-
-        $("editMealGrams").select();
-
-    },100);
-
-}
-
-function closeEditMeal(){
-
-    $("editMealModal").classList.remove("show");
-
-    unlockScroll();
-
-}
-
-async function saveMealEdit(){
-
-    const meal=
-
-        state.editMeal.meal;
-
-    const index=
-
-        state.editMeal.index;
+function openMealEditor(meal,index){
 
     const item=
 
         state.meals[meal][index];
 
-    const grams=
-
-        number(
-
-            $("editMealGrams").value
-
-        );
-
-    if(grams<=0){
-
-        alert("Cantidad no válida.");
+    if(!item){
 
         return;
 
     }
 
+    state.editingMeal={
+
+        meal,
+
+        index
+
+    };
+
+    ui.editMealName.textContent=
+
+        `${item.emoji||"🍽️"} ${item.name}`;
+
+    ui.editMealGrams.value=
+
+        item.grams;
+
+    lockScroll();
+
+    ui.editMealModal.classList.add("show");
+
+    setTimeout(()=>{
+
+        ui.editMealGrams.focus();
+
+        ui.editMealGrams.select();
+
+    },120);
+
+}
+
+function closeMealEditor(){
+
+    ui.editMealModal.classList.remove("show");
+
+    unlockScroll();
+
+}
+
+/* ==========================================================
+   AÑADIR ALIMENTO
+========================================================== */
+
+async function addFoodToMeal(){
+
+    const grams=
+
+        number(ui.gramsInput.value);
+
+    if(grams<=0){
+
+        toast("Cantidad no válida.");
+
+        return;
+
+    }
+
+    const factor=
+
+        grams/(state.selectedFood.base||100);
+
+    state.meals
+
+        [state.currentMeal]
+
+        .push({
+
+            id:uid(),
+
+            foodId:state.selectedFood.id,
+
+            emoji:state.selectedFood.emoji,
+
+            name:state.selectedFood.name,
+
+            grams,
+
+            unit:state.selectedFood.unit,
+
+            kcal:Math.round(
+
+                state.selectedFood.kcal*factor
+
+            ),
+
+            protein:Number(
+
+                (state.selectedFood.protein*factor)
+
+                .toFixed(1)
+
+            ),
+
+            carbs:Number(
+
+                (state.selectedFood.carbs*factor)
+
+                .toFixed(1)
+
+            ),
+
+            fat:Number(
+
+                (state.selectedFood.fat*factor)
+
+                .toFixed(1)
+
+            )
+
+        });
+
+    await saveMeals();
+
+    ui.gramsModal.classList.remove("show");
+
+    unlockScroll();
+
+    refresh();
+
+}
+
+/* ==========================================================
+   GUARDAR EDICIÓN
+========================================================== */
+
+async function saveMealEditor(){
+
+    const grams=
+
+        number(ui.editMealGrams.value);
+
+    if(grams<=0){
+
+        toast("Cantidad no válida.");
+
+        return;
+
+    }
+
+    const meal=
+
+        state.editingMeal.meal;
+
+    const index=
+
+        state.editingMeal.index;
+
+    const item=
+
+        state.meals[meal][index];
+
     const food=
 
-        state.foods.find(
-
-            f=>f.id===item.foodId
-
-        );
+        foodById(item.foodId);
 
     if(!food){
 
-        alert("No se encontró el alimento.");
+        toast("No existe el alimento.");
 
         return;
 
@@ -1693,49 +1831,49 @@ async function saveMealEdit(){
 
     item.protein=Number(
 
-        (food.protein*factor).toFixed(1)
+        (food.protein*factor)
+
+        .toFixed(1)
 
     );
 
     item.carbs=Number(
 
-        (food.carbs*factor).toFixed(1)
+        (food.carbs*factor)
+
+        .toFixed(1)
 
     );
 
     item.fat=Number(
 
-        (food.fat*factor).toFixed(1)
+        (food.fat*factor)
+
+        .toFixed(1)
 
     );
 
     await saveMeals();
 
-    refresh();
+    closeMealEditor();
 
-    closeEditMeal();
+    refresh();
 
 }
 
-async function deleteMealItem(){
+/* ==========================================================
+   BORRAR DEL DÍA
+========================================================== */
+
+async function deleteMealFood(){
 
     const meal=
 
-        state.editMeal.meal;
+        state.editingMeal.meal;
 
     const index=
 
-        state.editMeal.index;
-
-    if(!confirm(
-
-        "¿Eliminar este alimento?"
-
-    )){
-
-        return;
-
-    }
+        state.editingMeal.index;
 
     state.meals[meal].splice(
 
@@ -1747,9 +1885,9 @@ async function deleteMealItem(){
 
     await saveMeals();
 
-    refresh();
+    closeMealEditor();
 
-    closeEditMeal();
+    refresh();
 
 }
 
@@ -1759,11 +1897,7 @@ async function deleteMealItem(){
 
 function renderMeals(){
 
-    document
-
-    .querySelectorAll(".meal")
-
-    .forEach(card=>{
+    $$(".meal").forEach(card=>{
 
         const meal=
 
@@ -1805,20 +1939,15 @@ function renderMeals(){
 
             kcal+=food.kcal;
 
-            if(index<3){
+            const row=
 
-                const row=
+                document.createElement("div");
 
-                    document.createElement("div");
+            row.className="preview-item";
 
-                row.className="preview-item";
-                
-                row.onclick=(e)=>{
-    e.stopPropagation();
-    editMealFood(meal,index);
-};
+            row.style.cursor="pointer";
 
-                row.innerHTML=`
+            row.innerHTML=`
 
 <span>
 
@@ -1828,51 +1957,37 @@ ${food.name}
 
 <span>
 
+${food.grams}${food.unit}
+
+·
+
 ${food.kcal} kcal
 
 </span>
 
 `;
 
-row.style.cursor="pointer";
+            row.onclick=e=>{
 
-row.onclick=()=>{
+                e.stopPropagation();
 
-    openEditMeal(
+                openMealEditor(
 
-        meal,
+                    meal,
 
-        index
+                    index
 
-    );
+                );
 
-};
+            };
 
-                preview.appendChild(row);
-
-            }
+            preview.appendChild(row);
 
         });
 
-        if(foods.length>3){
-
-            const more=
-
-                document.createElement("div");
-
-            more.className="more-foods";
-
-            more.textContent=
-
-                `+${foods.length-3} más`;
-
-            preview.appendChild(more);
-
-        }
-
         total.innerHTML=
 
-            `<strong>${Math.round(kcal)} kcal</strong>`;
+        `<strong>${Math.round(kcal)} kcal</strong>`;
 
     });
 
@@ -1882,616 +1997,64 @@ row.onclick=()=>{
    EVENTOS
 ========================================================== */
 
-document
-
-.querySelectorAll(".meal")
-
-.forEach(card=>{
-
-    card.onclick=()=>{
-
-        openLibrary(
-
-            card.dataset.meal
-
-        );
-
-    };
-
-});
-
 ui.acceptGrams.onclick=
 
     addFoodToMeal;
 
-ui.cancelGrams.onclick=
+ui.cancelGrams.onclick=()=>{
 
-    closeGrams;
+    ui.gramsModal.classList.remove("show");
 
-ui.gramsModal.onclick=e=>{
-
-    if(e.target===ui.gramsModal){
-
-        closeGrams();
-
-    }
+    ui.library.classList.add("show");
 
 };
 
-ui.gramsInput.addEventListener(
+ui.saveMeal.onclick=
 
-    "keydown",
+    saveMealEditor;
 
-    e=>{
+ui.deleteMeal.onclick=
 
-        if(e.key==="Enter"){
+    deleteMealFood;
 
-            addFoodToMeal();
+ui.closeMeal.onclick=
 
-        }
-
-    }
-
-);
-
-/* ==========================================================
+    closeMealEditor;
+    
+    /* ==========================================================
    MI NUTRICIÓN NEXT
-   app.js V5.1
-   PARTE 7/10
-   Historial + Favoritos + Recientes
-========================================================== */
-
-/* ==========================================================
-   CARGAR HISTORIAL
-========================================================== */
-
-async function loadHistory(){
-
-    return await DB.getHistory();
-
-}
-
-/* ==========================================================
-   CAMBIAR DE DÍA
-========================================================== */
-
-async function loadDay(date){
-
-    state.currentDate=date;
-
-    state.meals=await DB.getDay(date);
-
-    refresh();
-
-}
-
-/* ==========================================================
-   IR A HOY
-========================================================== */
-
-async function goToday(){
-
-    await loadDay(
-
-        DB.todayKey()
-
-    );
-
-}
-
-/* ==========================================================
-   FAVORITOS
-========================================================== */
-
-function getFavorites(){
-
-    return state.foods
-
-        .filter(food=>food.favorite===true)
-
-        .sort((a,b)=>
-
-            a.name.localeCompare(
-
-                b.name,
-
-                "es"
-
-            )
-
-        );
-
-}
-
-async function toggleFavorite(id){
-
-    const food=
-
-        state.foods.find(
-
-            f=>f.id===id
-
-        );
-
-    if(!food){
-
-        return;
-
-    }
-
-    food.favorite=
-
-        !food.favorite;
-
-    await saveFoods();
-
-    renderFoods(
-
-        ui.searchFood.value
-
-    );
-
-}
-
-/* ==========================================================
-   RECIENTES
-========================================================== */
-
-function addRecent(foodId){
-
-    let recent=
-
-        JSON.parse(
-
-            localStorage.getItem(
-
-                "recentFoods"
-
-            )||"[]"
-
-        );
-
-    recent=recent.filter(
-
-        id=>id!==foodId
-
-    );
-
-    recent.unshift(foodId);
-
-    recent=recent.slice(0,20);
-
-    localStorage.setItem(
-
-        "recentFoods",
-
-        JSON.stringify(recent)
-
-    );
-
-}
-
-function getRecentFoods(){
-
-    const recent=
-
-        JSON.parse(
-
-            localStorage.getItem(
-
-                "recentFoods"
-
-            )||"[]"
-
-        );
-
-    return recent
-
-        .map(id=>
-
-            state.foods.find(
-
-                f=>f.id===id
-
-            )
-
-        )
-
-        .filter(Boolean);
-
-}
-
-/* ==========================================================
-   AÑADIR A RECIENTES
-========================================================== */
-
-const originalAddFoodToMeal=
-
-    addFoodToMeal;
-
-addFoodToMeal=async function(){
-
-    await originalAddFoodToMeal();
-
-    if(state.selectedFood){
-
-        addRecent(
-
-            state.selectedFood.id
-
-        );
-
-    }
-
-};
-
-/* ==========================================================
-   BUSCADOR INTELIGENTE
-========================================================== */
-
-function searchFoods(text){
-
-    text=normalize(text);
-
-    return state.foods.filter(food=>{
-
-        return(
-
-            normalize(food.name)
-
-                .includes(text)
-
-            ||
-
-            normalize(
-
-                food.brand||""
-
-            )
-
-            .includes(text)
-
-            ||
-
-            normalize(
-
-                food.category||""
-
-            )
-
-            .includes(text)
-
-        );
-
-    });
-
-}
-
-/* ==========================================================
-   RECARGAR
-========================================================== */
-
-async function reloadCurrentDay(){
-
-    state.meals=
-
-        await DB.getDay(
-
-            state.currentDate
-
-        );
-
-    refresh();
-
-}
-
-/* ==========================================================
-   MI NUTRICIÓN NEXT
-   app.js V5.1
-   PARTE 8/10
-   Exportación + Copias de seguridad + Sincronización
-========================================================== */
-
-/* ==========================================================
-   EXPORTAR BASE DE DATOS
-========================================================== */
-
-async function exportDatabase(){
-
-    const backup=await DB.exportBackup();
-
-    const blob=new Blob(
-
-        [
-
-            JSON.stringify(
-
-                backup,
-
-                null,
-
-                2
-
-            )
-
-        ],
-
-        {
-
-            type:"application/json"
-
-        }
-
-    );
-
-    const url=
-
-        URL.createObjectURL(blob);
-
-    const link=
-
-        document.createElement("a");
-
-    link.href=url;
-
-    link.download=
-
-        `MiNutricion-${state.currentDate}.json`;
-
-    link.click();
-
-    URL.revokeObjectURL(url);
-
-}
-
-/* ==========================================================
-   IMPORTAR BASE DE DATOS
-========================================================== */
-
-async function importDatabase(file){
-
-    try{
-
-        const text=
-
-            await file.text();
-
-        const json=
-
-            JSON.parse(text);
-
-        await DB.importBackup(json);
-
-        await loadApp();
-
-        refresh();
-
-        alert(
-
-            "Copia restaurada correctamente."
-
-        );
-
-    }
-
-    catch(error){
-
-        console.error(error);
-
-        alert(
-
-            "No se pudo importar la copia."
-
-        );
-
-    }
-
-}
-
-/* ==========================================================
-   RECALCULAR TODAS LAS COMIDAS
-========================================================== */
-
-async function recalculateMeals(){
-
-    Object.keys(state.meals).forEach(meal=>{
-
-        state.meals[meal].forEach(item=>{
-
-            const food=
-
-                state.foods.find(
-
-                    f=>f.id===item.foodId
-
-                );
-
-            if(!food){
-
-                return;
-
-            }
-
-            const factor=
-
-                item.grams/
-
-                (food.base||100);
-
-            item.name=food.name;
-
-            item.brand=food.brand;
-
-            item.category=food.category;
-
-            item.emoji=food.emoji;
-
-            item.unit=food.unit;
-
-            item.base=food.base;
-
-            item.kcal=Math.round(
-
-                food.kcal*factor
-
-            );
-
-            item.protein=Number(
-
-                (food.protein*factor)
-
-                .toFixed(1)
-
-            );
-
-            item.carbs=Number(
-
-                (food.carbs*factor)
-
-                .toFixed(1)
-
-            );
-
-            item.fat=Number(
-
-                (food.fat*factor)
-
-                .toFixed(1)
-
-            );
-
-        });
-
-    });
-
-    await saveMeals();
-
-    refresh();
-
-}
-
-/* ==========================================================
-   SINCRONIZAR
-========================================================== */
-
-async function sync(){
-
-    const data=
-
-        await DB.load();
-
-    state.foods=data.foods;
-
-    state.settings=data.settings;
-
-    state.meals=
-
-        await DB.getDay(
-
-            state.currentDate
-
-        );
-
-    refresh();
-
-}
-
-/* ==========================================================
-   CAMBIOS EN OTRAS PESTAÑAS
-========================================================== */
-
-window.addEventListener(
-
-    "storage",
-
-    sync
-
-);
-
-/* ==========================================================
-   API PÚBLICA
-========================================================== */
-
-window.miNutricion={
-
-    state,
-
-    refresh,
-
-    sync,
-
-    loadDay,
-
-    goToday,
-
-    exportDatabase,
-
-    importDatabase,
-
-    recalculateMeals,
-
-    buildSummary,
-
-    copySummary,
-
-    toggleFavorite,
-
-    getFavorites,
-
-    getRecentFoods
-
-};
-
-/* ==========================================================
-   MI NUTRICIÓN NEXT
-   app.js V5.1
-   PARTE 9/10
+   app.js V5.2
+   PARTE 7/8
    Inicialización + Eventos globales
 ========================================================== */
 
 /* ==========================================================
-   ABRIR / CERRAR MODALES
+   EVENTOS TARJETAS
 ========================================================== */
 
-function closeAllModals(){
+function bindMealCards(){
 
-    ui.modal.classList.remove("show");
+    $$(".meal").forEach(card=>{
 
-    ui.newFoodModal.classList.remove("show");
+        card.onclick=()=>{
 
-    ui.editFoodModal.classList.remove("show");
+            openLibrary(
 
-    ui.gramsModal.classList.remove("show");
+                card.dataset.meal
 
-    unlockScroll();
+            );
 
-}
+        };
 
-function showLibrary(){
-
-    closeAllModals();
-
-    lockScroll();
-
-    ui.modal.classList.add("show");
-
-}
-
-function showImport(){
-
-    ui.modal.classList.remove("show");
-
-    ui.newFoodModal.classList.add("show");
-
-    ui.jsonInput.focus();
+    });
 
 }
 
 /* ==========================================================
-   EVENTOS GLOBALES
+   CERRAR MODALES
 ========================================================== */
 
-document.addEventListener(
+window.addEventListener(
 
     "keydown",
 
@@ -2507,43 +2070,83 @@ document.addEventListener(
 
 );
 
-document.querySelector(".ring").onclick=
+ui.library.onclick=e=>{
+
+    if(e.target===ui.library){
+
+        closeLibrary();
+
+    }
+
+};
+
+ui.importModal.onclick=e=>{
+
+    if(e.target===ui.importModal){
+
+        ui.importModal.classList.remove("show");
+
+        ui.library.classList.add("show");
+
+    }
+
+};
+
+ui.gramsModal.onclick=e=>{
+
+    if(e.target===ui.gramsModal){
+
+        ui.gramsModal.classList.remove("show");
+
+        ui.library.classList.add("show");
+
+    }
+
+};
+
+ui.editMealModal.onclick=e=>{
+
+    if(e.target===ui.editMealModal){
+
+        closeMealEditor();
+
+    }
+
+};
+
+ui.editFoodModal.onclick=e=>{
+
+    if(e.target===ui.editFoodModal){
+
+        closeFoodEditor();
+
+    }
+
+};
+
+/* ==========================================================
+   CÍRCULO
+========================================================== */
+
+document
+
+.querySelector(".ring")
+
+.onclick=
 
     copySummary;
 
-document.querySelectorAll(".meal")
-
-.forEach(card=>{
-
-    card.addEventListener(
-
-        "click",
-
-        ()=>{
-
-            openLibrary(
-
-                card.dataset.meal
-
-            );
-
-        }
-
-    );
-
-});
-
 /* ==========================================================
-   ACTUALIZAR FECHA
+   REFRESCO
 ========================================================== */
 
-setInterval(()=>{
+setInterval(
 
-    updateGreeting();
+    updateGreeting,
 
-    updateDate();
+    60000
 
-},60000);
+);
 
 /* ==========================================================
    INICIALIZACIÓN
@@ -2553,13 +2156,15 @@ async function init(){
 
     await loadApp();
 
+    bindMealCards();
+
     refresh();
 
     console.log(
 
-        "%cMi Nutrición NEXT V5.1",
+        "%cMi Nutrición NEXT V5.2",
 
-        "color:#34c759;font-size:18px;font-weight:bold;"
+        "color:#34c759;font-size:18px;font-weight:bold"
 
     );
 
@@ -2578,54 +2183,32 @@ document.addEventListener(
 );
 
 /* ==========================================================
-   MI NUTRICIÓN NEXT
-   app.js V5.1
-   PARTE 10/10
-   Utilidades finales + Fin del archivo
+   SINCRONIZACIÓN
 ========================================================== */
 
-/* ==========================================================
-   UTILIDADES
-========================================================== */
+window.addEventListener(
 
-function resetImport(){
+    "storage",
 
-    if(ui.jsonInput){
+    async()=>{
 
-        ui.jsonInput.value="";
+        await loadApp();
+
+        refresh();
 
     }
 
-    state.previewFood=null;
-
-}
-
-function resetEditor(){
-
-    state.editingFood=null;
-
-    if(ui.foodName) ui.foodName.value="";
-    if(ui.foodBrand) ui.foodBrand.value="";
-    if(ui.foodCategory) ui.foodCategory.value="";
-    if(ui.foodBase) ui.foodBase.value=100;
-    if(ui.foodUnit) ui.foodUnit.value="g";
-    if(ui.foodKcal) ui.foodKcal.value="";
-    if(ui.foodProtein) ui.foodProtein.value="";
-    if(ui.foodCarbs) ui.foodCarbs.value="";
-    if(ui.foodFat) ui.foodFat.value="";
-
-}
-
-function resetSelection(){
-
-    state.selectedFood=null;
-
-    state.currentMeal=null;
-
-}
+);
 
 /* ==========================================================
-   RECARGAR TODO
+   MI NUTRICIÓN NEXT
+   app.js V5.2
+   PARTE 8/8
+   Final del archivo
+========================================================== */
+
+/* ==========================================================
+   RECARGAR
 ========================================================== */
 
 async function reload(){
@@ -2637,12 +2220,16 @@ async function reload(){
 }
 
 /* ==========================================================
-   RESETEAR APLICACIÓN
+   REINICIAR
 ========================================================== */
 
 async function resetApp(){
 
-    if(!confirm("¿Reiniciar la aplicación?")){
+    if(!confirm(
+
+        "¿Reiniciar toda la aplicación?"
+
+    )){
 
         return;
 
@@ -2652,63 +2239,113 @@ async function resetApp(){
 
     await reload();
 
+    toast(
+
+        "Aplicación reiniciada."
+
+    );
+
 }
 
 /* ==========================================================
-   EVENTOS VISIBILIDAD
+   EXPORTAR INFORME
 ========================================================== */
 
-document.addEventListener(
+function downloadSummary(){
 
-    "visibilitychange",
+    const blob=new Blob(
 
-    ()=>{
+        [
 
-        if(document.visibilityState==="visible"){
+            buildSummary()
 
-            sync();
+        ],
+
+        {
+
+            type:"text/plain"
 
         }
 
-    }
+    );
 
-);
+    const url=
+
+        URL.createObjectURL(blob);
+
+    const a=
+
+        document.createElement("a");
+
+    a.href=url;
+
+    a.download=
+
+        `Informe-${state.currentDate}.txt`;
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+}
 
 /* ==========================================================
-   API EXTRA
+   API PÚBLICA
 ========================================================== */
 
-window.miNutricion.reload=reload;
+window.miNutricion={
 
-window.miNutricion.resetApp=resetApp;
+    state,
 
-window.miNutricion.resetImport=resetImport;
+    reload,
 
-window.miNutricion.resetEditor=resetEditor;
+    resetApp,
 
-window.miNutricion.resetSelection=resetSelection;
+    buildSummary,
+
+    copySummary,
+
+    downloadSummary,
+
+    loadApp,
+
+    refresh,
+
+    openLibrary,
+
+    closeLibrary,
+
+    openGrams,
+
+    openMealEditor,
+
+    editFood,
+
+    newFood
+
+};
 
 /* ==========================================================
-   INFORMACIÓN
+   DEBUG
 ========================================================== */
 
 console.table({
 
     Aplicacion:"Mi Nutrición NEXT",
 
-    Version:"5.1",
+    Version:"5.2",
 
-    BaseDatos:"IndexedDB",
+    Fecha:state.currentDate,
 
-    Fecha:state.currentDate
+    Alimentos:state.foods.length
 
 });
 
 console.log(
 
-    "%cAplicación iniciada correctamente",
+    "%cMi Nutrición NEXT V5.2 iniciada",
 
-    "color:#34c759;font-weight:bold;font-size:16px;"
+    "color:#34c759;font-weight:bold;font-size:16px"
 
 );
 
