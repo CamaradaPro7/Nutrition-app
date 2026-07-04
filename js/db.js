@@ -6,23 +6,27 @@
 
 "use strict";
 
+/* ==========================================================
+   CONFIGURACIÓN
+========================================================== */
+
 const DB_NAME = "MiNutricionNext";
 
 const DB_VERSION = 1;
 
 const STORE = "app";
 
-let db;
+let db = null;
 
 /* ==========================================================
-   ABRIR BD
+   ABRIR BASE DE DATOS
 ========================================================== */
 
-async function openDB(){
+function openDB(){
 
     if(db){
 
-        return db;
+        return Promise.resolve(db);
 
     }
 
@@ -84,11 +88,7 @@ async function dbGet(key){
 
         );
 
-        const req = tx
-
-            .objectStore(STORE)
-
-            .get(key);
+        const req = tx.objectStore(STORE).get(key);
 
         req.onsuccess = ()=>{
 
@@ -124,9 +124,43 @@ async function dbSet(key,value){
 
         );
 
-        tx.objectStore(STORE)
+        tx.objectStore(STORE).put(value,key);
 
-            .put(value,key);
+        tx.oncomplete = ()=>{
+
+            resolve(true);
+
+        };
+
+        tx.onerror = ()=>{
+
+            resolve(false);
+
+        };
+
+    });
+
+}
+
+/* ==========================================================
+   DELETE
+========================================================== */
+
+async function dbDelete(key){
+
+    await openDB();
+
+    return new Promise(resolve=>{
+
+        const tx = db.transaction(
+
+            STORE,
+
+            "readwrite"
+
+        );
+
+        tx.objectStore(STORE).delete(key);
 
         tx.oncomplete = ()=>{
 
@@ -151,73 +185,25 @@ async function dbSet(key,value){
 ========================================================== */
 
 /* ==========================================================
-   DELETE
-========================================================== */
-
-async function dbDelete(key){
-
-    await openDB();
-
-    return new Promise(resolve=>{
-
-        const tx = db.transaction(
-            STORE,
-            "readwrite"
-        );
-
-        tx.objectStore(STORE)
-            .delete(key);
-
-        tx.oncomplete = ()=>resolve(true);
-
-        tx.onerror = ()=>resolve(false);
-
-    });
-
-}
-
-/* ==========================================================
-   CLEAR
-========================================================== */
-
-async function dbClear(){
-
-    await openDB();
-
-    return new Promise(resolve=>{
-
-        const tx = db.transaction(
-            STORE,
-            "readwrite"
-        );
-
-        tx.objectStore(STORE)
-            .clear();
-
-        tx.oncomplete = ()=>resolve(true);
-
-        tx.onerror = ()=>resolve(false);
-
-    });
-
-}
-
-/* ==========================================================
-   FECHA YYYY-MM-DD
+   FECHA ACTUAL
 ========================================================== */
 
 function todayKey(){
 
-    const now = new Date();
+    const date = new Date();
 
-    const year = now.getFullYear();
+    const year = date.getFullYear();
 
     const month = String(
-        now.getMonth()+1
+
+        date.getMonth()+1
+
     ).padStart(2,"0");
 
     const day = String(
-        now.getDate()
+
+        date.getDate()
+
     ).padStart(2,"0");
 
     return `${year}-${month}-${day}`;
@@ -259,30 +245,32 @@ function defaultSettings(){
 }
 
 /* ==========================================================
-   INICIALIZAR BASE DE DATOS
+   INICIALIZAR
 ========================================================== */
 
 async function initializeDatabase(){
 
-    await openDB();
+    if(await dbGet("foods")===undefined){
 
-    let foods = await dbGet("foods");
+        await dbSet(
 
-    if(!foods){
+            "foods",
 
-        foods = [];
+            []
 
-        await dbSet("foods",foods);
+        );
 
     }
 
-    let settings = await dbGet("settings");
+    if(await dbGet("settings")===undefined){
 
-    if(!settings){
+        await dbSet(
 
-        settings = defaultSettings();
+            "settings",
 
-        await dbSet("settings",settings);
+            defaultSettings()
+
+        );
 
     }
 
@@ -302,7 +290,13 @@ async function initializeDatabase(){
 
     }
 
-    await dbSet("diary",diary);
+    await dbSet(
+
+        "diary",
+
+        diary
+
+    );
 
 }
 
@@ -322,7 +316,9 @@ async function loadDatabase(){
 
         settings:
 
-            await dbGet("settings") || defaultSettings(),
+            await dbGet("settings") ||
+
+            defaultSettings(),
 
         diary:
 
@@ -333,40 +329,50 @@ async function loadDatabase(){
 }
 
 /* ==========================================================
-   MI NUTRICIÓN NEXT
-   db.js
-   PARTE 3/4
-========================================================== */
-
-/* ==========================================================
-   GUARDAR ALIMENTOS
+   GUARDAR
 ========================================================== */
 
 async function saveFoods(foods){
 
-    return dbSet("foods", foods);
+    return dbSet(
+
+        "foods",
+
+        foods
+
+    );
 
 }
-
-/* ==========================================================
-   GUARDAR CONFIGURACIÓN
-========================================================== */
 
 async function saveSettings(settings){
 
-    return dbSet("settings", settings);
+    return dbSet(
+
+        "settings",
+
+        settings
+
+    );
+
+}
+
+async function saveDiary(diary){
+
+    return dbSet(
+
+        "diary",
+
+        diary
+
+    );
 
 }
 
 /* ==========================================================
-   GUARDAR HISTORIAL COMPLETO
+   MI NUTRICIÓN NEXT
+   db.js
+   PARTE 3/4
 ========================================================== */
-
-async function saveDiary(diary){
-
-    return dbSet("diary", diary);
-
-}
 
 /* ==========================================================
    OBTENER DÍA
@@ -380,11 +386,21 @@ async function getDay(date = todayKey()){
 
         diary[date] = emptyDay();
 
-        await dbSet("diary", diary);
+        await dbSet(
+
+            "diary",
+
+            diary
+
+        );
 
     }
 
-    return structuredClone(diary[date]);
+    return structuredClone(
+
+        diary[date]
+
+    );
 
 }
 
@@ -392,13 +408,23 @@ async function getDay(date = todayKey()){
    GUARDAR DÍA
 ========================================================== */
 
-async function saveDay(date, meals){
+async function saveDay(date,meals){
 
     const diary = await dbGet("diary") || {};
 
-    diary[date] = structuredClone(meals);
+    diary[date] = structuredClone(
 
-    await dbSet("diary", diary);
+        meals
+
+    );
+
+    await dbSet(
+
+        "diary",
+
+        diary
+
+    );
 
 }
 
@@ -412,12 +438,18 @@ async function deleteDay(date){
 
     delete diary[date];
 
-    await dbSet("diary", diary);
+    await dbSet(
+
+        "diary",
+
+        diary
+
+    );
 
 }
 
 /* ==========================================================
-   LISTA DE DÍAS
+   HISTORIAL
 ========================================================== */
 
 async function getHistory(){
@@ -426,12 +458,16 @@ async function getHistory(){
 
     return Object.keys(diary)
 
-        .sort((a,b)=>b.localeCompare(a));
+        .sort((a,b)=>
+
+            b.localeCompare(a)
+
+        );
 
 }
 
 /* ==========================================================
-   COPIAR DÍA
+   DUPLICAR DÍA
 ========================================================== */
 
 async function duplicateDay(fromDate,toDate){
@@ -450,7 +486,13 @@ async function duplicateDay(fromDate,toDate){
 
     );
 
-    await dbSet("diary", diary);
+    await dbSet(
+
+        "diary",
+
+        diary
+
+    );
 
     return true;
 
@@ -462,9 +504,13 @@ async function duplicateDay(fromDate,toDate){
 
 async function databaseStats(){
 
-    const foods = await dbGet("foods") || [];
+    const foods =
 
-    const diary = await dbGet("diary") || {};
+        await dbGet("foods") || [];
+
+    const diary =
+
+        await dbGet("diary") || {};
 
     return{
 
@@ -472,7 +518,9 @@ async function databaseStats(){
 
         days: Object.keys(diary).length,
 
-        latest: Object.keys(diary)
+        latest:
+
+            Object.keys(diary)
 
             .sort()
 
@@ -494,7 +542,7 @@ async function databaseStats(){
 
 async function exportBackup(){
 
-    return {
+    return{
 
         version:1,
 
@@ -559,12 +607,16 @@ async function importBackup(data){
 }
 
 /* ==========================================================
-   RESETEAR BASE DE DATOS
+   REINICIAR BASE DE DATOS
 ========================================================== */
 
 async function resetDatabase(){
 
-    await dbClear();
+    await dbDelete("foods");
+
+    await dbDelete("settings");
+
+    await dbDelete("diary");
 
     await initializeDatabase();
 
@@ -574,7 +626,7 @@ async function resetDatabase(){
    API PÚBLICA
 ========================================================== */
 
-window.DB = {
+window.DB={
 
     open:openDB,
 
@@ -583,8 +635,6 @@ window.DB = {
     set:dbSet,
 
     delete:dbDelete,
-
-    clear:dbClear,
 
     load:loadDatabase,
 
@@ -634,9 +684,9 @@ document.addEventListener(
 
             console.log(
 
-                "%c💾 Base de datos lista",
+                "%c💾 Base de datos preparada",
 
-                "color:#38d46a;font-weight:bold;"
+                "color:#34c759;font-weight:bold;"
 
             );
 
@@ -645,8 +695,6 @@ document.addEventListener(
         catch(error){
 
             console.error(
-
-                "Error inicializando la base de datos",
 
                 error
 
@@ -660,5 +708,4 @@ document.addEventListener(
 
 /* ==========================================================
    FIN DEL ARCHIVO
-   db.js
 ========================================================== */
