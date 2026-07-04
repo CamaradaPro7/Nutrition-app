@@ -396,107 +396,58 @@ Añadir
      AÑADIR ALIMENTO
 ====================================================== -->
 
-<div
-id="newFoodModal"
-class="modal">
+<div id="newFoodModal" class="modal">
 
-<div class="sheet">
+    <div class="sheet">
 
-<h2>
+        <h2>📋 Añadir alimento</h2>
 
-Añadir alimento
+        <p class="sheet-subtitle">
 
-</h2>
+            Pega aquí el texto generado por ChatGPT.
 
-<div class="import-options">
+        </p>
 
-<button
-id="pasteFoodBtn"
-class="option-card"
-type="button">
+        <textarea
+            id="jsonInput"
+            class="json-box"
+            placeholder="Ejemplo:
 
-📋
+Pechuga de pollo
 
-<strong>
+Valores nutricionales por 100 g
 
-Pegar texto
+110 kcal
 
-</strong>
+Proteínas 23 g
 
-<small>
+Hidratos 0 g
 
-Recomendado
+Grasas 1,2 g"></textarea>
 
-</small>
+        <div class="actions">
 
-</button>
+            <button
+                id="manualFoodBtn"
+                class="secondary-btn"
+                type="button">
 
-<button
-id="manualFoodBtn"
-class="option-card"
-type="button">
+                Crear manualmente
 
-📝
+            </button>
 
-<strong>
+            <button
+                id="saveFood"
+                class="primary-btn"
+                type="button">
 
-Manual
+                Guardar
 
-</strong>
+            </button>
 
-</button>
+        </div>
 
-<button
-id="jsonFoodBtn"
-class="option-card"
-type="button">
-
-📦
-
-<strong>
-
-JSON
-
-</strong>
-
-</button>
-
-</div>
-
-<textarea
-id="jsonInput"
-class="json-box"
-placeholder="Pega aquí el texto generado por ChatGPT..."></textarea>
-
-<div
-id="jsonStatus"
-class="json-status">
-
-</div>
-
-<div class="actions">
-
-<button
-id="cancelFood"
-class="secondary-btn"
-type="button">
-
-Cancelar
-
-</button>
-
-<button
-id="saveFood"
-class="primary-btn"
-type="button">
-
-Guardar
-
-</button>
-
-</div>
-
-</div>
+    </div>
 
 </div>
 
