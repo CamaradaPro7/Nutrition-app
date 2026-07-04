@@ -2028,6 +2028,8 @@ function unlockScroll(){
 ===================================================== */
 
 function init(){
+    
+    alert(Object.keys(localStorage).join("\n"));
 
     refreshDashboard();
 
