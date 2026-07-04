@@ -1083,3 +1083,27 @@ padding:20px;
 }
 
 }
+
+.sheet-subtitle{
+
+    color:var(--text2);
+
+    font-size:16px;
+
+    margin-top:-6px;
+
+    margin-bottom:8px;
+
+}
+
+.json-box{
+
+    flex:1;
+
+    min-height:320px;
+
+    font-size:17px;
+
+    line-height:1.6;
+
+}
