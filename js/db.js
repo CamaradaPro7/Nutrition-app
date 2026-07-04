@@ -1,98 +1,62 @@
 /* ==========================================================
-   MI NUTRICIÓN V5
+   MI NUTRICIÓN NEXT
    db.js
-   Parte 1/2
-   IndexedDB + Migración + API
+   PARTE 1/4
 ========================================================== */
 
 "use strict";
 
+const DB_NAME = "MiNutricionNext";
+
+const DB_VERSION = 1;
+
+const STORE = "app";
+
+let db;
+
 /* ==========================================================
-   CONFIGURACIÓN
+   ABRIR BD
 ========================================================== */
 
-const DB_NAME = "MiNutricionDB";
-const DB_VERSION = 2;
-const STORE_NAME = "app";
+async function openDB(){
 
-/* Claves antiguas (compatibilidad V3) */
+    if(db){
 
-const LEGACY = {
-
-    FOODS: "foodLibrary",
-
-    MEALS: "miNutricion",
-
-    SETTINGS: "miNutricionSettings"
-
-};
-
-/* Valores por defecto */
-
-const DEFAULT_DATA = {
-
-    foods: [],
-
-    meals: {
-
-        desayuno: [],
-        comida: [],
-        merienda: [],
-        cena: []
-
-    },
-
-    settings: {
-
-        kcalGoal: 2200
+        return db;
 
     }
 
-};
+    return new Promise((resolve,reject)=>{
 
-/* ==========================================================
-   ESTADO
-========================================================== */
+        const request = indexedDB.open(
 
-let dbInstance = null;
+            DB_NAME,
 
-/* ==========================================================
-   ABRIR BASE DE DATOS
-========================================================== */
+            DB_VERSION
 
-async function openDB() {
+        );
 
-    if (dbInstance) {
+        request.onupgradeneeded = ()=>{
 
-        return dbInstance;
+            db = request.result;
 
-    }
+            if(!db.objectStoreNames.contains(STORE)){
 
-    return new Promise((resolve, reject) => {
-
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-        request.onupgradeneeded = event => {
-
-            const db = event.target.result;
-
-            if (!db.objectStoreNames.contains(STORE_NAME)) {
-
-                db.createObjectStore(STORE_NAME);
+                db.createObjectStore(STORE);
 
             }
 
         };
 
-        request.onsuccess = event => {
+        request.onsuccess = ()=>{
 
-            dbInstance = event.target.result;
+            db = request.result;
 
-            resolve(dbInstance);
+            resolve(db);
 
         };
 
-        request.onerror = () => {
+        request.onerror = ()=>{
 
             reject(request.error);
 
@@ -103,38 +67,36 @@ async function openDB() {
 }
 
 /* ==========================================================
-   TRANSACCIÓN
-========================================================== */
-
-async function getStore(mode = "readonly") {
-
-    const db = await openDB();
-
-    return db
-        .transaction(STORE_NAME, mode)
-        .objectStore(STORE_NAME);
-
-}
-
-/* ==========================================================
    GET
 ========================================================== */
 
-async function dbGet(key) {
+async function dbGet(key){
 
-    const store = await getStore();
+    await openDB();
 
-    return new Promise(resolve => {
+    return new Promise(resolve=>{
 
-        const request = store.get(key);
+        const tx = db.transaction(
 
-        request.onsuccess = () => {
+            STORE,
 
-            resolve(request.result);
+            "readonly"
+
+        );
+
+        const req = tx
+
+            .objectStore(STORE)
+
+            .get(key);
+
+        req.onsuccess = ()=>{
+
+            resolve(req.result);
 
         };
 
-        request.onerror = () => {
+        req.onerror = ()=>{
 
             resolve(null);
 
@@ -148,37 +110,67 @@ async function dbGet(key) {
    SET
 ========================================================== */
 
-async function dbSet(key, value) {
+async function dbSet(key,value){
 
-    const store = await getStore("readwrite");
+    await openDB();
 
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve=>{
 
-        const request = store.put(value, key);
+        const tx = db.transaction(
 
-        request.onsuccess = () => resolve(value);
+            STORE,
 
-        request.onerror = () => reject(request.error);
+            "readwrite"
+
+        );
+
+        tx.objectStore(STORE)
+
+            .put(value,key);
+
+        tx.oncomplete = ()=>{
+
+            resolve(true);
+
+        };
+
+        tx.onerror = ()=>{
+
+            resolve(false);
+
+        };
 
     });
 
 }
 
 /* ==========================================================
+   MI NUTRICIÓN NEXT
+   db.js
+   PARTE 2/4
+========================================================== */
+
+/* ==========================================================
    DELETE
 ========================================================== */
 
-async function dbDelete(key) {
+async function dbDelete(key){
 
-    const store = await getStore("readwrite");
+    await openDB();
 
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve=>{
 
-        const request = store.delete(key);
+        const tx = db.transaction(
+            STORE,
+            "readwrite"
+        );
 
-        request.onsuccess = () => resolve(true);
+        tx.objectStore(STORE)
+            .delete(key);
 
-        request.onerror = () => reject(request.error);
+        tx.oncomplete = ()=>resolve(true);
+
+        tx.onerror = ()=>resolve(false);
 
     });
 
@@ -188,168 +180,381 @@ async function dbDelete(key) {
    CLEAR
 ========================================================== */
 
-async function dbClear() {
+async function dbClear(){
 
-    const store = await getStore("readwrite");
+    await openDB();
 
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve=>{
 
-        const request = store.clear();
+        const tx = db.transaction(
+            STORE,
+            "readwrite"
+        );
 
-        request.onsuccess = () => resolve(true);
+        tx.objectStore(STORE)
+            .clear();
 
-        request.onerror = () => reject(request.error);
+        tx.oncomplete = ()=>resolve(true);
+
+        tx.onerror = ()=>resolve(false);
 
     });
 
 }
 
 /* ==========================================================
-   EXISTE CLAVE
+   FECHA YYYY-MM-DD
 ========================================================== */
 
-async function hasKey(key) {
+function todayKey(){
 
-    return (await dbGet(key)) !== undefined;
+    const now = new Date();
+
+    const year = now.getFullYear();
+
+    const month = String(
+        now.getMonth()+1
+    ).padStart(2,"0");
+
+    const day = String(
+        now.getDate()
+    ).padStart(2,"0");
+
+    return `${year}-${month}-${day}`;
 
 }
 
 /* ==========================================================
-   MIGRACIÓN DESDE V3
+   DÍA VACÍO
 ========================================================== */
 
-async function migrateLegacyData() {
+function emptyDay(){
 
-    const migrated = await dbGet("migration_v5");
+    return{
 
-    if (migrated) {
+        desayuno:[],
 
-        return;
+        comida:[],
+
+        merienda:[],
+
+        cena:[]
+
+    };
+
+}
+
+/* ==========================================================
+   CONFIGURACIÓN
+========================================================== */
+
+function defaultSettings(){
+
+    return{
+
+        kcalGoal:2200
+
+    };
+
+}
+
+/* ==========================================================
+   INICIALIZAR BASE DE DATOS
+========================================================== */
+
+async function initializeDatabase(){
+
+    await openDB();
+
+    let foods = await dbGet("foods");
+
+    if(!foods){
+
+        foods = [];
+
+        await dbSet("foods",foods);
 
     }
 
-    const foods =
-        JSON.parse(localStorage.getItem(LEGACY.FOODS))
-        || DEFAULT_DATA.foods;
+    let settings = await dbGet("settings");
 
-    const meals =
-        JSON.parse(localStorage.getItem(LEGACY.MEALS))
-        || DEFAULT_DATA.meals;
+    if(!settings){
 
-    const settings =
-        JSON.parse(localStorage.getItem(LEGACY.SETTINGS))
-        || DEFAULT_DATA.settings;
+        settings = defaultSettings();
 
-    await dbSet("foods", foods);
+        await dbSet("settings",settings);
 
-    await dbSet("meals", meals);
+    }
 
-    await dbSet("settings", settings);
+    let diary = await dbGet("diary");
 
-    await dbSet("migration_v5", true);
+    if(!diary){
+
+        diary = {};
+
+    }
+
+    const today = todayKey();
+
+    if(!diary[today]){
+
+        diary[today] = emptyDay();
+
+    }
+
+    await dbSet("diary",diary);
 
 }
-
-/* ==========================================================
-   MI NUTRICIÓN V5
-   db.js
-   Parte 2/2
-   Inicialización + API pública + Backup
-========================================================== */
 
 /* ==========================================================
    CARGAR DATOS
 ========================================================== */
 
-async function loadAppData() {
+async function loadDatabase(){
 
-    await openDB();
+    await initializeDatabase();
 
-    await migrateLegacyData();
+    return{
 
-    const foods =
-        (await dbGet("foods")) ??
-        structuredClone(DEFAULT_DATA.foods);
+        foods:
 
-    const meals =
-        (await dbGet("meals")) ??
-        structuredClone(DEFAULT_DATA.meals);
+            await dbGet("foods") || [],
 
-    const settings =
-        (await dbGet("settings")) ??
-        structuredClone(DEFAULT_DATA.settings);
+        settings:
 
-    return {
-        foods,
-        meals,
-        settings
-    };
+            await dbGet("settings") || defaultSettings(),
 
-}
+        diary:
 
-/* ==========================================================
-   GUARDAR DATOS
-========================================================== */
-
-async function saveAppData(data = {}) {
-
-    if (data.foods !== undefined) {
-        await dbSet("foods", data.foods);
-    }
-
-    if (data.meals !== undefined) {
-        await dbSet("meals", data.meals);
-    }
-
-    if (data.settings !== undefined) {
-        await dbSet("settings", data.settings);
-    }
-
-}
-
-/* ==========================================================
-   BACKUP
-========================================================== */
-
-async function createBackup() {
-
-    const data = await loadAppData();
-
-    return {
-
-        version: 5,
-
-        createdAt: new Date().toISOString(),
-
-        foods: data.foods,
-
-        meals: data.meals,
-
-        settings: data.settings
+            await dbGet("diary") || {}
 
     };
 
 }
 
 /* ==========================================================
-   RESTAURAR BACKUP
+   MI NUTRICIÓN NEXT
+   db.js
+   PARTE 3/4
 ========================================================== */
 
-async function restoreBackup(backup) {
+/* ==========================================================
+   GUARDAR ALIMENTOS
+========================================================== */
 
-    if (!backup || typeof backup !== "object") {
-        throw new Error("Backup no válido.");
+async function saveFoods(foods){
+
+    return dbSet("foods", foods);
+
+}
+
+/* ==========================================================
+   GUARDAR CONFIGURACIÓN
+========================================================== */
+
+async function saveSettings(settings){
+
+    return dbSet("settings", settings);
+
+}
+
+/* ==========================================================
+   GUARDAR HISTORIAL COMPLETO
+========================================================== */
+
+async function saveDiary(diary){
+
+    return dbSet("diary", diary);
+
+}
+
+/* ==========================================================
+   OBTENER DÍA
+========================================================== */
+
+async function getDay(date = todayKey()){
+
+    const diary = await dbGet("diary") || {};
+
+    if(!diary[date]){
+
+        diary[date] = emptyDay();
+
+        await dbSet("diary", diary);
+
     }
 
-    await saveAppData({
+    return structuredClone(diary[date]);
 
-        foods: backup.foods || [],
+}
 
-        meals: backup.meals || structuredClone(DEFAULT_DATA.meals),
+/* ==========================================================
+   GUARDAR DÍA
+========================================================== */
 
-        settings: backup.settings || structuredClone(DEFAULT_DATA.settings)
+async function saveDay(date, meals){
 
-    });
+    const diary = await dbGet("diary") || {};
+
+    diary[date] = structuredClone(meals);
+
+    await dbSet("diary", diary);
+
+}
+
+/* ==========================================================
+   ELIMINAR DÍA
+========================================================== */
+
+async function deleteDay(date){
+
+    const diary = await dbGet("diary") || {};
+
+    delete diary[date];
+
+    await dbSet("diary", diary);
+
+}
+
+/* ==========================================================
+   LISTA DE DÍAS
+========================================================== */
+
+async function getHistory(){
+
+    const diary = await dbGet("diary") || {};
+
+    return Object.keys(diary)
+
+        .sort((a,b)=>b.localeCompare(a));
+
+}
+
+/* ==========================================================
+   COPIAR DÍA
+========================================================== */
+
+async function duplicateDay(fromDate,toDate){
+
+    const diary = await dbGet("diary") || {};
+
+    if(!diary[fromDate]){
+
+        return false;
+
+    }
+
+    diary[toDate] = structuredClone(
+
+        diary[fromDate]
+
+    );
+
+    await dbSet("diary", diary);
+
+    return true;
+
+}
+
+/* ==========================================================
+   ESTADÍSTICAS
+========================================================== */
+
+async function databaseStats(){
+
+    const foods = await dbGet("foods") || [];
+
+    const diary = await dbGet("diary") || {};
+
+    return{
+
+        foods: foods.length,
+
+        days: Object.keys(diary).length,
+
+        latest: Object.keys(diary)
+
+            .sort()
+
+            .pop() || null
+
+    };
+
+}
+
+/* ==========================================================
+   MI NUTRICIÓN NEXT
+   db.js
+   PARTE 4/4
+========================================================== */
+
+/* ==========================================================
+   EXPORTAR COPIA
+========================================================== */
+
+async function exportBackup(){
+
+    return {
+
+        version:1,
+
+        created:new Date().toISOString(),
+
+        foods:await dbGet("foods") || [],
+
+        settings:await dbGet("settings") || defaultSettings(),
+
+        diary:await dbGet("diary") || {}
+
+    };
+
+}
+
+/* ==========================================================
+   IMPORTAR COPIA
+========================================================== */
+
+async function importBackup(data){
+
+    if(!data){
+
+        return false;
+
+    }
+
+    await dbSet(
+
+        "foods",
+
+        Array.isArray(data.foods)
+
+            ? data.foods
+
+            : []
+
+    );
+
+    await dbSet(
+
+        "settings",
+
+        data.settings ||
+
+        defaultSettings()
+
+    );
+
+    await dbSet(
+
+        "diary",
+
+        data.diary ||
+
+        {}
+
+    );
+
+    return true;
 
 }
 
@@ -357,55 +562,11 @@ async function restoreBackup(backup) {
    RESETEAR BASE DE DATOS
 ========================================================== */
 
-async function resetDatabase() {
+async function resetDatabase(){
 
     await dbClear();
 
-    await saveAppData(DEFAULT_DATA);
-
-    await dbSet("migration_v5", true);
-
-}
-
-/* ==========================================================
-   ELIMINAR DATOS LEGACY (OPCIONAL)
-========================================================== */
-
-function removeLegacyStorage() {
-
-    localStorage.removeItem(LEGACY.FOODS);
-
-    localStorage.removeItem(LEGACY.MEALS);
-
-    localStorage.removeItem(LEGACY.SETTINGS);
-
-}
-
-/* ==========================================================
-   INFORMACIÓN
-========================================================== */
-
-async function databaseInfo() {
-
-    const data = await loadAppData();
-
-    return {
-
-        version: DB_VERSION,
-
-        foods: data.foods.length,
-
-        desayuno: data.meals.desayuno.length,
-
-        comida: data.meals.comida.length,
-
-        merienda: data.meals.merienda.length,
-
-        cena: data.meals.cena.length,
-
-        kcalGoal: data.settings.kcalGoal
-
-    };
+    await initializeDatabase();
 
 }
 
@@ -415,31 +576,45 @@ async function databaseInfo() {
 
 window.DB = {
 
-    open: openDB,
+    open:openDB,
 
-    get: dbGet,
+    get:dbGet,
 
-    set: dbSet,
+    set:dbSet,
 
-    delete: dbDelete,
+    delete:dbDelete,
 
-    clear: dbClear,
+    clear:dbClear,
 
-    has: hasKey,
+    load:loadDatabase,
 
-    load: loadAppData,
+    saveFoods,
 
-    save: saveAppData,
+    saveSettings,
 
-    backup: createBackup,
+    saveDiary,
 
-    restore: restoreBackup,
+    getDay,
 
-    reset: resetDatabase,
+    saveDay,
 
-    info: databaseInfo,
+    deleteDay,
 
-    removeLegacyStorage
+    getHistory,
+
+    duplicateDay,
+
+    exportBackup,
+
+    importBackup,
+
+    databaseStats,
+
+    resetDatabase,
+
+    todayKey,
+
+    emptyDay
 
 };
 
@@ -447,30 +622,43 @@ window.DB = {
    INICIALIZACIÓN
 ========================================================== */
 
-(async () => {
+document.addEventListener(
 
-    try {
+    "DOMContentLoaded",
 
-        await openDB();
+    async()=>{
 
-        await migrateLegacyData();
+        try{
 
-        console.log(
-            "%c💾 Mi Nutrición V5 - Base de datos preparada",
-            "color:#38d46a;font-weight:bold;"
-        );
+            await initializeDatabase();
 
-    } catch (error) {
+            console.log(
 
-        console.error(
-            "Error inicializando IndexedDB:",
-            error
-        );
+                "%c💾 Base de datos lista",
+
+                "color:#38d46a;font-weight:bold;"
+
+            );
+
+        }
+
+        catch(error){
+
+            console.error(
+
+                "Error inicializando la base de datos",
+
+                error
+
+            );
+
+        }
 
     }
 
-})();
+);
 
 /* ==========================================================
-   FIN DEL ARCHIVO db.js V5
+   FIN DEL ARCHIVO
+   db.js
 ========================================================== */
