@@ -1102,6 +1102,14 @@ ui.newFoodModal.onclick=e=>{
 
 };
 
+$("closeNewFood").onclick=()=>{
+
+    ui.newFoodModal.classList.remove("show");
+
+    ui.modal.classList.add("show");
+
+};
+
 ui.jsonInput.addEventListener(
 
     "keydown",
