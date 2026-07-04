@@ -1323,7 +1323,12 @@ async function importJSON(text){
 
 async function importChatGPT(text){
 
-    const food={
+    text = text
+        .replace(/```/g,"")
+        .replace(/\r/g,"")
+        .trim();
+
+    const food = {
 
         id:createId(),
 
@@ -1349,101 +1354,99 @@ async function importChatGPT(text){
 
     };
 
-    text
+    const lines = text
+        .split("\n")
+        .map(l=>l.trim())
+        .filter(Boolean);
 
-    .split("\n")
+    if(lines.length){
 
-    .map(line=>line.trim())
+        food.name = lines[0];
+    }
 
-    .filter(Boolean)
+    for(const line of lines){
 
-    .forEach((line,index)=>{
+        const value = line.match(/(\d+[.,]?\d*)/);
 
-        if(index===0){
+        if(!value) continue;
 
-            food.name=line;
+        const n = number(value[1]);
 
-            return;
+        if(/energ|kcal|calor/i.test(line)){
 
-        }
-
-        const value=line.match(
-
-            /([\d.,]+)/
-
-        );
-
-        if(!value){
-
-            return;
+            food.kcal = n;
+            continue;
 
         }
 
-        const n=number(value[1]);
+        if(/prote/i.test(line)){
 
-        if(/kcal/i.test(line)){
-
-            food.kcal=n;
-
-        }
-
-        else if(/prote/i.test(line)){
-
-            food.protein=n;
+            food.protein = n;
+            continue;
 
         }
 
-        else if(/hidr|hc/i.test(line)){
+        if(/hidr|carbo|hc/i.test(line)){
 
-            food.carbs=n;
-
-        }
-
-        else if(/gras/i.test(line)){
-
-            food.fat=n;
+            food.carbs = n;
+            continue;
 
         }
 
-        else if(/base|100/i.test(line)){
+        if(/gras/i.test(line)){
 
-            food.base=n;
-
-            food.unit=
-
-            /ml/i.test(line)
-
-            ?"ml"
-
-            :"g";
+            food.fat = n;
+            continue;
 
         }
 
-    });
+        if(/100\s*ml/i.test(line)){
 
-    const exists=state.foods.find(
+            food.base = 100;
+            food.unit = "ml";
+            continue;
 
-        f=>normalize(f.name)
+        }
 
-        ===
+        if(/100\s*g/i.test(line)){
 
-        normalize(food.name)
+            food.base = 100;
+            food.unit = "g";
+            continue;
 
-    );
-
-    if(exists){
-
-        Object.assign(exists,food);
+        }
 
     }
 
-    else{
+    if(!food.name){
+
+        alert("No se ha podido detectar el nombre del alimento.");
+
+        return;
+
+    }
+
+    const existing = state.foods.find(f=>
+
+        normalize(f.name)===normalize(food.name)
+
+    );
+
+    if(existing){
+
+        Object.assign(existing,food);
+
+    }else{
 
         state.foods.push(food);
 
     }
 
     await saveFoods();
+
+    renderFoods();
+
+    alert(`✅ ${food.name} añadido correctamente.`);
 
 }
 
