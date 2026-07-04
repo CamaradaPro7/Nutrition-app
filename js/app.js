@@ -1464,6 +1464,28 @@ function buildMealFood(food,grams){
 
 }
 
+function editMealFood(meal,index){
+
+    const food=state.meals[meal][index];
+
+    state.editingFood={
+        meal,
+        index
+    };
+
+    ui.selectedFood.textContent=food.name;
+    ui.gramsInput.value=food.grams;
+
+    ui.modal.classList.remove("show");
+    ui.gramsModal.classList.add("show");
+
+    setTimeout(()=>{
+        ui.gramsInput.focus();
+        ui.gramsInput.select();
+    },150);
+
+}
+
 /* ==========================================================
    AÑADIR A LA COMIDA
 ========================================================== */
@@ -1487,6 +1509,47 @@ async function addFoodToMeal(){
         return;
 
     }
+    
+    if(state.editingFood){
+
+    const grams=number(ui.gramsInput.value);
+
+    const item=
+        state.meals[
+            state.editingFood.meal
+        ][
+            state.editingFood.index
+        ];
+
+    const food=
+        state.foods.find(
+            f=>f.id===item.foodId
+        );
+
+    const updated=
+        buildMealFood(food,grams);
+
+    updated.id=item.id;
+
+    state.meals[
+        state.editingFood.meal
+    ][
+        state.editingFood.index
+    ]=updated;
+
+    state.editingFood=null;
+
+    await saveMeals();
+
+    refresh();
+
+    ui.gramsModal.classList.remove("show");
+
+    unlockScroll();
+
+    return;
+
+}
 
     const item=
 
@@ -1573,6 +1636,11 @@ function renderMeals(){
                     document.createElement("div");
 
                 row.className="preview-item";
+                
+                row.onclick=(e)=>{
+    e.stopPropagation();
+    editMealFood(meal,index);
+};
 
                 row.innerHTML=`
 
