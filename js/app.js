@@ -103,15 +103,11 @@ render() {
 
     </section>
     
-    <section class="card meal">
-
     <div class="meal-header">
 
-        <h2>🍳 Desayuno</h2>
+    <h2>🍳 Desayuno</h2>
 
-        <button>+</button>
-
-    </div>
+</div>
 
     <p class="meal-empty">
 
