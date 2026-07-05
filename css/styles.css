@@ -186,29 +186,47 @@ body{
 
     border-radius:18px;
 
-    padding:14px 10px;
+    padding:14px 8px;
 
-    text-align:center;
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
 
 }
 
 .macro span{
 
-    display:block;
+    display:flex;
 
-    font-size:14px;
+    align-items:center;
+
+    justify-content:center;
+
+    height:22px;
+
+    font-size:15px;
+
+    font-weight:500;
 
     color:var(--text-light);
 
-    margin-bottom:6px;
+    white-space:nowrap;
 
 }
 
 .macro strong{
 
-    font-size:20px;
+    font-size:24px;
 
     font-weight:700;
+
+    line-height:1;
 
 }
 
