@@ -60,72 +60,58 @@ const App = {
 
 render() {
 
-    const app = document.getElementById("app");
+const app = document.getElementById("app");
 
-    app.innerHTML = `
+app.innerHTML = `
 
-    <section class="card dashboard">
+<section class="card dashboard">
 
-        <h1 class="title">Buenos días</h1>
+    <h1 class="title">Buenos días</h1>
 
-        <p class="date">${this.formatDate()}</p>
+    <p class="date">${this.formatDate()}</p>
 
-        <div class="progress">
+    <div class="progress" onclick="App.openReport()">
 
-            <div class="progress-circle">
+        <div class="progress-circle">
 
-                <div class="progress-value">0</div>
+            <div class="progress-value">0</div>
 
-                <div class="progress-label">de ${this.state.settings.objetivoKcal} kcal</div>
-
-            </div>
+            <div class="progress-label">de ${this.state.settings.objetivoKcal} kcal</div>
 
         </div>
 
-        <div class="macros">
+    </div>
 
-            <div class="macro">
-                <span>🥩 Proteínas</span>
-                <strong>0 g</strong>
-            </div>
+    <div class="macros">
 
-            <div class="macro">
-                <span>🍚 Hidratos</span>
-                <strong>0 g</strong>
-            </div>
-
-            <div class="macro">
-                <span>🥑 Grasas</span>
-                <strong>0 g</strong>
-            </div>
-
+        <div class="macro">
+            <span>🥩 Proteínas</span>
+            <strong>0 g</strong>
         </div>
 
-    </section>
-    
-    <section class="card meal" onclick="App.openMeal('desayuno')">
-    
-    <div class="meal-header">
+        <div class="macro">
+            <span>🍚 Hidratos</span>
+            <strong>0 g</strong>
+        </div>
 
-    <h2>🍳 Desayuno</h2>
-
-</div>
-
-    <p class="meal-empty">
-
-        Sin alimentos
-
-    </p>
-
-    <div class="meal-total">
-
-        0 kcal
+        <div class="macro">
+            <span>🥑 Grasas</span>
+            <strong>0 g</strong>
+        </div>
 
     </div>
 
 </section>
 
-    `;
+${this.mealCard("🍳","Desayuno","desayuno")}
+
+${this.mealCard("🍝","Comida","comida")}
+
+${this.mealCard("🍓","Merienda","merienda")}
+
+${this.mealCard("🥗","Cena","cena")}
+
+`;
 
 },
 
@@ -142,6 +128,50 @@ formatDate() {
         year:"numeric"
 
     });
+    
+mealCard(icono,nombre,id){
+
+    return `
+
+    <section class="card meal" onclick="App.openMeal('${id}')">
+
+        <div class="meal-row">
+
+            <div class="meal-title">
+
+                <span>${icono}</span>
+
+                <span>${nombre}</span>
+
+            </div>
+
+            <div class="meal-arrow">›</div>
+
+        </div>
+
+    </section>
+
+    `;
+    
+openMeal(meal){
+
+    alert("Abrir biblioteca: " + meal);
+
+},
+
+openReport(){
+
+    alert("Informe diario");
+
+},
+
+},
+
+openReport(){
+
+    alert("Informe diario");
+
+},
 
 }
 
