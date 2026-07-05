@@ -7,39 +7,99 @@
 
 const App = {
 
-async init(){
+    state: {
 
-try{
+        today: "",
 
-await DB.open();
+        foods: [],
 
-Dashboard.render();
+        day: null,
 
-Biblioteca.init();
+        settings: {
 
-Eventos.init();
+            objetivoKcal: 2200
 
-console.log("✅ Mi Nutrición NEXT V7 iniciada");
+        }
 
-}
+    },
 
-catch(error){
+    async init() {
 
-console.error(error);
+        try {
 
-document.body.innerHTML=`
-<h2 style="padding:40px;text-align:center">
-Error al iniciar la aplicación
-</h2>
-`;
+            await DB.open();
 
-}
+            this.state.today = DB.today();
 
-}
+            this.state.day = DB.emptyDay();
+
+            this.render();
+
+            console.log("✅ Mi Nutrición NEXT V7 iniciada");
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.body.innerHTML = `
+                <div style="
+                    display:flex;
+                    justify-content:center;
+                    align-items:center;
+                    height:100vh;
+                    text-align:center;
+                    padding:30px;
+                    font-size:20px;">
+                    Error al iniciar la aplicación
+                </div>
+            `;
+
+        }
+
+    },
+
+    render() {
+
+        const app = document.getElementById("app");
+
+        app.innerHTML = `
+
+        <div class="card">
+
+            <h1>Mi Nutrición NEXT</h1>
+
+            <p>Versión 7</p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Dashboard</h2>
+
+            <p>En construcción...</p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Biblioteca</h2>
+
+            <p>En construcción...</p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Comidas</h2>
+
+            <p>En construcción...</p>
+
+        </div>
+
+        `;
+
+    }
 
 };
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>App.init()
-);
+document.addEventListener("DOMContentLoaded", () => App.init());
