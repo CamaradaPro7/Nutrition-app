@@ -1,67 +1,170 @@
+/* ==========================================================
+   MI NUTRICIÓN NEXT V7
+   styles.css
+========================================================== */
+
+:root{
+
+--bg:#f4f6f9;
+--surface:#ffffff;
+--primary:#4CAF50;
+--text:#1B2430;
+--text-light:#6B7280;
+--border:#E5E7EB;
+--shadow:0 10px 30px rgba(0,0,0,.08);
+--radius:22px;
+
+}
+
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+-webkit-tap-highlight-color:transparent;
+}
+
+html{
+font-size:16px;
 }
 
 body{
-background:#f4f6f9;
-color:#1b2430;
+
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+
+background:var(--bg);
+
+color:var(--text);
+
+min-height:100vh;
+
+padding:20px;
+
 }
 
 button{
-cursor:pointer;
+
 border:none;
+
 background:none;
+
+font:inherit;
+
+cursor:pointer;
+
 }
+
+input,
+textarea,
+select{
+
+font:inherit;
+
+outline:none;
+
+}
+
+#app{
+
+max-width:700px;
+
+margin:0 auto;
+
+display:flex;
+
+flex-direction:column;
+
+gap:18px;
+
+padding-bottom:40px;
+
+}
+
+/* ==========================
+   TARJETAS
+========================== */
+
+.card{
+
+background:var(--surface);
+
+border-radius:var(--radius);
+
+padding:20px;
+
+box-shadow:var(--shadow);
+
+}
+
+/* ==========================
+   MODAL
+========================== */
 
 .modal{
+
 position:fixed;
+
 inset:0;
-display:none;
-justify-content:flex-end;
-flex-direction:column;
+
 background:rgba(0,0,0,.35);
+
+display:flex;
+
+justify-content:flex-end;
+
+align-items:flex-end;
+
+opacity:1;
+
+transition:.25s;
+
+z-index:1000;
+
 }
 
-.modal.show{
-display:flex;
+.modal.hidden{
+
+display:none;
+
 }
 
 .sheet{
+
+width:100%;
+
 background:#fff;
+
 border-radius:28px 28px 0 0;
+
 padding:24px;
-min-height:70vh;
-box-shadow:0 -10px 30px rgba(0,0,0,.15);
+
+max-height:90vh;
+
+overflow:auto;
+
 }
 
-.sheet-header{
+/* ==========================
+   UTILIDADES
+========================== */
+
+.hidden{
+
+display:none!important;
+
+}
+
+.center{
+
 display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
-}
 
-.sheet-header h2{
-font-size:30px;
-font-weight:700;
-}
-
-#closeFoodModal{
-width:42px;
-height:42px;
-border-radius:50%;
-background:#eceff3;
-font-size:22px;
-}
-
-#foodResults{
-display:flex;
 justify-content:center;
+
 align-items:center;
-height:300px;
-font-size:22px;
-color:#7b8794;
+
+}
+
+.text-center{
+
+text-align:center;
+
 }
