@@ -1,14 +1,17 @@
 "use strict";
 
+/* ==========================================================
+   MI NUTRICIÓN NEXT V7
+   eventos.js
+========================================================== */
+
 const Eventos={
 
 init(){
 
-document
+const cards=document.querySelectorAll(".meal");
 
-.querySelectorAll(".meal")
-
-.forEach(card=>{
+cards.forEach(card=>{
 
 card.addEventListener(
 
@@ -16,11 +19,9 @@ card.addEventListener(
 
 ()=>{
 
-const meal=
+const meal=card.dataset.meal;
 
-card.dataset.meal;
-
-Eventos.openMeal(meal);
+this.openMeal(meal);
 
 }
 
@@ -28,13 +29,27 @@ Eventos.openMeal(meal);
 
 });
 
+console.log("✅ Eventos iniciados");
+
 },
 
 openMeal(meal){
 
+const nombres={
+
+desayuno:"🍳 Desayuno",
+
+comida:"🍝 Comida",
+
+merienda:"🥪 Merienda",
+
+cena:"🌙 Cena"
+
+};
+
 alert(
 
-`Has pulsado:\n\n${meal}`
+`Has pulsado:\n\n${nombres[meal]}`
 
 );
 
