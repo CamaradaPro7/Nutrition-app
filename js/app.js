@@ -58,47 +58,70 @@ const App = {
 
     },
 
-    render() {
+render() {
 
-        const app = document.getElementById("app");
+    const app = document.getElementById("app");
 
-        app.innerHTML = `
+    app.innerHTML = `
 
-        <div class="card">
+    <section class="card dashboard">
 
-            <h1>Mi Nutrición NEXT</h1>
+        <h1 class="title">Buenos días</h1>
 
-            <p>Versión 7</p>
+        <p class="date">${this.formatDate()}</p>
 
-        </div>
+        <div class="progress">
 
-        <div class="card">
+            <div class="progress-circle">
 
-            <h2>Dashboard</h2>
+                <div class="progress-value">0</div>
 
-            <p>En construcción...</p>
+                <div class="progress-label">de ${this.state.settings.objetivoKcal} kcal</div>
 
-        </div>
-
-        <div class="card">
-
-            <h2>Biblioteca</h2>
-
-            <p>En construcción...</p>
+            </div>
 
         </div>
 
-        <div class="card">
+        <div class="macros">
 
-            <h2>Comidas</h2>
+            <div class="macro">
+                <span>🥩 Proteínas</span>
+                <strong>0 g</strong>
+            </div>
 
-            <p>En construcción...</p>
+            <div class="macro">
+                <span>🍚 Hidratos</span>
+                <strong>0 g</strong>
+            </div>
+
+            <div class="macro">
+                <span>🥑 Grasas</span>
+                <strong>0 g</strong>
+            </div>
 
         </div>
 
-        `;
+    </section>
 
-    }
+    `;
+
+},
+
+formatDate() {
+
+    return new Date().toLocaleDateString("es-ES",{
+
+        weekday:"long",
+
+        day:"numeric",
+
+        month:"long",
+
+        year:"numeric"
+
+    });
+
+}
 
 };
 
