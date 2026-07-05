@@ -1,104 +1,95 @@
 "use strict";
 
-/* ==========================================================
-   MI NUTRICIÓN NEXT V7
-   db.js
-========================================================== */
-
 const DB={
 
-    NAME:"MiNutricionNEXT",
+db:null,
 
-    VERSION:1,
+name:"MiNutricionNEXT",
 
-    DATABASE:null,
+version:1,
 
-    async open(){
+today(){
 
-        if(this.DATABASE){
+return new Date().toISOString().slice(0,10);
 
-            return this.DATABASE;
+},
 
-        }
+emptyDay(){
 
-        return new Promise((resolve,reject)=>{
+return{
 
-            const request=indexedDB.open(
+desayuno:[],
 
-                this.NAME,
+comida:[],
 
-                this.VERSION
+merienda:[],
 
-            );
-
-            request.onupgradeneeded=e=>{
-
-                const db=e.target.result;
-
-                if(!db.objectStoreNames.contains("config")){
-
-                    db.createObjectStore("config");
-
-                }
-
-                if(!db.objectStoreNames.contains("foods")){
-
-                    db.createObjectStore("foods",{
-
-                        keyPath:"id"
-
-                    });
-
-                }
-
-                if(!db.objectStoreNames.contains("days")){
-
-                    db.createObjectStore("days");
-
-                }
-
-            };
-
-            request.onsuccess=e=>{
-
-                this.DATABASE=e.target.result;
-
-                resolve(this.DATABASE);
-
-            };
-
-            request.onerror=()=>{
-
-                reject(request.error);
-
-            };
-
-        });
-
-    },
-
-    emptyDay(){
-
-        return{
-
-            desayuno:[],
-
-            comida:[],
-
-            merienda:[],
-
-            cena:[]
-
-        };
-
-    },
-
-    todayKey(){
-
-        return new Date().toISOString().slice(0,10);
-
-    }
+cena:[]
 
 };
 
-console.log("✅ DB V7 cargada");
+},
+
+async open(){
+
+if(this.db){
+
+return this.db;
+
+}
+
+return new Promise((resolve,reject)=>{
+
+const request=indexedDB.open(
+
+this.name,
+
+this.version
+
+);
+
+request.onupgradeneeded=e=>{
+
+const db=e.target.result;
+
+if(!db.objectStoreNames.contains("foods")){
+
+db.createObjectStore("foods",{
+
+keyPath:"id"
+
+});
+
+}
+
+if(!db.objectStoreNames.contains("days")){
+
+db.createObjectStore("days");
+
+}
+
+if(!db.objectStoreNames.contains("settings")){
+
+db.createObjectStore("settings");
+
+}
+
+};
+
+request.onsuccess=e=>{
+
+this.db=e.target.result;
+
+resolve(this.db);
+
+};
+
+request.onerror=()=>reject(request.error);
+
+});
+
+}
+
+};
+
+console.log("✅ db.js cargado");
