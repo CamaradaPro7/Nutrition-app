@@ -9,9 +9,7 @@ const Eventos={
 
 init(){
 
-const cards=document.querySelectorAll(".meal");
-
-cards.forEach(card=>{
+document.querySelectorAll(".meal").forEach(card=>{
 
 card.addEventListener(
 
@@ -19,9 +17,11 @@ card.addEventListener(
 
 ()=>{
 
-const meal=card.dataset.meal;
+Biblioteca.open(
 
-this.openMeal(meal);
+card.dataset.meal
+
+);
 
 }
 
@@ -30,28 +30,6 @@ this.openMeal(meal);
 });
 
 console.log("✅ Eventos iniciados");
-
-},
-
-openMeal(meal){
-
-const nombres={
-
-desayuno:"🍳 Desayuno",
-
-comida:"🍝 Comida",
-
-merienda:"🥪 Merienda",
-
-cena:"🌙 Cena"
-
-};
-
-alert(
-
-`Has pulsado:\n\n${nombres[meal]}`
-
-);
 
 }
 
