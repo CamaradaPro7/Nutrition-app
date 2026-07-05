@@ -237,3 +237,73 @@ text-align:center;
 .macro strong{
     font-size:32px;
 }
+
+/* ==========================================================
+   COMIDAS
+========================================================== */
+
+.meal{
+
+padding:24px;
+
+}
+
+.meal-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:20px;
+
+}
+
+.meal-header h2{
+
+font-size:40px;
+
+font-weight:800;
+
+}
+
+.meal-header button{
+
+width:54px;
+
+height:54px;
+
+border-radius:50%;
+
+background:var(--primary);
+
+color:#fff;
+
+font-size:34px;
+
+font-weight:400;
+
+}
+
+.meal-empty{
+
+font-size:22px;
+
+color:var(--text-light);
+
+font-style:italic;
+
+margin-bottom:24px;
+
+}
+
+.meal-total{
+
+font-size:48px;
+
+font-weight:800;
+
+color:var(--primary);
+
+}
