@@ -168,3 +168,70 @@ align-items:center;
 text-align:center;
 
 }
+
+/* ==========================================================
+   DASHBOARD
+========================================================== */
+
+.title{
+    font-size:56px;
+    font-weight:800;
+    line-height:1;
+}
+
+.date{
+    margin-top:10px;
+    font-size:22px;
+    color:var(--text-light);
+}
+
+.progress{
+    display:flex;
+    justify-content:center;
+    margin:40px 0;
+}
+
+.progress-circle{
+    width:250px;
+    height:250px;
+    border:14px solid #E7ECF4;
+    border-radius:50%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.progress-value{
+    font-size:72px;
+    font-weight:800;
+}
+
+.progress-label{
+    margin-top:8px;
+    font-size:18px;
+    color:var(--text-light);
+}
+
+.macros{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.macro{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-top:1px solid var(--border);
+    font-size:28px;
+}
+
+.macro:first-child{
+    border-top:none;
+}
+
+.macro strong{
+    font-size:32px;
+}
