@@ -1,5 +1,10 @@
 "use strict";
 
+/* ==========================================================
+   MI NUTRICIÓN NEXT V7
+   app.js
+========================================================== */
+
 const App={
 
 state:{
@@ -22,9 +27,15 @@ async init(){
 
 try{
 
+console.log("🚀 Iniciando...");
+
 await DB.open();
 
 Dashboard.render();
+
+Comidas.render();
+
+Eventos.init();
 
 console.log("✅ Mi Nutrición NEXT V7 iniciada");
 
@@ -36,11 +47,13 @@ console.error(error);
 
 document.body.innerHTML=`
 
-<h2 style="padding:40px;text-align:center">
+<div style="padding:40px;text-align:center;font-family:sans-serif;">
 
-Error al iniciar la aplicación
+<h2>❌ Error al iniciar la aplicación</h2>
 
-</h2>
+<p>Abre la consola para ver el error.</p>
+
+</div>
 
 `;
 
@@ -54,6 +67,10 @@ document.addEventListener(
 
 "DOMContentLoaded",
 
-()=>App.init()
+async()=>{
+
+await App.init();
+
+}
 
 );
