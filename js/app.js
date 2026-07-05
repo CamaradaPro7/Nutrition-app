@@ -6,6 +6,14 @@
 
 "use strict";
 
+const state=Base.state;
+
+const loadApp=Base.loadApp;
+
+const saveFoods=Base.saveFoods;
+
+const saveMeals=Base.saveMeals;
+
 /* ==========================================================
    ESTADO
 ========================================================== */
