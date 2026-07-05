@@ -174,7 +174,7 @@ text-align:center;
 ========================================================== */
 
 .title{
-    font-size:56px;
+    font-size:44px;
     font-weight:800;
     line-height:1;
 }
@@ -192,8 +192,8 @@ text-align:center;
 }
 
 .progress-circle{
-    width:250px;
-    height:250px;
+    width:220px;
+    height:220px;
     border:14px solid #E7ECF4;
     border-radius:50%;
     display:flex;
@@ -203,7 +203,7 @@ text-align:center;
 }
 
 .progress-value{
-    font-size:72px;
+    font-size:64px;
     font-weight:800;
 }
 
