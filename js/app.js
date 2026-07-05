@@ -10,46 +10,42 @@ const App = {
     state: {
 
         today: "",
-
         foods: [],
-
         day: null,
 
         settings: {
-
             objetivoKcal: 2200
-
         }
 
     },
 
-    async init() {
+    async init(){
 
-        try {
+        try{
 
             await DB.open();
 
             this.state.today = DB.today();
-
             this.state.day = DB.emptyDay();
 
             this.render();
 
-            console.log("✅ Mi Nutrición NEXT V7 iniciada");
+            console.log("✅ Mi Nutrición NEXT iniciada");
 
-        } catch (error) {
+        }
+
+        catch(error){
 
             console.error(error);
 
-            document.body.innerHTML = `
+            document.body.innerHTML=`
                 <div style="
                     display:flex;
                     justify-content:center;
                     align-items:center;
                     height:100vh;
-                    text-align:center;
-                    padding:30px;
-                    font-size:20px;">
+                    font-size:22px;
+                ">
                     Error al iniciar la aplicación
                 </div>
             `;
@@ -58,48 +54,50 @@ const App = {
 
     },
 
-render() {
+    render(){
 
-const app = document.getElementById("app");
+        const app=document.getElementById("app");
 
-app.innerHTML = `
+        app.innerHTML=`
 
 <section class="card dashboard">
 
-    <h1 class="title">Buenos días</h1>
+<h1 class="title">Buenos días</h1>
 
-    <p class="date">${this.formatDate()}</p>
+<p class="date">${this.formatDate()}</p>
 
-    <div class="progress" onclick="App.openReport()">
+<div class="progress" onclick="App.openReport()">
 
-        <div class="progress-circle">
+<div class="progress-circle">
 
-            <div class="progress-value">0</div>
+<div class="progress-value">0</div>
 
-            <div class="progress-label">de ${this.state.settings.objetivoKcal} kcal</div>
+<div class="progress-label">
+de ${this.state.settings.objetivoKcal} kcal
+</div>
 
-        </div>
+</div>
 
-    </div>
+</div>
 
-    <div class="macros">
+<div class="macros">
 
-        <div class="macro">
-            <span>🥩 Proteínas</span>
-            <strong>0 g</strong>
-        </div>
+<div class="macro">
+<span>🥩 Proteínas</span>
+<strong>0 g</strong>
+</div>
 
-        <div class="macro">
-            <span>🍚 Hidratos</span>
-            <strong>0 g</strong>
-        </div>
+<div class="macro">
+<span>🍚 Hidratos</span>
+<strong>0 g</strong>
+</div>
 
-        <div class="macro">
-            <span>🥑 Grasas</span>
-            <strong>0 g</strong>
-        </div>
+<div class="macro">
+<span>🥑 Grasas</span>
+<strong>0 g</strong>
+</div>
 
-    </div>
+</div>
 
 </section>
 
@@ -113,68 +111,67 @@ ${this.mealCard("🥗","Cena","cena")}
 
 `;
 
-},
+    },
 
-formatDate() {
+    mealCard(icono,nombre,id){
 
-    return new Date().toLocaleDateString("es-ES",{
+        return `
 
-        weekday:"long",
+<section class="card meal" onclick="App.openMeal('${id}')">
 
-        day:"numeric",
+<div class="meal-row">
 
-        month:"long",
+<div class="meal-title">
 
-        year:"numeric"
+<span class="meal-icon">${icono}</span>
 
-    });
-    
-mealCard(icono,nombre,id){
+<span>${nombre}</span>
 
-    return `
+</div>
 
-    <section class="card meal" onclick="App.openMeal('${id}')">
+<div class="meal-arrow">›</div>
 
-        <div class="meal-row">
+</div>
 
-            <div class="meal-title">
+<p class="meal-empty">
+Sin alimentos
+</p>
 
-                <span>${icono}</span>
+<div class="meal-total">
+0 kcal
+</div>
 
-                <span>${nombre}</span>
+</section>
 
-            </div>
+`;
 
-            <div class="meal-arrow">›</div>
+    },
 
-        </div>
+    formatDate(){
 
-    </section>
+        return new Date().toLocaleDateString("es-ES",{
 
-    `;
-    
-openMeal(meal){
+            weekday:"long",
+            day:"numeric",
+            month:"long",
+            year:"numeric"
 
-    alert("Abrir biblioteca: " + meal);
+        });
 
-},
+    },
 
-openReport(){
+    openMeal(meal){
 
-    alert("Informe diario");
+        alert("Abrir biblioteca: " + meal);
 
-},
+    },
 
-},
+    openReport(){
 
-openReport(){
+        alert("Informe diario");
 
-    alert("Informe diario");
-
-},
-
-}
+    }
 
 };
 
-document.addEventListener("DOMContentLoaded", () => App.init());
+document.addEventListener("DOMContentLoaded",()=>App.init());
