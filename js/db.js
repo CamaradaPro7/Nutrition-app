@@ -1,95 +1,93 @@
 "use strict";
 
-const DB={
+/* ==========================================================
+   MI NUTRICIÓN NEXT V7
+   db.js
+========================================================== */
 
-db:null,
+const DB = {
 
-name:"MiNutricionNEXT",
+    db: null,
 
-version:1,
+    name: "MiNutricionNEXT",
 
-today(){
+    version: 1,
 
-return new Date().toISOString().slice(0,10);
+    stores: {
+        foods: "foods",
+        days: "days",
+        settings: "settings",
+        backup: "backup"
+    },
 
-},
+    async open() {
 
-emptyDay(){
+        if (this.db) return this.db;
 
-return{
+        return new Promise((resolve, reject) => {
 
-desayuno:[],
+            const request = indexedDB.open(this.name, this.version);
 
-comida:[],
+            request.onupgradeneeded = (event) => {
 
-merienda:[],
+                const db = event.target.result;
 
-cena:[]
+                Object.values(this.stores).forEach(store => {
+
+                    if (!db.objectStoreNames.contains(store)) {
+
+                        db.createObjectStore(store, {
+                            keyPath: "id"
+                        });
+
+                    }
+
+                });
+
+            };
+
+            request.onsuccess = (event) => {
+
+                this.db = event.target.result;
+
+                console.log("✅ IndexedDB iniciada");
+
+                resolve(this.db);
+
+            };
+
+            request.onerror = () => {
+
+                reject(request.error);
+
+            };
+
+        });
+
+    },
+
+    today() {
+
+        return new Date().toISOString().slice(0, 10);
+
+    },
+
+    emptyDay() {
+
+        return {
+
+            id: this.today(),
+
+            desayuno: [],
+
+            comida: [],
+
+            merienda: [],
+
+            cena: []
+
+        };
+
+    }
 
 };
-
-},
-
-async open(){
-
-if(this.db){
-
-return this.db;
-
-}
-
-return new Promise((resolve,reject)=>{
-
-const request=indexedDB.open(
-
-this.name,
-
-this.version
-
-);
-
-request.onupgradeneeded=e=>{
-
-const db=e.target.result;
-
-if(!db.objectStoreNames.contains("foods")){
-
-db.createObjectStore("foods",{
-
-keyPath:"id"
-
-});
-
-}
-
-if(!db.objectStoreNames.contains("days")){
-
-db.createObjectStore("days");
-
-}
-
-if(!db.objectStoreNames.contains("settings")){
-
-db.createObjectStore("settings");
-
-}
-
-};
-
-request.onsuccess=e=>{
-
-this.db=e.target.result;
-
-resolve(this.db);
-
-};
-
-request.onerror=()=>reject(request.error);
-
-});
-
-}
-
-};
-
-console.log("✅ db.js cargado");
