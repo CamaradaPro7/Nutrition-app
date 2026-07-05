@@ -1,46 +1,91 @@
 "use strict";
 
+/* ==========================================================
+   MI NUTRICIÓN NEXT V7
+   biblioteca.js
+========================================================== */
+
 const Biblioteca={
 
-foods:[],
+meal:null,
 
-render(){
+open(meal){
 
-console.log("📚 Biblioteca iniciada");
+this.meal=meal;
+
+const modal=document.getElementById("modal");
+
+const title=document.getElementById("sheetTitle");
+
+const list=document.getElementById("foodResults");
+
+title.textContent={
+
+desayuno:"🍳 Desayuno",
+
+comida:"🍝 Comida",
+
+merienda:"🥪 Merienda",
+
+cena:"🌙 Cena"
+
+}[meal];
+
+list.innerHTML=`
+
+<div class="emptyMeal">
+
+Biblioteca vacía
+
+</div>
+
+`;
+
+modal.classList.add("show");
 
 },
 
-add(food){
+close(){
 
-this.foods.push(food);
+document
 
-},
+.getElementById("modal")
 
-all(){
-
-return this.foods;
+.classList.remove("show");
 
 },
 
-find(id){
+init(){
 
-return this.foods.find(
+document
 
-food=>food.id===id
+.getElementById("closeFoodModal")
+
+.addEventListener(
+
+"click",
+
+()=>this.close()
 
 );
 
-},
+document
 
-exists(name){
+.getElementById("modal")
 
-return this.foods.find(
+.addEventListener(
 
-food=>
+"click",
 
-normalize(food.name)===
+e=>{
 
-normalize(name)
+if(e.target.id==="modal"){
+
+this.close();
+
+}
+
+}
 
 );
 
