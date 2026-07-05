@@ -5,35 +5,17 @@
    app.js
 ========================================================== */
 
-const App={
-
-state:{
-
-date:DB.today(),
-
-foods:[],
-
-meals:DB.emptyDay(),
-
-settings:{
-
-kcalGoal:2200
-
-}
-
-},
+const App = {
 
 async init(){
 
 try{
 
-console.log("🚀 Iniciando...");
-
 await DB.open();
 
 Dashboard.render();
 
-Comidas.render();
+Biblioteca.init();
 
 Eventos.init();
 
@@ -46,15 +28,9 @@ catch(error){
 console.error(error);
 
 document.body.innerHTML=`
-
-<div style="padding:40px;text-align:center;font-family:sans-serif;">
-
-<h2>❌ Error al iniciar la aplicación</h2>
-
-<p>Abre la consola para ver el error.</p>
-
-</div>
-
+<h2 style="padding:40px;text-align:center">
+Error al iniciar la aplicación
+</h2>
 `;
 
 }
@@ -64,13 +40,6 @@ document.body.innerHTML=`
 };
 
 document.addEventListener(
-
 "DOMContentLoaded",
-
-async()=>{
-
-await App.init();
-
-}
-
+()=>App.init()
 );
