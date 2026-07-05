@@ -12,10 +12,15 @@ const loadApp=Base.loadApp;
 
 const saveFoods=Base.saveFoods;
 
-const saveMeals=Base.saveMeals;
-
+const saveMeals
 /* ==========================================================
    ESTADO
+========================================================== */
+
+"use strict";
+
+/* ==========================================================
+   BASE V6.1
 ========================================================== */
 
 const state={
@@ -43,6 +48,62 @@ const state={
     lastScroll:0,
 
     touch:false
+
+};
+
+async function loadApp(){
+
+    const data=await DB.load();
+
+    state.foods=data.foods||[];
+
+    state.settings=data.settings||{
+
+        kcalGoal:2200
+
+    };
+
+    state.meals=
+
+        await DB.getDay(
+
+            state.currentDate
+
+        );
+
+}
+
+async function saveFoods(){
+
+    await DB.saveFoods(
+
+        state.foods
+
+    );
+
+}
+
+async function saveMeals(){
+
+    await DB.saveDay(
+
+        state.currentDate,
+
+        state.meals
+
+    );
+
+}
+
+window.Base={
+
+    state,
+
+    loadApp,
+
+    saveFoods,
+
+    saveMeals
 
 };
 
