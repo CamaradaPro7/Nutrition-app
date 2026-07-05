@@ -103,6 +103,8 @@ render() {
 
     </section>
     
+    <section class="card meal" onclick="App.openMeal('desayuno')">
+    
     <div class="meal-header">
 
     <h2>🍳 Desayuno</h2>
