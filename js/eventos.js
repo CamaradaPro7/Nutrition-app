@@ -1,38 +1,21 @@
 "use strict";
 
-/* ==========================================================
-   MI NUTRICIÓN NEXT V7
-   eventos.js
-========================================================== */
-
 const Eventos={
 
 init(){
 
+console.log("Eventos.init()");
+
 document.querySelectorAll(".meal").forEach(card=>{
 
-card.addEventListener(
+card.onclick=()=>{
 
-"click",
+alert(card.dataset.meal);
 
-()=>{
-
-Biblioteca.open(
-
-card.dataset.meal
-
-);
-
-}
-
-);
+};
 
 });
-
-console.log("✅ Eventos iniciados");
 
 }
 
 };
-
-console.log("✅ eventos.js cargado");
