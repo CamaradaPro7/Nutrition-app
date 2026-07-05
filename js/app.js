@@ -1,54 +1,59 @@
 "use strict";
 
-/* ==========================================================
-   MI NUTRICIÓN NEXT V7
-   app.js
-========================================================== */
-
 const App={
 
-    version:"7.0",
+state:{
 
-    state:{
+date:DB.today(),
 
-        currentDate:DB.todayKey(),
+foods:[],
 
-        settings:{
-            kcalGoal:2200
-        },
+meals:DB.emptyDay(),
 
-        foods:[],
+settings:{
 
-        meals:DB.emptyDay()
+kcalGoal:2200
 
-    },
+}
 
-    async init(){
+},
 
-        console.log(
+async init(){
 
-            "🚀 Iniciando Mi Nutrición NEXT V7..."
+try{
 
-        );
+await DB.open();
 
-        await DB.open();
+Dashboard.render();
 
-        console.log(
+console.log("✅ Mi Nutrición NEXT V7 iniciada");
 
-            "✅ Base de datos preparada"
+}
 
-        );
+catch(error){
 
-        Dashboard.render();
+console.error(error);
 
-    }
+document.body.innerHTML=`
+
+<h2 style="padding:40px;text-align:center">
+
+Error al iniciar la aplicación
+
+</h2>
+
+`;
+
+}
+
+}
 
 };
 
 document.addEventListener(
 
-    "DOMContentLoaded",
+"DOMContentLoaded",
 
-    ()=>App.init()
+()=>App.init()
 
 );
