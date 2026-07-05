@@ -102,6 +102,30 @@ render() {
         </div>
 
     </section>
+    
+    <section class="card meal">
+
+    <div class="meal-header">
+
+        <h2>🍳 Desayuno</h2>
+
+        <button>+</button>
+
+    </div>
+
+    <p class="meal-empty">
+
+        Sin alimentos
+
+    </p>
+
+    <div class="meal-total">
+
+        0 kcal
+
+    </div>
+
+</section>
 
     `;
 
