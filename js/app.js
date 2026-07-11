@@ -46,73 +46,45 @@ const App = {
     },
 
     render() {
-        const app = document.getElementById("app");
+app.innerHTML = `
+    <section class="card dashboard">
+        <div class="dashboard-top">
+            <div class="dashboard-copy">
+                <h1 class="title">Buenos días</h1>
+                <p class="date">${this.formatDate()}</p>
+            </div>
+        </div>
 
-        app.innerHTML = `
-            <section class="card dashboard">
-                <div class="dashboard-top">
-                    <div class="dashboard-copy">
-                        <h1 class="title">Buenos días</h1>
-                        <p class="date">${this.formatDate()}</p>
+        <div class="progress-wrap">
+            <button class="progress" type="button" onclick="App.openReport()">
+                <svg viewBox="0 0 220 220">
+                    <circle class="progress-track" cx="110" cy="110" r="96"></circle>
+                    <circle class="progress-ring" cx="110" cy="110" r="96"></circle>
+                </svg>
+
+                <div class="progress-center">
+                    <div class="progress-value" id="kcalValue">0</div>
+                    <div class="progress-label" id="kcalLabel">
+                        de ${this.state.settings.objetivoKcal} kcal
                     </div>
-                    <button class="icon-btn" type="button" onclick="App.openReport()" aria-label="Abrir informe">
-                        <span>☰</span>
-                    </button>
                 </div>
+            </button>
+        </div>
 
-                <div class="progress-wrap">
-                    <button class="progress" type="button" onclick="App.openReport()" aria-label="Ver progreso">
-                        <svg viewBox="0 0 220 220" aria-hidden="true">
-                            <circle class="progress-track" cx="110" cy="110" r="96"></circle>
-                            <circle class="progress-ring" cx="110" cy="110" r="96"></circle>
-                        </svg>
-                        <div class="progress-center">
-                            <div class="progress-value" id="kcalValue">0</div>
-                            <div class="progress-label" id="kcalLabel">de ${this.state.settings.objetivoKcal} kcal</div>
-                        </div>
-                    </button>
-                </div>
+        <div class="macros">
+            ${this.renderMacro("Proteínas","🥩","proteinas",this.state.settings.macros.proteinas,"g")}
+            ${this.renderMacro("Hidratos","🍚","hidratos",this.state.settings.macros.hidratos,"g")}
+            ${this.renderMacro("Grasas","🥑","grasas",this.state.settings.macros.grasas,"g")}
+        </div>
+    </section>
 
-                <div class="macros">
-                    ${this.renderMacro("Proteínas", "🥩", "proteinas", this.state.settings.macros.proteinas, "g")}
-                    ${this.renderMacro("Hidratos", "🍚", "hidratos", this.state.settings.macros.hidratos, "g")}
-                    ${this.renderMacro("Grasas", "🥑", "grasas", this.state.settings.macros.grasas, "g")}
-                </div>
-            </section>
-
-            <section class="meals">
-                ${this.mealCard("🍳", "Desayuno", "desayuno")}
-                ${this.mealCard("🍝", "Comida", "comida")}
-                ${this.mealCard("🍓", "Merienda", "merienda")}
-                ${this.mealCard("🥗", "Cena", "cena")}
-            </section>
-
-            <nav class="bottom-nav" aria-label="Navegación principal">
-                <div class="bottom-nav-inner">
-                    <a class="nav-item active" href="javascript:void(0)" aria-label="Inicio">
-                        <span class="nav-icon">🏠</span>
-                        <span>Inicio</span>
-                    </a>
-                    <a class="nav-item" href="javascript:void(0)" aria-label="Comidas" onclick="App.openMeal('desayuno')">
-                        <span class="nav-icon">🍽️</span>
-                        <span>Comidas</span>
-                    </a>
-                    <a class="nav-item" href="javascript:void(0)" aria-label="Añadir" onclick="App.openQuickAdd()">
-                        <span class="nav-icon">＋</span>
-                        <span>Añadir</span>
-                    </a>
-                    <a class="nav-item" href="javascript:void(0)" aria-label="Resumen" onclick="App.openReport()">
-                        <span class="nav-icon">📊</span>
-                        <span>Resumen</span>
-                    </a>
-                    <a class="nav-item" href="javascript:void(0)" aria-label="Ajustes" onclick="App.openSettings()">
-                        <span class="nav-icon">⚙️</span>
-                        <span>Ajustes</span>
-                    </a>
-                </div>
-            </nav>
-        `;
-    },
+    <section class="meals">
+        ${this.mealCard("🍳","Desayuno","desayuno")}
+        ${this.mealCard("🍝","Comida","comida")}
+        ${this.mealCard("🍓","Merienda","merienda")}
+        ${this.mealCard("🥗","Cena","cena")}
+    </section>
+`;
 
     renderMacro(label, emoji, key, target, unit) {
         const current = this.getMacroValue(key);
