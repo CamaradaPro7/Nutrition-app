@@ -1,426 +1,460 @@
 /* ==========================================================
-   MI NUTRICIÓN NEXT V7
+   MI NUTRICIÓN NEXT
    styles.css
-========================================================== */
+   ========================================================== */
 
 :root{
-
-    --bg:#F4F6FA;
-    --card:#FFFFFF;
-
-    --text:#1C2431;
-    --text-light:#6E7788;
-
-    --line:#E9EDF3;
-
-    --green:#48B04D;
-
+    --bg:#f4f6fa;
+    --card:#ffffff;
+    --card-soft:#f8fafc;
+    --text:#1c2431;
+    --text-light:#6e7788;
+    --line:#e9edf3;
+    --line-strong:#dfe5ee;
+    --green:#48b04d;
+    --green-soft:#e8f6ea;
+    --amber:#f59e0b;
+    --blue:#4f8df7;
+    --orange:#fb923c;
     --shadow:0 10px 30px rgba(20,30,50,.08);
-
+    --shadow-soft:0 6px 18px rgba(20,30,50,.06);
     --radius:28px;
-
+    --radius-lg:32px;
 }
 
 *{
-
     margin:0;
     padding:0;
     box-sizing:border-box;
-
 }
 
 html{
-
     font-size:16px;
-
+    -webkit-text-size-adjust:100%;
 }
 
 body{
-
     background:var(--bg);
-
     color:var(--text);
-
-    font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "SF Pro Display",
-    "Segoe UI",
-    sans-serif;
-
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
     -webkit-font-smoothing:antialiased;
-
+    text-rendering:optimizeLegibility;
 }
 
-#app{
-
-    width:min(100%,520px);
-
-    margin:auto;
-
-    padding:26px 18px 40px;
-
+button,input,textarea,select{
+    font:inherit;
 }
-
-.card{
-
-    background:var(--card);
-
-    border-radius:var(--radius);
-
-    box-shadow:var(--shadow);
-
-    margin-bottom:18px;
-
-}
-
-/* ==========================================================
-   DASHBOARD
-========================================================== */
-
-.dashboard{
-
-    padding:28px;
-
-}
-
-.title{
-
-    text-align:center;
-
-    font-size:42px;
-
-    font-weight:800;
-
-    line-height:1.05;
-
-}
-
-.date{
-
-    margin-top:10px;
-
-    color:var(--text-light);
-
-    font-size:18px;
-
-    text-align:center;
-
-}
-
-.progress{
-
-    display:flex;
-
-    justify-content:center;
-
-    margin:26px 0;
-
-    cursor:pointer;
-
-}
-
-.progress-circle{
-
-    width:190px;
-
-    height:190px;
-
-    border-radius:50%;
-
-    border:10px solid #E8EDF5;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    align-items:center;
-
-    transition:.18s;
-
-}
-
-.progress-circle:active{
-
-    transform:scale(.98);
-
-}
-
-.progress-value{
-
-    font-size:60px;
-
-    font-weight:800;
-
-}
-
-.progress-label{
-
-    margin-top:6px;
-
-    font-size:16px;
-
-    color:var(--text-light);
-
-}
-
-/* ==========================================================
-   MACROS
-========================================================== */
-
-.macros{
-
-    display:grid;
-
-    grid-template-columns:repeat(3,1fr);
-
-    gap:12px;
-
-}
-
-.macro{
-
-    background:#F8FAFD;
-
-    border:1px solid var(--line);
-
-    border-radius:18px;
-
-    padding:14px 8px;
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:8px;
-
-}
-
-.macro span{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    height:22px;
-
-    font-size:15px;
-
-    font-weight:500;
-
-    color:var(--text-light);
-
-    white-space:nowrap;
-
-}
-
-.macro strong{
-
-    font-size:24px;
-
-    font-weight:700;
-
-    line-height:1;
-
-}
-
-/* ==========================================================
-   TARJETAS COMIDAS
-========================================================== */
-
-.meal{
-
-    padding:18px 20px;
-
-    cursor:pointer;
-
-    transition:.15s;
-
-}
-
-.meal:active{
-
-    transform:scale(.985);
-
-}
-
-.meal-row{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-}
-
-.meal-title{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    font-size:22px;
-
-    font-weight:700;
-
-}
-
-.meal-icon{
-
-    font-size:24px;
-
-}
-
-.meal-arrow{
-
-    font-size:28px;
-
-    color:#B8C0CC;
-
-}
-
-.meal-empty{
-
-    margin-top:10px;
-
-    font-size:15px;
-
-    color:var(--text-light);
-
-    font-style:italic;
-
-}
-
-.meal-total{
-
-    margin-top:12px;
-
-    text-align:right;
-
-    font-size:24px;
-
-    font-weight:800;
-
-    color:var(--green);
-
-}
-
-/* ==========================================================
-   MODAL
-========================================================== */
-
-.modal{
-
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(0,0,0,.35);
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    align-items:flex-end;
-
-    z-index:1000;
-
-}
-
-.modal.hidden{
-
-    display:none;
-
-}
-
-.sheet{
-
-    width:100%;
-
-    background:#FFF;
-
-    border-radius:28px 28px 0 0;
-
-    padding:24px;
-
-    max-height:90vh;
-
-    overflow:auto;
-
-}
-
-/* ==========================================================
-   BOTONES
-========================================================== */
 
 button{
-
     border:none;
-
     background:none;
-
-    font:inherit;
-
     cursor:pointer;
-
 }
-
-/* ==========================================================
-   FORMULARIOS
-========================================================== */
 
 input,
 textarea,
 select{
-
     width:100%;
-
-    font:inherit;
-
     border:none;
-
     outline:none;
-
+    background:transparent;
 }
 
-/* ==========================================================
-   UTILIDADES
-========================================================== */
+#app{
+    width:min(100%,520px);
+    margin:0 auto;
+    padding:18px 18px calc(110px + env(safe-area-inset-bottom));
+}
+
+.card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    margin-bottom:16px;
+}
+
+.dashboard{
+    padding:22px 22px 20px;
+}
+
+.dashboard-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+}
+
+.dashboard-copy{
+    flex:1;
+    min-width:0;
+}
+
+.title{
+    font-size:34px;
+    line-height:1.05;
+    font-weight:800;
+    letter-spacing:-.04em;
+}
+
+.date{
+    margin-top:8px;
+    color:var(--text-light);
+    font-size:16px;
+    line-height:1.35;
+}
+
+.icon-btn{
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    background:#111827;
+    color:#fff;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 10px 18px rgba(17,24,39,.18);
+    flex:0 0 auto;
+}
+
+.icon-btn span{
+    font-size:18px;
+    line-height:1;
+}
+
+.progress-wrap{
+    display:flex;
+    justify-content:center;
+    margin:18px 0 18px;
+}
+
+.progress{
+    position:relative;
+    width:208px;
+    height:208px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.progress svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    transform:rotate(-90deg);
+}
+
+.progress-track{
+    fill:none;
+    stroke:#e8edf5;
+    stroke-width:12;
+}
+
+.progress-ring{
+    fill:none;
+    stroke:var(--green);
+    stroke-linecap:round;
+    stroke-width:12;
+    stroke-dasharray:0 999;
+    transition:stroke-dasharray .35s ease;
+}
+
+.progress-center{
+    width:146px;
+    height:146px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:inset 0 0 0 1px rgba(233,237,243,.9);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+.progress-value{
+    font-size:54px;
+    line-height:1;
+    font-weight:800;
+    letter-spacing:-.04em;
+}
+
+.progress-label{
+    margin-top:5px;
+    font-size:15px;
+    color:var(--text-light);
+}
+
+.macros{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:4px;
+}
+
+.macro{
+    background:var(--card-soft);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:14px 12px 12px;
+    box-shadow:var(--shadow-soft);
+}
+
+.macro-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.macro-label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:0;
+    color:var(--text-light);
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+.macro-emoji{
+    font-size:15px;
+    line-height:1;
+}
+
+.macro-value{
+    font-size:19px;
+    line-height:1;
+    font-weight:800;
+    letter-spacing:-.03em;
+}
+
+.macro-bar{
+    width:100%;
+    height:8px;
+    border-radius:999px;
+    background:#e8edf5;
+    overflow:hidden;
+}
+
+.macro-bar-fill{
+    display:block;
+    height:100%;
+    width:0%;
+    border-radius:inherit;
+    background:var(--green);
+    transition:width .35s ease;
+}
+
+.macro-meta{
+    margin-top:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    color:var(--text-light);
+}
+
+.meals{
+    margin-top:2px;
+}
+
+.meal{
+    padding:18px 18px 16px;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+}
+
+.meal:active{
+    transform:scale(.986);
+}
+
+.meal-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+}
+
+.meal-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:-.02em;
+}
+
+.meal-icon{
+    width:36px;
+    height:36px;
+    border-radius:12px;
+    background:#f3f6fb;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    flex:0 0 auto;
+}
+
+.meal-arrow{
+    font-size:28px;
+    line-height:1;
+    color:#b8c0cc;
+    flex:0 0 auto;
+}
+
+.meal-empty{
+    margin-top:10px;
+    font-size:14px;
+    color:var(--text-light);
+}
+
+.meal-total{
+    margin-top:10px;
+    text-align:right;
+    font-size:20px;
+    font-weight:800;
+    color:var(--green);
+    letter-spacing:-.02em;
+}
+
+.bottom-nav{
+    position:fixed;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:min(100%,520px);
+    padding:12px 16px calc(14px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top, rgba(244,246,250,.98), rgba(244,246,250,.84));
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-top:1px solid rgba(233,237,243,.9);
+    z-index:50;
+}
+
+.bottom-nav-inner{
+    background:#fff;
+    border:1px solid rgba(233,237,243,.95);
+    border-radius:24px;
+    padding:10px 8px;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:6px;
+    box-shadow:0 10px 28px rgba(20,30,50,.08);
+}
+
+.nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    min-height:52px;
+    color:var(--text-light);
+    text-decoration:none;
+    font-size:11px;
+    font-weight:700;
+}
+
+.nav-item.active{
+    color:var(--green);
+}
+
+.nav-icon{
+    font-size:19px;
+    line-height:1;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(13,18,28,.35);
+    display:flex;
+    justify-content:flex-end;
+    align-items:flex-end;
+    z-index:1000;
+}
+
+.modal.hidden{
+    display:none;
+}
+
+.sheet{
+    width:100%;
+    background:#fff;
+    border-radius:28px 28px 0 0;
+    padding:24px;
+    max-height:90vh;
+    overflow:auto;
+    box-shadow:0 -14px 36px rgba(20,30,50,.12);
+}
 
 .hidden{
-
     display:none !important;
-
 }
 
 .center{
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
 }
 
 .text-center{
-
     text-align:center;
-
 }
 
 .mt-10{margin-top:10px;}
 .mt-20{margin-top:20px;}
 .mb-10{margin-bottom:10px;}
 .mb-20{margin-bottom:20px;}
+
+@media (max-width:420px){
+    #app{
+        padding-left:14px;
+        padding-right:14px;
+    }
+
+    .dashboard{
+        padding:20px 18px 18px;
+    }
+
+    .title{
+        font-size:30px;
+    }
+
+    .progress{
+        width:188px;
+        height:188px;
+    }
+
+    .progress-center{
+        width:134px;
+        height:134px;
+    }
+
+    .progress-value{
+        font-size:48px;
+    }
+
+    .macro{
+        padding:13px 10px 11px;
+    }
+
+    .macro-value{
+        font-size:18px;
+    }
+
+    .meal{
+        padding:16px 16px 14px;
+    }
+
+    .meal-title{
+        font-size:18px;
+    }
+}
