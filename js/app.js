@@ -92,27 +92,31 @@ render() {
 },
 
     renderMacro(label, emoji, key, target, unit) {
-        const current = this.getMacroValue(key);
-        const progress = target > 0 ? Math.min((current / target) * 100, 100) : 0;
-        return `
-            <article class="macro">
-                <div class="macro-head">
-                    <div class="macro-label">
-                        <span class="macro-emoji">${emoji}</span>
-                        <span>${label}</span>
-                    </div>
-                    <div class="macro-value">${Math.round(current)} ${unit}</div>
+
+    const current = this.getMacroValue(key);
+
+    return `
+        <article class="macro">
+
+            <div class="macro-head">
+
+                <div class="macro-emoji">
+                    ${emoji}
                 </div>
-                <div class="macro-bar" aria-hidden="true">
-                    <span class="macro-bar-fill" style="width:${progress}%;"></span>
+
+                <div class="macro-label">
+                    ${label}
                 </div>
-                <div class="macro-meta">
-                    <span>${Math.round(current)} / ${target} ${unit}</span>
-                    <span>${Math.round(progress)}%</span>
+
+                <div class="macro-value">
+                    ${Math.round(current)} ${unit}
                 </div>
-            </article>
-        `;
-    },
+
+            </div>
+
+        </article>
+    `;
+},
 
     mealCard(icono, nombre, id) {
         return `
