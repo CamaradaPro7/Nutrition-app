@@ -254,8 +254,6 @@ render() {
 
 pasteFood(meal){
 
-pasteFood(meal){
-
     const modal=document.getElementById("modal");
 
     const titulo=meal.charAt(0).toUpperCase()+meal.slice(1);
