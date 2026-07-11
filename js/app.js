@@ -189,8 +189,97 @@ render() {
     },
 
     openMeal(meal) {
-        alert("Abrir comida: " + meal);
-    },
+
+    const modal = document.getElementById("modal");
+
+    const titulo = meal.charAt(0).toUpperCase() + meal.slice(1);
+
+    modal.classList.remove("hidden");
+
+    modal.innerHTML = `
+
+<div class="sheet">
+
+    <h2 class="text-center">${titulo}</h2>
+
+    <div class="mt-20">
+
+        <button class="action-btn"
+            onclick="App.pasteFood('${meal}')">
+
+            📋 Pegar desde ChatGPT
+
+        </button>
+
+        <button class="action-btn"
+            onclick="App.showFoods('${meal}')">
+
+            📄 Ver alimentos
+
+        </button>
+
+        <button class="action-btn danger"
+            onclick="App.clearMeal('${meal}')">
+
+            🗑 Vaciar comida
+
+        </button>
+
+    </div>
+
+    <div class="mt-20 center">
+
+        <button onclick="App.closeModal()">
+
+            Cerrar
+
+        </button>
+
+    </div>
+
+</div>
+
+`;
+
+},
+
+pasteFood(meal){
+
+    alert("Aquí pegaremos el texto de ChatGPT");
+
+},
+
+showFoods(meal){
+
+    alert("Listado de alimentos");
+
+},
+
+clearMeal(meal){
+
+    if(!confirm("¿Vaciar esta comida?")) return;
+
+    this.state.day[meal]=[];
+
+    DB.saveDay(this.state.day);
+
+    this.render();
+
+    this.updateUI();
+
+    this.closeModal();
+
+},
+
+closeModal(){
+
+    const modal=document.getElementById("modal");
+
+    modal.classList.add("hidden");
+
+    modal.innerHTML="";
+
+},
 
     openReport() {
         alert("Resumen diario");
