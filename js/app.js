@@ -56,90 +56,82 @@ const App = {
 
     render(){
 
-        const app=document.getElementById("app");
+        const app = document.getElementById("app");
 
-        app.innerHTML=`
+        app.innerHTML = `
 
 <section class="card dashboard">
 
-<h1 class="title">Buenos días</h1>
+    <h1 class="title">Buenos días</h1>
 
-<p class="date">${this.formatDate()}</p>
+    <p class="date">${this.formatDate()}</p>
 
-<div class="progress" onclick="App.openReport()">
+    <div class="progress" onclick="App.openReport()">
 
-<div class="progress-circle">
+        <div class="progress-circle">
 
-<div class="progress-value">0</div>
+            <div class="progress-value">0</div>
 
-<div class="progress-label">
-de ${this.state.settings.objetivoKcal} kcal
-</div>
+            <div class="progress-label">
+                de ${this.state.settings.objetivoKcal} kcal
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
-<div class="macros">
+    <div class="macros">
 
-<div class="macro">
-<span>🥩 Proteínas</span>
-<strong>0 g</strong>
-</div>
+        <div class="macro">
+            <span>🥩 Proteínas</span>
+            <strong>0 g</strong>
+        </div>
 
-<div class="macro">
-<span>🍚 Hidratos</span>
-<strong>0 g</strong>
-</div>
+        <div class="macro">
+            <span>🍚 Hidratos</span>
+            <strong>0 g</strong>
+        </div>
 
-<div class="macro">
-<span>🥑 Grasas</span>
-<strong>0 g</strong>
-</div>
+        <div class="macro">
+            <span>🥑 Grasas</span>
+            <strong>0 g</strong>
+        </div>
 
-</div>
+    </div>
 
 </section>
 
 ${this.mealCard("🍳","Desayuno","desayuno")}
-
 ${this.mealCard("🍝","Comida","comida")}
-
 ${this.mealCard("🍓","Merienda","merienda")}
-
 ${this.mealCard("🥗","Cena","cena")}
 
 `;
 
     },
 
-    mealCard(icono,nombre,id){
+    mealCard(icono, nombre, id){
 
         return `
 
 <section class="card meal" onclick="App.openMeal('${id}')">
 
-<div class="meal-row">
+    <div class="meal-row">
 
-<div class="meal-title">
+        <div class="meal-title">
 
-<span class="meal-icon">${icono}</span>
+            <span class="meal-icon">${icono}</span>
+            <span>${nombre}</span>
 
-<span>${nombre}</span>
+        </div>
 
-</div>
+        <div class="meal-arrow">›</div>
 
-<div class="meal-arrow">›</div>
+    </div>
 
-</div>
+    <p class="meal-empty">Sin alimentos</p>
 
-<p class="meal-empty">
-Sin alimentos
-</p>
-
-<div class="meal-total">
-0 kcal
-</div>
+    <div class="meal-total">0 kcal</div>
 
 </section>
 
