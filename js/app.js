@@ -254,28 +254,101 @@ render() {
 
 pasteFood(meal){
 
-    const texto = prompt(`Pega aquí el texto de ChatGPT para ${meal}`);
+pasteFood(meal){
+
+    const modal=document.getElementById("modal");
+
+    const titulo=meal.charAt(0).toUpperCase()+meal.slice(1);
+
+    modal.innerHTML=`
+
+<div class="sheet">
+
+<h2>${titulo}</h2>
+
+<textarea id="foodText"
+placeholder="Pega aquí uno o varios alimentos copiados desde ChatGPT..."
+style="
+width:100%;
+height:260px;
+padding:16px;
+border:1px solid #ddd;
+border-radius:18px;
+font-size:16px;
+resize:none;
+"></textarea>
+
+<div class="mt-20">
+
+<button class="action-btn"
+onclick="App.savePastedFood('${meal}')">
+
+Guardar alimentos
+
+</button>
+
+<button class="action-btn danger"
+onclick="App.openMeal('${meal}')">
+
+Cancelar
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+},
+
+savePastedFood(meal){
+
+    const texto=document.getElementById("foodText").value.trim();
 
     if(!texto) return;
 
-    const kcal = Number((texto.match(/kcal[: ]*(\d+)/i)||[])[1]||0);
-    const proteinas = Number((texto.match(/prote[ií]nas[: ]*(\d+)/i)||[])[1]||0);
-    const hidratos = Number((texto.match(/hidratos[: ]*(\d+)/i)||[])[1]||0);
-    const grasas = Number((texto.match(/grasas[: ]*(\d+)/i)||[])[1]||0);
+    const bloques=texto.split(/\n\s*\n/);
 
-    this.state.day[meal].push({
+    bloques.forEach(bloque=>{
 
-        nombre:"Comida ChatGPT",
+        const lineas=bloque.split("\n");
 
-        kcal,
+        const nombre=lineas[0].trim();
 
-        proteinas,
+        const kcal=parseFloat(((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i)||[])[1]||0).replace(",","."));
 
-        hidratos,
+        const proteinas=parseFloat(((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i)||[])[1]||0).replace(",","."));
 
-        grasas
+        const hidratos=parseFloat(((bloque.match(/(Carbohidratos|Hidratos):\s*([\d.,]+)/i)||[])[2]||0).replace(",","."));
+
+        const grasas=parseFloat(((bloque.match(/Grasas:\s*([\d.,]+)/i)||[])[1]||0).replace(",","."));
+
+        this.state.day[meal].push({
+
+            nombre,
+
+            kcal,
+
+            proteinas,
+
+            hidratos,
+
+            grasas
+
+        });
 
     });
+
+    DB.saveDay(this.state.day);
+
+    this.closeModal();
+
+    this.render();
+
+    this.updateUI();
+
+},
 
     DB.saveDay(this.state.day);
 
