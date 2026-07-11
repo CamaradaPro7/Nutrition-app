@@ -62,8 +62,8 @@ select{
 
 #app{
     width:min(100%,520px);
-    margin:auto;
-    padding:20px 18px 30px;
+    margin:0 auto;
+    padding:20px 18px 28px;
 }
 
 .card{
@@ -74,12 +74,13 @@ select{
 }
 
 .dashboard{
-    padding:22px 22px 20px;
+    padding:26px 22px 22px;
 }
 
 .dashboard-top{
-    display:block;
-    text-align:center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
 .dashboard-copy{
@@ -93,17 +94,16 @@ select{
 }
 
 .title{
-    font-size:34px;
-    line-height:1.05;
+    font-size:42px;
     font-weight:800;
-    letter-spacing:-.04em;
+    line-height:1;
+    letter-spacing:-.05em;
 }
 
 .date{
-    margin-top:8px;
+    margin-top:10px;
+    font-size:18px;
     color:var(--text-light);
-    font-size:16px;
-    line-height:1.35;
 }
 
 .icon-btn{
@@ -127,16 +127,16 @@ select{
 .progress-wrap{
     display:flex;
     justify-content:center;
-    margin:18px 0 18px;
+    margin:26px 0;
 }
 
 .progress{
     position:relative;
-    width:208px;
-    height:208px;
+    width:220px;
+    height:220px;
     display:flex;
-    align-items:center;
     justify-content:center;
+    align-items:center;
 }
 
 .progress svg{
@@ -189,43 +189,44 @@ select{
 }
 
 .macro{
-    flex:1;
     background:var(--card-soft);
     border:1px solid var(--line);
     border-radius:22px;
-    padding:18px 10px;
+    padding:16px 10px;
+    box-shadow:var(--shadow-soft);
     display:flex;
     justify-content:center;
     align-items:center;
     text-align:center;
-    box-shadow:var(--shadow-soft);
+    min-height:160px;
 }
 
 .macro-head{
+    width:100%;
     display:flex;
     flex-direction:column;
-    align-items:center;
     justify-content:center;
+    align-items:center;
     gap:8px;
-    width:100%;
 }
 
 .macro-emoji{
-    font-size:30px;
+    font-size:34px;
+    line-height:1;
 }
 
 .macro-label{
-    font-size:12px;
+    color:var(--text-light);
+    font-size:13px;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:.08em;
-    color:var(--text-light);
 }
 
 .macro-value{
-    font-size:22px;
+    font-size:26px;
     font-weight:800;
-    color:var(--text);
+    letter-spacing:-.03em;
 }
 
 .meals{
@@ -233,64 +234,57 @@ select{
 }
 
 .meal{
-    padding:18px 18px 16px;
+    padding:18px 20px;
     cursor:pointer;
-    transition:transform .15s ease, box-shadow .15s ease;
+    transition:.2s;
 }
 
 .meal:active{
-    transform:scale(.986);
+    transform:scale(.98);
 }
 
 .meal-row{
     display:flex;
-    align-items:center;
     justify-content:space-between;
-    gap:16px;
+    align-items:center;
 }
 
 .meal-title{
     display:flex;
     align-items:center;
-    gap:12px;
-    min-width:0;
-    font-size:20px;
-    font-weight:800;
-    letter-spacing:-.02em;
+    gap:14px;
+    font-size:22px;
+    font-weight:700;
 }
 
 .meal-icon{
-    width:36px;
-    height:36px;
-    border-radius:12px;
-    background:#f3f6fb;
-    display:inline-flex;
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    background:#f5f7fb;
+    display:flex;
     align-items:center;
     justify-content:center;
-    font-size:18px;
-    flex:0 0 auto;
+    font-size:22px;
 }
 
 .meal-arrow{
-    font-size:28px;
-    line-height:1;
-    color:#b8c0cc;
-    flex:0 0 auto;
+    font-size:30px;
+    color:#c6ccd6;
 }
 
 .meal-empty{
-    margin-top:10px;
-    font-size:14px;
+    margin-top:12px;
     color:var(--text-light);
+    font-size:15px;
 }
 
 .meal-total{
-    margin-top:10px;
+    margin-top:8px;
     text-align:right;
-    font-size:20px;
+    font-size:22px;
     font-weight:800;
     color:var(--green);
-    letter-spacing:-.02em;
 }
 
 .bottom-nav{
@@ -384,55 +378,99 @@ select{
 .mb-20{margin-bottom:20px;}
 
 @media (max-width:420px){
+
     #app{
-        padding-left:14px;
-        padding-right:14px;
+        padding:18px 14px 24px;
     }
 
     .dashboard{
-        padding:20px 18px 18px;
+        padding:22px 18px 20px;
     }
 
     .title{
-        font-size:30px;
+        font-size:34px;
+    }
+
+    .date{
+        font-size:16px;
     }
 
     .progress{
-        width:188px;
-        height:188px;
+        width:190px;
+        height:190px;
     }
 
     .progress-center{
-        width:134px;
-        height:134px;
+        width:132px;
+        height:132px;
     }
 
     .progress-value{
         font-size:48px;
     }
 
+    .macros{
+        gap:10px;
+    }
+
     .macro{
-        padding:13px 10px 11px;
+        min-height:125px;
+        padding:14px 8px;
+    }
+
+    .macro-emoji{
+        font-size:26px;
+    }
+
+    .macro-label{
+        font-size:11px;
     }
 
     .macro-value{
-        font-size:18px;
+        font-size:20px;
     }
 
     .meal{
-        padding:16px 16px 14px;
+        padding:16px;
     }
 
     .meal-title{
-        font-size:18px;
+        font-size:20px;
     }
-    
-.macro-value{
-    text-align:center;
+
+    .meal-icon{
+        width:38px;
+        height:38px;
+        font-size:20px;
+    }
+
+    .meal-total{
+        font-size:20px;
+    }
+
 }
 
-.macro-meta{
-    justify-content:center;
-    gap:12px;
+.progress{
+    border:none;
+    background:none;
 }
+
+.progress:hover{
+    transform:none;
+}
+
+.progress:active{
+    transform:scale(.98);
+}
+
+.meal:hover{
+    box-shadow:var(--shadow);
+}
+
+.dashboard{
+    overflow:hidden;
+}
+
+.card{
+    overflow:hidden;
 }
