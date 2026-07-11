@@ -45,6 +45,8 @@ const App = {
         }
     },
 
+const app = document.getElementById("app");
+
     render() {
 app.innerHTML = `
     <section class="card dashboard">
@@ -85,6 +87,8 @@ app.innerHTML = `
         ${this.mealCard("🥗","Cena","cena")}
     </section>
 `;
+
+},
 
     renderMacro(label, emoji, key, target, unit) {
         const current = this.getMacroValue(key);
