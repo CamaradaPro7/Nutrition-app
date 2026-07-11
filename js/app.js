@@ -350,16 +350,6 @@ savePastedFood(meal){
 
 },
 
-    DB.saveDay(this.state.day);
-
-    this.closeModal();
-
-    this.render();
-
-    this.updateUI();
-
-},
-
 showFoods(meal){
 
     alert("Listado de alimentos");
