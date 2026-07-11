@@ -45,11 +45,12 @@ const App = {
         }
     },
 
-const app = document.getElementById("app");
+render() {
 
-    render() {
-app.innerHTML = `
-    <section class="card dashboard">
+    const app = document.getElementById("app");
+
+    app.innerHTML = `
+        <section class="card dashboard">
         <div class="dashboard-top">
             <div class="dashboard-copy">
                 <h1 class="title">Buenos días</h1>
@@ -191,13 +192,6 @@ app.innerHTML = `
         alert("Resumen diario");
     },
 
-    openQuickAdd() {
-        alert("Añadir alimento");
-    },
-
-    openSettings() {
-        alert("Ajustes");
-    }
 };
 
 document.addEventListener("DOMContentLoaded", () => App.init());
