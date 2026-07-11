@@ -159,14 +159,23 @@ render() {
         return this.getMealCalories("desayuno") + this.getMealCalories("comida") + this.getMealCalories("merienda") + this.getMealCalories("cena");
     },
 
-    getMacroValue(key) {
-        const map = {
-            proteinas: 0,
-            hidratos: 0,
-            grasas: 0
-        };
-        return map[key] || 0;
-    },
+    getMacroValue(key){
+
+    let total=0;
+
+    ["desayuno","comida","merienda","cena"].forEach(meal=>{
+
+        this.state.day[meal].forEach(food=>{
+
+            total+=Number(food[key]||0);
+
+        });
+
+    });
+
+    return total;
+
+},
 
     getMealCalories(meal) {
         const items = this.state.day?.[meal] || [];
@@ -245,7 +254,36 @@ render() {
 
 pasteFood(meal){
 
-    alert("Aquí pegaremos el texto de ChatGPT");
+    const texto = prompt(`Pega aquí el texto de ChatGPT para ${meal}`);
+
+    if(!texto) return;
+
+    const kcal = Number((texto.match(/kcal[: ]*(\d+)/i)||[])[1]||0);
+    const proteinas = Number((texto.match(/prote[ií]nas[: ]*(\d+)/i)||[])[1]||0);
+    const hidratos = Number((texto.match(/hidratos[: ]*(\d+)/i)||[])[1]||0);
+    const grasas = Number((texto.match(/grasas[: ]*(\d+)/i)||[])[1]||0);
+
+    this.state.day[meal].push({
+
+        nombre:"Comida ChatGPT",
+
+        kcal,
+
+        proteinas,
+
+        hidratos,
+
+        grasas
+
+    });
+
+    DB.saveDay(this.state.day);
+
+    this.closeModal();
+
+    this.render();
+
+    this.updateUI();
 
 },
 
