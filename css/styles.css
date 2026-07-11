@@ -86,7 +86,7 @@ body{
 
 .title{
 
-    text-align:left;
+    text-align:center;
 
     font-size:42px;
 
@@ -103,6 +103,8 @@ body{
     color:var(--text-light);
 
     font-size:18px;
+
+    text-align:center;
 
 }
 
