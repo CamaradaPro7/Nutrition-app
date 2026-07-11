@@ -476,3 +476,54 @@ select{
 .card{
     overflow:hidden;
 }
+
+.action-btn{
+    width:100%;
+    border:none;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:14px;
+    background:var(--green);
+    color:#fff;
+    font-size:18px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.action-btn:active{
+    transform:scale(.98);
+}
+
+.action-btn:last-child{
+    margin-bottom:0;
+}
+
+.action-btn.danger{
+    background:#ef4444;
+}
+
+.sheet h2{
+    font-size:28px;
+    font-weight:800;
+    margin-bottom:24px;
+    text-align:center;
+}
+
+.sheet{
+    animation:slideUp .25s ease;
+}
+
+@keyframes slideUp{
+
+    from{
+        transform:translateY(100%);
+        opacity:0;
+    }
+
+    to{
+        transform:translateY(0);
+        opacity:1;
+    }
+
+}
