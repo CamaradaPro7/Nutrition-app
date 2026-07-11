@@ -188,45 +188,47 @@ select{
     color:var(--text-light);
 }
 
+.macros{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:10px;
+}
+
 .macro{
     background:var(--card-soft);
     border:1px solid var(--line);
-    border-radius:22px;
-    padding:16px 10px;
+    border-radius:20px;
+    padding:14px 10px 12px;
     box-shadow:var(--shadow-soft);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    min-height:160px;
 }
 
 .macro-head{
-    width:100%;
     display:flex;
     flex-direction:column;
-    justify-content:center;
     align-items:center;
-    gap:8px;
+    justify-content:center;
+    gap:6px;
+    text-align:center;
 }
 
 .macro-emoji{
-    font-size:34px;
+    font-size:24px;
     line-height:1;
 }
 
 .macro-label{
-    color:var(--text-light);
-    font-size:13px;
+    font-size:12px;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:.08em;
+    color:var(--text-light);
 }
 
 .macro-value{
-    font-size:26px;
+    font-size:20px;
     font-weight:800;
-    letter-spacing:-.03em;
+    color:var(--text);
 }
 
 .meals{
