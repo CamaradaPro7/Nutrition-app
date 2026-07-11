@@ -199,7 +199,7 @@ select{
     background:var(--card-soft);
     border:1px solid var(--line);
     border-radius:20px;
-    padding:14px 12px 12px;
+    padding:14px 8px 12px;
     box-shadow:var(--shadow-soft);
 }
 
@@ -261,9 +261,9 @@ select{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:8px;
     font-size:12px;
     color:var(--text-light);
+    white-space:nowrap;
 }
 
 .meals{
