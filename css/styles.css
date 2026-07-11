@@ -527,3 +527,37 @@ select{
     }
 
 }
+
+.food-list{
+    margin-top:20px;
+}
+
+.food-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 0;
+    border-bottom:1px solid #ececec;
+}
+
+.food-name{
+    font-size:17px;
+    font-weight:700;
+}
+
+.food-kcal{
+    margin-top:4px;
+    font-size:14px;
+    color:#6e7788;
+}
+
+.delete-btn{
+    width:38px;
+    height:38px;
+    border:none;
+    border-radius:12px;
+    background:#ef4444;
+    color:#fff;
+    font-size:20px;
+    cursor:pointer;
+}
