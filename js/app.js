@@ -350,7 +350,97 @@ savePastedFood(meal){
 
 showFoods(meal){
 
-    alert("Listado de alimentos");
+    const modal=document.getElementById("modal");
+
+    const foods=this.state.day[meal]||[];
+
+    const titulo=meal.charAt(0).toUpperCase()+meal.slice(1);
+
+    modal.classList.remove("hidden");
+
+    modal.innerHTML=`
+
+<div class="sheet">
+
+<h2>${titulo}</h2>
+
+<div class="food-list">
+
+${
+foods.length
+?
+foods.map((food,index)=>`
+
+<div class="food-item">
+
+<div>
+
+<div class="food-name">${food.nombre}</div>
+
+<div class="food-kcal">
+
+${food.kcal} kcal ·
+P ${food.proteinas} g ·
+C ${food.hidratos} g ·
+G ${food.grasas} g
+
+</div>
+
+</div>
+
+<button class="delete-btn"
+
+onclick="App.deleteFood('${meal}',${index})">
+
+✕
+</button>
+
+</div>
+
+`).join("")
+:
+"<p class='text-center'>Sin alimentos</p>"
+}
+
+</div>
+
+<div class="mt-20">
+
+<button class="action-btn"
+
+onclick="App.pasteFood('${meal}')">
+
+📋 Añadir alimentos
+
+</button>
+
+<button class="action-btn danger"
+
+onclick="App.closeModal()">
+
+Cerrar
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+},
+
+deleteFood(meal,index){
+
+    this.state.day[meal].splice(index,1);
+
+    DB.saveDay(this.state.day);
+
+    this.showFoods(meal);
+
+    this.render();
+
+    this.updateUI();
 
 },
 
