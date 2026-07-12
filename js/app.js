@@ -302,25 +302,43 @@ Cancelar
 
 savePastedFood(meal){
 
-    const texto=document.getElementById("foodText").value.trim();
+    const texto = document.getElementById("foodText").value.trim();
 
     if(!texto) return;
 
-    const bloques=texto.split(/\n\s*\n/);
+    const bloques = texto.split(/\n\s*\n/);
+
+    const ahora = new Date();
+
+    const fecha = ahora.toISOString().slice(0,10);
+
+    const hora = ahora.toLocaleTimeString("es-ES",{
+        hour:"2-digit",
+        minute:"2-digit"
+    });
 
     bloques.forEach(bloque=>{
 
-        const lineas=bloque.split("\n");
+        const lineas = bloque.trim().split("\n");
 
-        const nombre=lineas[0].trim();
+        const nombre = lineas[0].trim();
 
-        const kcal=parseFloat(((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i)||[])[1]||0).replace(",","."));
+        const kcal = parseFloat((((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i)||[])[1])||0).replace(",","."));
 
-        const proteinas=parseFloat(((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i)||[])[1]||0).replace(",","."));
+        const proteinas = parseFloat((((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i)||[])[1])||0).replace(",","."));
 
-        const hidratos=parseFloat(((bloque.match(/(Carbohidratos|Hidratos):\s*([\d.,]+)/i)||[])[2]||0).replace(",","."));
+        let hidratos = 0;
 
-        const grasas=parseFloat(((bloque.match(/Grasas:\s*([\d.,]+)/i)||[])[1]||0).replace(",","."));
+        const carbo = bloque.match(/Carbohidratos:\s*([\d.,]+)/i);
+        const hidra = bloque.match(/Hidratos:\s*([\d.,]+)/i);
+
+        if(carbo){
+            hidratos = parseFloat(carbo[1].replace(",","."));
+        }else if(hidra){
+            hidratos = parseFloat(hidra[1].replace(",","."));
+        }
+
+        const grasas = parseFloat((((bloque.match(/Grasas:\s*([\d.,]+)/i)||[])[1])||0).replace(",","."));
 
         this.state.day[meal].push({
 
@@ -332,7 +350,15 @@ savePastedFood(meal){
 
             hidratos,
 
-            grasas
+            grasas,
+
+            fecha,
+
+            hora,
+
+            comida: meal,
+
+            origen: bloque.trim()
 
         });
 
@@ -346,7 +372,7 @@ savePastedFood(meal){
 
     this.updateUI();
 
-},
+}
 
 showFoods(meal){
 
@@ -378,6 +404,10 @@ foods.map((food,index)=>`
 <div class="food-name">${food.nombre}</div>
 
 <div class="food-kcal">
+
+🕒 ${food.hora || "--:--"}
+
+<br>
 
 ${food.kcal} kcal ·
 P ${food.proteinas} g ·
