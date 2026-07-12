@@ -470,9 +470,117 @@ closeModal(){
 
 },
 
-    openReport() {
-        alert("Resumen diario");
-    },
+openReport() {
+
+    const total = this.getCalories();
+
+    const p = this.getMacroValue("proteinas");
+    const c = this.getMacroValue("hidratos");
+    const g = this.getMacroValue("grasas");
+
+    const comidas = [
+        ["DESAYUNO","desayuno"],
+        ["COMIDA","comida"],
+        ["MERIENDA","merienda"],
+        ["CENA","cena"]
+    ];
+
+    let informe = `RESUMEN DIARIO
+
+${this.formatDate()}
+
+🔥 Calorías
+${total} / ${this.state.settings.objetivoKcal} kcal
+
+🥩 Proteínas
+${p} / ${this.state.settings.macros.proteinas} g
+
+🍚 Hidratos
+${c} / ${this.state.settings.macros.hidratos} g
+
+🥑 Grasas
+${g} / ${this.state.settings.macros.grasas} g
+
+`;
+
+    comidas.forEach(([titulo,id])=>{
+
+        informe += `\n${titulo}\n`;
+
+        const foods=this.state.day[id]||[];
+
+        if(!foods.length){
+
+            informe+="Sin alimentos\n";
+
+        }else{
+
+            foods.forEach(food=>{
+
+                informe+=`• ${food.nombre}\n`;
+
+            });
+
+        }
+
+    });
+
+    const modal=document.getElementById("modal");
+
+    modal.classList.remove("hidden");
+
+    modal.innerHTML=`
+
+<div class="sheet">
+
+<h2 class="text-center mb-20">
+Resumen diario
+</h2>
+
+<textarea
+id="dailyReport"
+readonly
+style="
+width:100%;
+height:340px;
+padding:16px;
+border:1px solid #e5e7eb;
+border-radius:18px;
+font-size:15px;
+line-height:1.6;
+resize:none;
+background:#f8fafc;
+">${informe}</textarea>
+
+<div class="mt-20">
+
+<button class="action-btn"
+onclick="App.copyReport()">
+📋 Copiar informe
+</button>
+
+<button class="action-btn danger"
+onclick="App.closeModal()">
+Cerrar
+</button>
+
+</div>
+
+</div>
+
+`;
+
+},
+
+copyReport(){
+
+    const texto=document.getElementById("dailyReport").value;
+
+    navigator.clipboard.writeText(texto);
+
+    alert("Informe copiado.");
+
+},
 
 };
 
