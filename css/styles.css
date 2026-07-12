@@ -658,3 +658,129 @@ select{
     color:var(--text-light);
     font-style:italic;
 }
+
+/*======================================
+  INFORME DIARIO
+======================================*/
+
+.report-date{
+    text-align:center;
+    color:var(--text-light);
+    font-size:16px;
+    margin:18px 0 22px;
+}
+
+.report-calories{
+    display:flex;
+    justify-content:center;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:24px;
+    font-size:24px;
+    font-weight:700;
+}
+
+.report-calories strong{
+    font-size:52px;
+    color:var(--blue);
+    line-height:1;
+}
+
+.report-calories span{
+    color:var(--text-light);
+    font-size:22px;
+}
+
+.report-macros{
+    background:var(--card-soft);
+    border:1px solid var(--line);
+    border-radius:22px;
+    overflow:hidden;
+    margin-bottom:26px;
+}
+
+.report-macro{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 20px;
+}
+
+.report-macro:not(:last-child){
+    border-bottom:1px solid var(--line);
+}
+
+.report-macro span{
+    font-size:17px;
+    font-weight:600;
+}
+
+.report-macro strong{
+    font-size:17px;
+}
+
+.report-meal{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:18px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow-soft);
+}
+
+.report-meal-title{
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:18px;
+}
+
+.report-empty{
+    color:var(--text-light);
+    font-style:italic;
+    padding:6px 0;
+}
+
+.report-food{
+    padding:12px 0;
+}
+
+.report-food:not(:last-child){
+    border-bottom:1px solid var(--line);
+}
+
+.report-food-header{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.report-food-time{
+    min-width:48px;
+    color:var(--text-light);
+    font-size:14px;
+    font-weight:600;
+}
+
+.report-food-name{
+    flex:1;
+    font-size:16px;
+    font-weight:600;
+}
+
+.report-food-kcal{
+    margin-left:58px;
+    margin-top:4px;
+    color:var(--green);
+    font-weight:700;
+}
+
+.report-meal-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+    font-weight:800;
+    color:var(--green);
+}
