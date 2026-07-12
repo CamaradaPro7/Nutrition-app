@@ -504,111 +504,307 @@ openReport() {
 
     const total = this.getCalories();
 
-    const p = this.getMacroValue("proteinas");
-    const c = this.getMacroValue("hidratos");
-    const g = this.getMacroValue("grasas");
+    const objetivo = this.state.settings.objetivoKcal;
+
+    const restante = Math.max(0, objetivo - total);
+
+    const proteinas = this.getMacroValue("proteinas");
+    const hidratos = this.getMacroValue("hidratos");
+    const grasas = this.getMacroValue("grasas");
 
     const comidas = [
+        {
+            titulo: "🍳 Desayuno",
+            key: "desayuno"
+        },
+        {
+            titulo: "🍝 Comida",
+            key: "comida"
+        },
+        {
+            titulo: "🍓 Merienda",
+            key: "merienda"
+        },
+        {
+            titulo: "🥗 Cena",
+            key: "cena"
+        }
+    ];
+
+    let html = `
+
+<div class="sheet">
+
+<h2 class="text-center">
+Resumen diario
+</h2>
+
+<div class="report-card">
+
+<div class="report-date">
+
+📅 ${this.formatDate()}
+
+</div>
+
+<div class="report-kcal">
+
+<div>
+
+<span class="report-title">
+Objetivo
+</span>
+
+<strong>
+${objetivo} kcal
+</strong>
+
+</div>
+
+<div>
+
+<span class="report-title">
+Consumido
+</span>
+
+<strong>
+${total} kcal
+</strong>
+
+</div>
+
+<div>
+
+<span class="report-title">
+Restante
+</span>
+
+<strong>
+${restante} kcal
+</strong>
+
+</div>
+
+</div>
+
+<div class="report-macros">
+
+<div>
+
+🥩
+
+<strong>
+
+${proteinas}
+
+</strong>
+
+<span>
+
+/ ${this.state.settings.macros.proteinas} g</span>
+
+</div>
+
+<div>
+
+🍚
+
+<strong>
+
+${hidratos}
+
+</strong>
+
+<span>
+
+/ ${this.state.settings.macros.hidratos} g</span>
+
+</div>
+
+<div>
+
+🥑
+
+<strong>
+
+${grasas}
+
+</strong>
+
+<span>
+
+/ ${this.state.settings.macros.grasas} g</span>
+
+</div>
+
+</div>
+
+`;
+
+    comidas.forEach(comida => {
+
+        html += `
+
+<hr>
+
+<h3>
+
+${comida.titulo}
+
+</h3>
+
+`;
+
+        const foods = this.state.day[comida.key] || [];
+
+        if (!foods.length) {
+
+            html += `
+
+<p class="empty-meal">
+
+Sin alimentos
+
+</p>
+
+`;
+
+            return;
+
+        }
+
+        let totalMeal = 0;
+
+        foods.forEach(food => {
+
+            totalMeal += Number(food.kcal || 0);
+
+            html += `
+            <div class="report-food">
+
+    <div class="report-food-name">
+
+        ${food.hora || "--:--"} · ${food.nombre}
+
+    </div>
+
+    <div class="report-food-kcal">
+
+        ${food.kcal} kcal
+
+    </div>
+
+</div>
+
+`;
+
+        });
+
+        html += `
+
+<div class="report-total">
+
+Total ${comida.titulo.replace("🍳 ","").replace("🍝 ","").replace("🍓 ","").replace("🥗 ","").toLowerCase()}
+
+<strong>
+
+${totalMeal} kcal
+
+</strong>
+
+</div>
+
+`;
+
+    });
+
+    html += `
+
+<div class="mt-20">
+
+<button
+class="action-btn"
+onclick="App.copyReport()">
+
+📋 Copiar para ChatGPT
+
+</button>
+
+<button
+class="action-btn danger"
+onclick="App.closeModal()">
+
+Cerrar
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+    const modal = document.getElementById("modal");
+
+    modal.classList.remove("hidden");
+
+    modal.innerHTML = html;
+
+},
+
+copyReport(){
+
+    const comidas=[
         ["DESAYUNO","desayuno"],
         ["COMIDA","comida"],
         ["MERIENDA","merienda"],
         ["CENA","cena"]
     ];
 
-    let informe = `RESUMEN DIARIO
+    let texto="";
 
-${this.formatDate()}
+    texto+="RESUMEN DIARIO\n\n";
 
-🔥 Calorías
-${total} / ${this.state.settings.objetivoKcal} kcal
+    texto+=this.formatDate()+"\n\n";
 
-🥩 Proteínas
-${p} / ${this.state.settings.macros.proteinas} g
+    texto+=`Objetivo: ${this.state.settings.objetivoKcal} kcal\n`;
+    texto+=`Consumido: ${this.getCalories()} kcal\n`;
+    texto+=`Restante: ${Math.max(0,this.state.settings.objetivoKcal-this.getCalories())} kcal\n\n`;
 
-🍚 Hidratos
-${c} / ${this.state.settings.macros.hidratos} g
+    texto+=`Proteínas: ${this.getMacroValue("proteinas")} g\n`;
+    texto+=`Hidratos: ${this.getMacroValue("hidratos")} g\n`;
+    texto+=`Grasas: ${this.getMacroValue("grasas")} g\n\n`;
 
-🥑 Grasas
-${g} / ${this.state.settings.macros.grasas} g
+    comidas.forEach(([titulo,key])=>{
 
-`;
+        texto+=titulo+"\n";
 
-    comidas.forEach(([titulo,id])=>{
-
-        informe += `\n${titulo}\n`;
-
-        const foods=this.state.day[id]||[];
+        const foods=this.state.day[key]||[];
 
         if(!foods.length){
 
-            informe+="Sin alimentos\n";
-
-        }else{
-
-            foods.forEach(food=>{
-
-                informe+=`• ${food.nombre}\n`;
-
-            });
+            texto+="Sin alimentos\n\n";
+            return;
 
         }
 
+        let total=0;
+
+        foods.forEach(food=>{
+
+            texto+=`• ${food.hora || "--:--"} - ${food.nombre} (${food.kcal} kcal)\n`;
+
+            total+=Number(food.kcal);
+
+        });
+
+        texto+=`Total ${titulo.toLowerCase()}: ${total} kcal\n\n`;
+
     });
-
-    const modal=document.getElementById("modal");
-
-    modal.classList.remove("hidden");
-
-    modal.innerHTML=`
-
-<div class="sheet">
-
-<h2 class="text-center mb-20">
-Resumen diario
-</h2>
-
-<textarea
-id="dailyReport"
-readonly
-style="
-width:100%;
-height:340px;
-padding:16px;
-border:1px solid #e5e7eb;
-border-radius:18px;
-font-size:15px;
-line-height:1.6;
-resize:none;
-background:#f8fafc;
-">${informe}</textarea>
-
-<div class="mt-20">
-
-<button class="action-btn"
-onclick="App.copyReport()">
-📋 Copiar informe
-</button>
-
-<button class="action-btn danger"
-onclick="App.closeModal()">
-Cerrar
-</button>
-
-</div>
-
-</div>
-
-`;
-
-},
-
-copyReport(){
-
-    const texto=document.getElementById("dailyReport").value;
 
     navigator.clipboard.writeText(texto);
 
-    alert("Informe copiado.");
+    alert("✅ Informe copiado");
 
 },
 
