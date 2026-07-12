@@ -500,46 +500,32 @@ closeModal(){
 
 },
 
-openReport() {
+openReport(){
 
-    const total = this.getCalories();
+    const total=this.getCalories();
 
-    const objetivo = this.state.settings.objetivoKcal;
+    const objetivo=this.state.settings.objetivoKcal;
 
-    const restante = Math.max(0, objetivo - total);
+    const proteinas=this.getMacroValue("proteinas");
+    const hidratos=this.getMacroValue("hidratos");
+    const grasas=this.getMacroValue("grasas");
 
-    const proteinas = this.getMacroValue("proteinas");
-    const hidratos = this.getMacroValue("hidratos");
-    const grasas = this.getMacroValue("grasas");
-
-    const comidas = [
-        {
-            titulo: "🍳 Desayuno",
-            key: "desayuno"
-        },
-        {
-            titulo: "🍝 Comida",
-            key: "comida"
-        },
-        {
-            titulo: "🍓 Merienda",
-            key: "merienda"
-        },
-        {
-            titulo: "🥗 Cena",
-            key: "cena"
-        }
+    const comidas=[
+        {icono:"🍳",titulo:"Desayuno",key:"desayuno"},
+        {icono:"🍝",titulo:"Comida",key:"comida"},
+        {icono:"🍓",titulo:"Merienda",key:"merienda"},
+        {icono:"🥗",titulo:"Cena",key:"cena"}
     ];
 
-    let html = `
+    let html=`
 
 <div class="sheet">
 
 <h2 class="text-center">
-Resumen diario
-</h2>
 
-<div class="report-card">
+Resumen diario
+
+</h2>
 
 <div class="report-date">
 
@@ -547,93 +533,37 @@ Resumen diario
 
 </div>
 
-<div class="report-kcal">
+<div class="report-calories">
 
-<div>
+🔥 <strong>${total}</strong>
 
-<span class="report-title">
-Objetivo
-</span>
-
-<strong>
-${objetivo} kcal
-</strong>
-
-</div>
-
-<div>
-
-<span class="report-title">
-Consumido
-</span>
-
-<strong>
-${total} kcal
-</strong>
-
-</div>
-
-<div>
-
-<span class="report-title">
-Restante
-</span>
-
-<strong>
-${restante} kcal
-</strong>
-
-</div>
+<span>/ ${objetivo} kcal</span>
 
 </div>
 
 <div class="report-macros">
 
-<div>
+<div class="report-macro">
 
-🥩
+<span>🥩 Proteínas</span>
 
-<strong>
-
-${proteinas}
-
-</strong>
-
-<span>
-
-/ ${this.state.settings.macros.proteinas} g</span>
+<strong>${proteinas} / ${this.state.settings.macros.proteinas} g</strong>
 
 </div>
 
-<div>
+<div class="report-macro">
 
-🍚
+<span>🍚 Hidratos</span>
 
-<strong>
-
-${hidratos}
-
-</strong>
-
-<span>
-
-/ ${this.state.settings.macros.hidratos} g</span>
+<strong>${hidratos} / ${this.state.settings.macros.hidratos} g</strong>
 
 </div>
 
-<div>
+<div class="report-macro">
 
-🥑
+<span>🥑 Grasas</span>
 
-<strong>
-
-${grasas}
-
-</strong>
-
-<span>
-
-/ ${this.state.settings.macros.grasas} g</span>
+<strong>${grasas} / ${this.state.settings.macros.grasas} g</strong>
 
 </div>
 
@@ -641,50 +571,58 @@ ${grasas}
 
 `;
 
-    comidas.forEach(comida => {
+    comidas.forEach(comida=>{
 
-        html += `
+        const foods=this.state.day[comida.key]||[];
 
-<hr>
+        let totalMeal=0;
 
-<h3>
+        html+=`
 
-${comida.titulo}
+<div class="report-meal">
 
-</h3>
+<div class="report-meal-title">
+
+${comida.icono} ${comida.titulo}
+
+</div>
 
 `;
 
-        const foods = this.state.day[comida.key] || [];
+        if(!foods.length){
 
-        if (!foods.length) {
+            html+=`
 
-            html += `
-
-<p class="empty-meal">
+<div class="report-empty">
 
 Sin alimentos
 
-</p>
+</div>
 
 `;
 
-            return;
+        }else{
 
-        }
+            foods.forEach(food=>{
 
-        let totalMeal = 0;
+                totalMeal+=Number(food.kcal||0);
 
-        foods.forEach(food => {
+                html+=`
+                <div class="report-food">
 
-            totalMeal += Number(food.kcal || 0);
+    <div class="report-food-header">
 
-            html += `
-            <div class="report-food">
+        <span class="report-food-time">
 
-    <div class="report-food-name">
+            ${food.hora || "--:--"}
 
-        ${food.hora || "--:--"} · ${food.nombre}
+        </span>
+
+        <span class="report-food-name">
+
+            ${food.nombre}
+
+        </span>
 
     </div>
 
@@ -698,19 +636,23 @@ Sin alimentos
 
 `;
 
-        });
+            });
 
-        html += `
+            html+=`
 
-<div class="report-total">
+<div class="report-meal-total">
 
-Total ${comida.titulo.replace("🍳 ","").replace("🍝 ","").replace("🍓 ","").replace("🥗 ","").toLowerCase()}
+<span>Total ${comida.titulo}</span>
 
-<strong>
+<strong>${totalMeal} kcal</strong>
 
-${totalMeal} kcal
+</div>
 
-</strong>
+`;
+
+        }
+
+        html+=`
 
 </div>
 
@@ -718,7 +660,7 @@ ${totalMeal} kcal
 
     });
 
-    html += `
+    html+=`
 
 <div class="mt-20">
 
@@ -744,11 +686,11 @@ Cerrar
 
 `;
 
-    const modal = document.getElementById("modal");
+    const modal=document.getElementById("modal");
 
     modal.classList.remove("hidden");
 
-    modal.innerHTML = html;
+    modal.innerHTML=html;
 
 },
 
