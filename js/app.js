@@ -372,7 +372,7 @@ savePastedFood(meal){
 
     this.updateUI();
 
-}
+},
 
 showFoods(meal){
 
