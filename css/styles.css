@@ -561,3 +561,100 @@ select{
     font-size:20px;
     cursor:pointer;
 }
+
+/* ===========================
+   RESUMEN DIARIO
+=========================== */
+
+.report-card{
+    margin-top:18px;
+}
+
+.report-date{
+    text-align:center;
+    color:var(--text-light);
+    font-size:15px;
+    margin-bottom:22px;
+}
+
+.report-kcal{
+    background:#f8fafc;
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:18px;
+    margin-bottom:18px;
+    text-align:center;
+}
+
+.report-kcal strong{
+    display:block;
+    margin-top:6px;
+    font-size:34px;
+    font-weight:800;
+    color:var(--blue);
+}
+
+.report-title{
+    display:block;
+    font-size:13px;
+    color:var(--text-light);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+.report-macros{
+    background:#f8fafc;
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:18px;
+    margin-bottom:22px;
+}
+
+.report-macros div{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+}
+
+.report-macros div:not(:last-child){
+    border-bottom:1px solid var(--line);
+}
+
+.report-card hr{
+    border:none;
+    border-top:1px solid var(--line);
+    margin:22px 0;
+}
+
+.report-card h3{
+    font-size:22px;
+    margin-bottom:14px;
+}
+
+.report-food{
+    padding:10px 0;
+}
+
+.report-food-name{
+    font-size:16px;
+    font-weight:700;
+}
+
+.report-food-kcal{
+    color:var(--text-light);
+    margin-top:4px;
+}
+
+.report-total{
+    margin-top:12px;
+    display:flex;
+    justify-content:space-between;
+    font-weight:700;
+    color:var(--green);
+}
+
+.empty-meal{
+    color:var(--text-light);
+    font-style:italic;
+}
