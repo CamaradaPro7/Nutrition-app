@@ -67,7 +67,13 @@ const DB = {
             const store = tx.objectStore(this.stores.days);
             const request = store.get(id);
 
-            request.onsuccess = () => resolve(request.result || null);
+            request.onsuccess = () => {
+
+    console.log("📖 Día leído", request.result);
+
+    resolve(request.result || null);
+
+};
             request.onerror = () => reject(request.error);
         });
     },
@@ -79,7 +85,13 @@ const DB = {
             const store = tx.objectStore(this.stores.days);
             const request = store.put(day);
 
-            request.onsuccess = () => resolve(day);
+            request.onsuccess = () => {
+
+    console.log("✅ Día guardado", day);
+
+    resolve(day);
+
+};
             request.onerror = () => reject(request.error);
         });
     },
