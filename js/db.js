@@ -6,6 +6,21 @@
    ========================================================== */
 
 const DB = {
+
+    __diag(msg){
+        try{
+            let el=document.getElementById("db-debug");
+            if(!el){
+                el=document.createElement("pre");
+                el.id="db-debug";
+                el.style.cssText="position:fixed;left:0;right:0;bottom:0;max-height:40%;overflow:auto;background:#111;color:#0f0;padding:8px;font-size:12px;z-index:99999;white-space:pre-wrap;";
+                document.body.appendChild(el);
+            }
+            el.textContent += msg + "\n";
+        }catch(e){}
+    },
+
+
     db: null,
     name: "MiNutricionNEXT",
     version: 2,
@@ -67,7 +82,7 @@ const DB = {
             const store = tx.objectStore(this.stores.days);
             const request = store.get(id);
 
-            request.onsuccess = () => {
+            request.onsuccess = () => { this.__diag("DB abierta");
 
     console.log("📖 Día leído", request.result);
 
@@ -85,7 +100,7 @@ const DB = {
             const store = tx.objectStore(this.stores.days);
             const request = store.put(day);
 
-            request.onsuccess = () => {
+            request.onsuccess = () => { this.__diag("DB abierta");
 
     console.log("✅ Día guardado", day);
 
