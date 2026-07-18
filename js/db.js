@@ -2,67 +2,23 @@
 
 /* ==========================================================
    MI NUTRICIÓN NEXT
-   db.js
+   db.js (localStorage)
    ========================================================== */
 
 const DB = {
 
-    __diag(msg){
-        try{
-            let el=document.getElementById("db-debug");
-            if(!el){
-                el=document.createElement("pre");
-                el.id="db-debug";
-                el.style.cssText="position:fixed;left:0;right:0;bottom:0;max-height:40%;overflow:auto;background:#111;color:#0f0;padding:8px;font-size:12px;z-index:99999;white-space:pre-wrap;";
-                document.body.appendChild(el);
-            }
-            el.textContent += msg + "\n";
-        }catch(e){}
-    },
-
-
-    db: null,
-    name: "MiNutricionNEXT",
-    version: 2,
-    stores: {
-        foods: "foods",
-        days: "days",
-        settings: "settings",
-        backup: "backup"
-    },
-
-    async open() {
-        if (this.db) return this.db;
-
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(this.name, this.version);
-
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-
-                Object.values(this.stores).forEach((store) => {
-                    if (!db.objectStoreNames.contains(store)) {
-                        db.createObjectStore(store, {
-                            keyPath: "id"
-                        });
-                    }
-                });
-            };
-
-            request.onsuccess = (event) => {
-                this.db = event.target.result;
-                console.log("✅ IndexedDB iniciada");
-                resolve(this.db);
-            };
-
-            request.onerror = () => {
-                reject(request.error);
-            };
-        });
+    open() {
+        return true;
     },
 
     today() {
-        return new Date().toISOString().slice(0, 10);
+        const d = new Date();
+
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+
+        return `${y}-${m}-${day}`;
     },
 
     emptyDay() {
@@ -75,67 +31,105 @@ const DB = {
         };
     },
 
-    async getDay(id) {
-        await this.open();
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(this.stores.days, "readonly");
-            const store = tx.objectStore(this.stores.days);
-            const request = store.get(id);
+    getDay(id) {
+        try {
+            const data = localStorage.getItem(`day_${id}`);
 
-            request.onsuccess = () => { this.__diag("DB abierta");
+            if (!data) return null;
 
-    console.log("📖 Día leído", request.result);
+            return JSON.parse(data);
 
-    resolve(request.result || null);
+        } catch (e) {
 
-};
-            request.onerror = () => reject(request.error);
-        });
+            console.error("Error leyendo día", e);
+
+            return null;
+
+        }
     },
 
-    async saveDay(day) {
-        await this.open();
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(this.stores.days, "readwrite");
-            const store = tx.objectStore(this.stores.days);
-            const request = store.put(day);
+    saveDay(day) {
+        try {
 
-            request.onsuccess = () => { this.__diag("DB abierta");
+            if (!day.id) {
+                day.id = this.today();
+            }
 
-    console.log("✅ Día guardado", day);
+            localStorage.setItem(
+                `day_${day.id}`,
+                JSON.stringify(day)
+            );
 
-    resolve(day);
+            console.log("✅ Día guardado");
 
-};
-            request.onerror = () => reject(request.error);
-        });
+            return true;
+
+        } catch (e) {
+
+            console.error("Error guardando día", e);
+
+            return false;
+
+        }
     },
 
-    async getSettings() {
-        await this.open();
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(this.stores.settings, "readonly");
-            const store = tx.objectStore(this.stores.settings);
-            const request = store.get("app");
+    getSettings() {
 
-            request.onsuccess = () => resolve(request.result || null);
-            request.onerror = () => reject(request.error);
-        });
+        try {
+
+            const data = localStorage.getItem("settings");
+
+            return data ? JSON.parse(data) : null;
+
+        } catch (e) {
+
+            console.error(e);
+
+            return null;
+
+        }
+
     },
 
-    async saveSettings(settings) {
-        await this.open();
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(this.stores.settings, "readwrite");
-            const store = tx.objectStore(this.stores.settings);
-            const payload = {
-                id: "app",
-                ...settings
-            };
-            const request = store.put(payload);
+    saveSettings(settings) {
 
-            request.onsuccess = () => resolve(payload);
-            request.onerror = () => reject(request.error);
+        try {
+
+            localStorage.setItem(
+                "settings",
+                JSON.stringify(settings)
+            );
+
+            return true;
+
+        } catch (e) {
+
+            console.error(e);
+
+            return false;
+
+        }
+
+    },
+
+    clearDay(id) {
+
+        localStorage.removeItem(`day_${id}`);
+
+    },
+
+    clearAllDays() {
+
+        Object.keys(localStorage).forEach(key => {
+
+            if (key.startsWith("day_")) {
+
+                localStorage.removeItem(key);
+
+            }
+
         });
+
     }
+
 };
