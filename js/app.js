@@ -21,9 +21,11 @@ const App = {
 
     async init() {
         try {
-            await DB.open();
-            this.state.today = DB.today();
-            this.state.day = await DB.getDay(this.state.today) || DB.emptyDay();
+            DB.open();
+
+this.state.today = DB.today();
+
+this.state.day = DB.getDay(this.state.today) || DB.emptyDay();
             this.render();
             this.bindEvents();
             this.updateUI();
