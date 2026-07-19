@@ -426,7 +426,7 @@ if (!existe) {
 
 showLibrary(meal){
     
-    const biblioteca = DB.getLibrary().sort((a, b) =>
+    const biblioteca = [...DB.getLibrary()].sort((a, b) =>
     a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" })
 );
 
