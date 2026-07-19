@@ -426,41 +426,6 @@ if (!existe) {
 
 showLibrary(meal){
     
-    addLibraryFood(meal, index) {
-
-    const biblioteca = DB.getLibrary();
-
-    const food = biblioteca[index];
-
-    if (!food) return;
-
-    const ahora = new Date();
-
-    this.state.day[meal].push({
-
-        ...food,
-
-        fecha: ahora.toISOString().slice(0,10),
-
-        hora: ahora.toLocaleTimeString("es-ES",{
-            hour:"2-digit",
-            minute:"2-digit"
-        }),
-
-        comida: meal
-
-    });
-
-    DB.saveDay(this.state.day);
-
-    this.closeModal();
-
-    this.render();
-
-    this.updateUI();
-
-},
-
     const biblioteca = DB.getLibrary();
 
     const modal = document.getElementById("modal");
@@ -527,6 +492,41 @@ Volver
 
 },
 
+addLibraryFood(meal, index){
+
+    const biblioteca = DB.getLibrary();
+
+    const food = biblioteca[index];
+
+    if (!food) return;
+
+    const ahora = new Date();
+
+    this.state.day[meal].push({
+
+        ...food,
+
+        fecha: ahora.toISOString().slice(0,10),
+
+        hora: ahora.toLocaleTimeString("es-ES",{
+            hour:"2-digit",
+            minute:"2-digit"
+        }),
+
+        comida: meal
+
+    });
+
+    DB.saveDay(this.state.day);
+
+    this.closeModal();
+
+    this.render();
+
+    this.updateUI();
+
+},
+
 showFoods(meal){
 
     const modal=document.getElementById("modal");
@@ -550,7 +550,7 @@ foods.length
 ?
 foods.map((food,index)=>`
 
-<div class="food-item"
+<div class="food-item">
 
 <div>
 
