@@ -440,6 +440,20 @@ showLibrary(meal){
 
 <h2>📚 Biblioteca</h2>
 
+<input
+    id="librarySearch"
+    type="text"
+    placeholder="🔍 Buscar alimento..."
+    oninput="App.filterLibrary()"
+    style="
+        width:100%;
+        padding:12px;
+        margin:15px 0;
+        border:1px solid #ddd;
+        border-radius:12px;
+        font-size:16px;
+    ">
+
 <div class="food-list">
 
 ${
