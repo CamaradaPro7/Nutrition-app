@@ -355,8 +355,9 @@ select{
     background:#fff;
     border-radius:28px 28px 0 0;
     padding:24px;
-    max-height:90vh;
-    overflow:auto;
+    height:85dvh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
     box-shadow:0 -14px 36px rgba(20,30,50,.12);
 }
 
