@@ -464,7 +464,7 @@ biblioteca.length
 biblioteca.map((food,index)=>`
 
 <div class="food-item"
-     onclick="App.addLibraryFood('${meal}',${index})"
+     onclick="App.addLibraryFood('${meal}','${food.nombre}')"
      style="cursor:pointer;">
 
 <div>
@@ -523,11 +523,10 @@ filterLibrary() {
     });
 },
 
-addLibraryFood(meal, index){
+addLibraryFood(meal, nombre){
 
     const biblioteca = DB.getLibrary();
-
-    const food = biblioteca[index];
+const food = biblioteca.find(f => f.nombre === nombre);
 
     const item = document.querySelectorAll(".food-item")[index];
 
