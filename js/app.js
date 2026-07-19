@@ -901,9 +901,9 @@ copyReport(){
     texto+=`Consumido: ${this.getCalories()} kcal\n`;
     texto+=`Restante: ${Math.max(0,this.state.settings.objetivoKcal-this.getCalories())} kcal\n\n`;
 
-    texto+=`Proteínas: ${this.getMacroValue("proteinas")} g\n`;
-    texto+=`Hidratos: ${this.getMacroValue("hidratos")} g\n`;
-    texto+=`Grasas: ${this.getMacroValue("grasas")} g\n\n`;
+    texto+=`Proteínas: ${this.getMacroValue("proteinas").toFixed(1)} g\n`;
+    texto+=`Hidratos: ${this.getMacroValue("hidratos").toFixed(1)} g\n`;
+    texto+=`Grasas: ${this.getMacroValue("grasas").toFixed(1)} g\n\n`;
 
     comidas.forEach(([titulo,key])=>{
 
