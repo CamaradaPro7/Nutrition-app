@@ -494,6 +494,10 @@ G ${food.grasas} g
 <button class="action-btn danger"
 onclick="App.openMeal('${meal}')">
 
+<button class="action-btn" onclick="App.closeModal()">
+    ✅ Listo
+</button>
+
 Volver
 
 </button>
