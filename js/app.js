@@ -425,6 +425,41 @@ if (!existe) {
 },
 
 showLibrary(meal){
+    
+    addLibraryFood(meal, index) {
+
+    const biblioteca = DB.getLibrary();
+
+    const food = biblioteca[index];
+
+    if (!food) return;
+
+    const ahora = new Date();
+
+    this.state.day[meal].push({
+
+        ...food,
+
+        fecha: ahora.toISOString().slice(0,10),
+
+        hora: ahora.toLocaleTimeString("es-ES",{
+            hour:"2-digit",
+            minute:"2-digit"
+        }),
+
+        comida: meal
+
+    });
+
+    DB.saveDay(this.state.day);
+
+    this.closeModal();
+
+    this.render();
+
+    this.updateUI();
+
+},
 
     const biblioteca = DB.getLibrary();
 
@@ -465,9 +500,6 @@ G ${food.grasas} g
 </div>
 
 </div>
-
-onclick="App.addLibraryFood('${meal}',${index})"
-style="cursor:pointer;"
 
 </div>
 
@@ -519,8 +551,6 @@ foods.length
 foods.map((food,index)=>`
 
 <div class="food-item"
-onclick="App.addLibraryFood('${meal}',${index})"
-style="cursor:pointer;">
 
 <div>
 
