@@ -447,7 +447,9 @@ biblioteca.length
 ?
 biblioteca.map((food,index)=>`
 
-<div class="food-item">
+<div class="food-item"
+     onclick="App.addLibraryFood('${meal}',${index})"
+     style="cursor:pointer;">
 
 <div>
 
@@ -464,12 +466,8 @@ G ${food.grasas} g
 
 </div>
 
-<button class="action-btn"
-onclick="App.addLibraryFood('${meal}',${index})">
-
-➕
-
-</button>
+onclick="App.addLibraryFood('${meal}',${index})"
+style="cursor:pointer;"
 
 </div>
 
