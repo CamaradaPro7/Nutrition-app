@@ -426,7 +426,9 @@ if (!existe) {
 
 showLibrary(meal){
     
-    const biblioteca = DB.getLibrary();
+    const biblioteca = DB.getLibrary().sort((a, b) =>
+    a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" })
+);
 
     const modal = document.getElementById("modal");
 
