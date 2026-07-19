@@ -25,7 +25,20 @@ const App = {
 
 this.state.today = DB.today();
 
-this.state.day = DB.getDay(this.state.today) || DB.emptyDay();
+let day = DB.getDay(this.state.today);
+
+if (!day) {
+    day = DB.emptyDay();
+    DB.saveDay(day);
+}
+
+this.state.day = day;
+
+const settings = DB.getSettings();
+
+if (settings) {
+    this.state.settings = settings;
+}
             this.render();
             this.bindEvents();
             this.updateUI();
@@ -55,7 +68,7 @@ render() {
         <section class="card dashboard">
         <div class="dashboard-top">
             <div class="dashboard-copy">
-                <h1 class="title">Buenos días</h1>
+                <h1 class="title">${this.getGreeting()}</h1>
                 <p class="date">${this.formatDate()}</p>
             </div>
         </div>
@@ -198,6 +211,16 @@ render() {
             year: "numeric"
         });
     },
+    
+    getGreeting() {
+
+    const h = new Date().getHours();
+
+    if (h < 12) return "Buenos días";
+    if (h < 20) return "Buenas tardes";
+
+    return "Buenas noches";
+},
 
     openMeal(meal) {
 
