@@ -547,8 +547,6 @@ addLibraryFood(meal, index){
 
     DB.saveDay(this.state.day);
 
-    this.closeModal();
-
     this.render();
 
     this.updateUI();
