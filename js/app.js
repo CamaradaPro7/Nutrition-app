@@ -506,6 +506,20 @@ Volver
 
 },
 
+filterLibrary() {
+    const search = document.getElementById('librarySearch').value.toLowerCase();
+
+    document.querySelectorAll('.food-item').forEach(item => {
+        const text = item.textContent.toLowerCase();
+
+        if (text.includes(search)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+},
+
 addLibraryFood(meal, index){
 
     const biblioteca = DB.getLibrary();
