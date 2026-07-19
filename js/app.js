@@ -530,6 +530,17 @@ addLibraryFood(meal, index){
 
     const food = biblioteca[index];
 
+    const item = document.querySelectorAll(".food-item")[index];
+
+if (item) {
+    item.style.background = "#e8f6ea";
+    item.style.transition = "0.2s";
+
+    setTimeout(() => {
+        item.style.background = "";
+    }, 200);
+}
+
     if (!food) return;
 
     const ahora = new Date();
