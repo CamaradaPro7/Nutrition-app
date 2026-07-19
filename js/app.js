@@ -518,7 +518,9 @@ foods.length
 ?
 foods.map((food,index)=>`
 
-<div class="food-item">
+<div class="food-item"
+onclick="App.addLibraryFood('${meal}',${index})"
+style="cursor:pointer;">
 
 <div>
 
