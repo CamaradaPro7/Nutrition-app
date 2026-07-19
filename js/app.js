@@ -464,7 +464,7 @@ biblioteca.length
 biblioteca.map((food,index)=>`
 
 <div class="food-item"
-     onclick="App.addLibraryFood('${meal}','${food.nombre}')"
+     onclick="App.addLibraryFood('${meal}','${food.nombre}', this)"
      style="cursor:pointer;">
 
 <div>
@@ -523,21 +523,17 @@ filterLibrary() {
     });
 },
 
-addLibraryFood(meal, nombre){
+addLibraryFood(meal, nombre, element){
 
     const biblioteca = DB.getLibrary();
 const food = biblioteca.find(f => f.nombre === nombre);
 
-    const item = document.querySelectorAll(".food-item")[index];
+    element.style.background = "#e8f6ea";
+element.style.transition = "0.2s";
 
-if (item) {
-    item.style.background = "#e8f6ea";
-    item.style.transition = "0.2s";
-
-    setTimeout(() => {
-        item.style.background = "";
-    }, 200);
-}
+setTimeout(() => {
+    element.style.background = "";
+}, 200);
 
     if (!food) return;
 
