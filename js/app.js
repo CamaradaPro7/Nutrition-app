@@ -244,6 +244,13 @@ render() {
             📋 Pegar desde ChatGPT
 
         </button>
+        
+        <button class="action-btn"
+    onclick="App.showLibrary('${meal}')">
+
+    📚 Biblioteca
+
+</button>
 
         <button class="action-btn"
             onclick="App.showFoods('${meal}')">
@@ -414,6 +421,79 @@ if (!existe) {
     this.render();
 
     this.updateUI();
+
+},
+
+showLibrary(meal){
+
+    const biblioteca = DB.getLibrary();
+
+    const modal = document.getElementById("modal");
+
+    const titulo = meal.charAt(0).toUpperCase() + meal.slice(1);
+
+    modal.classList.remove("hidden");
+
+    modal.innerHTML = `
+
+<div class="sheet">
+
+<h2>📚 Biblioteca</h2>
+
+<div class="food-list">
+
+${
+biblioteca.length
+?
+biblioteca.map((food,index)=>`
+
+<div class="food-item">
+
+<div>
+
+<div class="food-name">${food.nombre}</div>
+
+<div class="food-kcal">
+
+${food.kcal} kcal ·
+P ${food.proteinas} g ·
+C ${food.hidratos} g ·
+G ${food.grasas} g
+
+</div>
+
+</div>
+
+<button class="action-btn"
+onclick="App.addLibraryFood('${meal}',${index})">
+
+➕
+
+</button>
+
+</div>
+
+`).join("")
+:
+"<p class='text-center'>Biblioteca vacía</p>"
+}
+
+</div>
+
+<div class="mt-20">
+
+<button class="action-btn danger"
+onclick="App.openMeal('${meal}')">
+
+Volver
+
+</button>
+
+</div>
+
+</div>
+
+`;
 
 },
 
