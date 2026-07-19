@@ -120,16 +120,22 @@ const DB = {
 
     clearAllDays() {
 
-        Object.keys(localStorage).forEach(key => {
+    Object.keys(localStorage).forEach(key => {
 
-            if (key.startsWith("day_")) {
+        if (key.startsWith("day_")) {
+            localStorage.removeItem(key);
+        }
 
-                localStorage.removeItem(key);
+    });
 
-            }
+},
 
-        });
+getLibrary() {
+    return JSON.parse(localStorage.getItem("nutrition_library") || "[]");
+},
 
-    }
+saveLibrary(library) {
+    localStorage.setItem("nutrition_library", JSON.stringify(library));
+}
 
 };
