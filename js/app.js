@@ -334,6 +334,8 @@ savePastedFood(meal){
     const bloques = texto.split(/\n\s*\n/);
 
     const ahora = new Date();
+    
+    let biblioteca = DB.getLibrary();
 
     const fecha = ahora.toISOString().slice(0,10);
 
@@ -364,6 +366,20 @@ savePastedFood(meal){
         }
 
         const grasas = parseFloat((((bloque.match(/Grasas:\s*([\d.,]+)/i)||[])[1])||0).replace(",","."));
+        
+        const existe = biblioteca.some(
+    food => food.nombre.toLowerCase() === nombre.toLowerCase()
+);
+
+if (!existe) {
+    biblioteca.push({
+        nombre,
+        kcal,
+        proteinas,
+        hidratos,
+        grasas
+    });
+}
 
         this.state.day[meal].push({
 
@@ -388,6 +404,8 @@ savePastedFood(meal){
         });
 
     });
+    
+    DB.saveLibrary(biblioteca);
 
     DB.saveDay(this.state.day);
 
