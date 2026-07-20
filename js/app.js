@@ -590,7 +590,7 @@ deleteLibraryFood(nombre, meal){
 
     this.showLibrary(meal);
 
-}
+},
 
 showFoods(meal){
 
