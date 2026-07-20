@@ -489,6 +489,13 @@ G ${food.grasas} g
 
 </div>
 
+<button class="delete-btn"
+onclick="event.stopPropagation(); App.deleteLibraryFood('${food.nombre}','${meal}')">
+
+✕
+
+</button>
+
 </div>
 
 `).join("")
@@ -568,6 +575,22 @@ setTimeout(() => {
     this.updateUI();
 
 },
+
+deleteLibraryFood(nombre, meal){
+
+    if(!confirm("¿Eliminar este alimento de la biblioteca?")) return;
+
+    let biblioteca = DB.getLibrary();
+
+    biblioteca = biblioteca.filter(
+        food => food.nombre !== nombre
+    );
+
+    DB.saveLibrary(biblioteca);
+
+    this.showLibrary(meal);
+
+}
 
 showFoods(meal){
 
