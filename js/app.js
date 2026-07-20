@@ -351,66 +351,73 @@ savePastedFood(meal){
         minute:"2-digit"
     });
 
-    bloques.forEach(bloque=>{
+    bloques.forEach(bloque => {
 
-        const lineas = bloque.trim().split("\n");
+    const lineas = bloque.trim().split("\n");
 
-        const nombre = lineas[0].trim();
+    const nombre = lineas[0].trim();
 
-        const kcal = parseFloat((((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i)||[])[1])||0).replace(",","."));
+    const numero = (valor) =>
+        parseFloat(
+            (valor || "0")
+                .replace(/\./g, "")
+                .replace(",", ".")
+        );
 
-        const proteinas = parseFloat((((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i)||[])[1])||0).replace(",","."));
+    const kcal = numero((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i) || [])[1]);
 
-        let hidratos = 0;
+    const proteinas = numero((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i) || [])[1]);
 
-        const carbo = bloque.match(/Carbohidratos:\s*([\d.,]+)/i);
-        const hidra = bloque.match(/Hidratos:\s*([\d.,]+)/i);
+    let hidratos = 0;
 
-        if(carbo){
-            hidratos = parseFloat(carbo[1].replace(",","."));
-        }else if(hidra){
-            hidratos = parseFloat(hidra[1].replace(",","."));
-        }
+    const carbo = bloque.match(/Carbohidratos:\s*([\d.,]+)/i);
+    const hidra = bloque.match(/Hidratos:\s*([\d.,]+)/i);
 
-        const grasas = parseFloat((((bloque.match(/Grasas:\s*([\d.,]+)/i)||[])[1])||0).replace(",","."));
-        
-        const existe = biblioteca.some(
-    food => food.nombre.toLowerCase() === nombre.toLowerCase()
-);
+    if (carbo) {
+        hidratos = numero(carbo[1]);
+    } else if (hidra) {
+        hidratos = numero(hidra[1]);
+    }
 
-if (!existe) {
-    biblioteca.push({
-        nombre,
-        kcal,
-        proteinas,
-        hidratos,
-        grasas
-    });
-}
+    const grasas = numero((bloque.match(/Grasas:\s*([\d.,]+)/i) || [])[1]);
 
-        this.state.day[meal].push({
+    const existe = biblioteca.some(
+        food => food.nombre.toLowerCase() === nombre.toLowerCase()
+    );
 
+    if (!existe) {
+        biblioteca.push({
             nombre,
-
             kcal,
-
             proteinas,
-
             hidratos,
-
-            grasas,
-
-            fecha,
-
-            hora,
-
-            comida: meal,
-
-            origen: bloque.trim()
-
+            grasas
         });
+    }
+
+    this.state.day[meal].push({
+
+        nombre,
+
+        kcal,
+
+        proteinas,
+
+        hidratos,
+
+        grasas,
+
+        fecha,
+
+        hora,
+
+        comida: meal,
+
+        origen: bloque.trim()
 
     });
+
+});
     
     DB.saveLibrary(biblioteca);
 
