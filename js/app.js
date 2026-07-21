@@ -804,7 +804,7 @@ Cancelar
 
 <button
 class="action-btn"
-onclick="alert('La siguiente fase recalculará automáticamente los valores.')">
+onclick="App.saveEditedFood('${meal}',${index},'${unidad}')"
 
 Guardar
 
@@ -817,6 +817,78 @@ Guardar
 `;
 
 },
+
+saveEditedFood(meal,index,unidad){
+
+    const food=this.state.day[meal][index];
+
+    const nuevo=parseFloat(
+        document.getElementById("editCantidad").value.replace(",",".")
+    );
+
+    if(isNaN(nuevo) || nuevo<=0){
+        alert("Cantidad no válida");
+        return;
+    }
+
+    let match;
+
+    if(unidad==="g"){
+        match=food.nombre.match(/(\d+(?:[.,]\d+)?)\s*g/i);
+    }else if(unidad==="ml"){
+        match=food.nombre.match(/(\d+(?:[.,]\d+)?)\s*ml/i);
+    }else{
+        match=food.nombre.match(/(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i);
+    }
+
+    if(!match){
+        alert("No se pudo calcular.");
+        return;
+    }
+
+    const anterior=parseFloat(match[1].replace(",","."));
+
+    const factor=nuevo/anterior;
+
+    food.kcal=+(food.kcal*factor).toFixed(1);
+    food.proteinas=+(food.proteinas*factor).toFixed(1);
+    food.hidratos=+(food.hidratos*factor).toFixed(1);
+    food.grasas=+(food.grasas*factor).toFixed(1);
+
+    if(unidad==="g"){
+
+        food.nombre=food.nombre.replace(
+            /(\d+(?:[.,]\d+)?)\s*g/i,
+            `${nuevo} g`
+        );
+
+    }else if(unidad==="ml"){
+
+        food.nombre=food.nombre.replace(
+            /(\d+(?:[.,]\d+)?)\s*ml/i,
+            `${nuevo} ml`
+        );
+
+    }else{
+
+        const texto=nuevo===1 ? "ración" : "raciones";
+
+        food.nombre=food.nombre.replace(
+            /(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i,
+            `${nuevo} ${texto}`
+        );
+
+    }
+
+    DB.saveDay(this.state.day);
+
+    this.showFoods(meal);
+
+    this.render();
+
+    this.updateUI();
+
+}
 
 clearMeal(meal){
 
