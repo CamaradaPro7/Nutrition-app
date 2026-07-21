@@ -636,12 +636,23 @@ G ${food.grasas} g
 
 </div>
 
-<button class="delete-btn"
+<div style="display:flex;flex-direction:column;gap:6px;">
 
+<button class="delete-btn"
+onclick="App.editFood('${meal}',${index})">
+
+✏️
+
+</button>
+
+<button class="delete-btn"
 onclick="App.deleteFood('${meal}',${index})">
 
 ✕
+
 </button>
+
+</div>
 
 </div>
 
@@ -689,6 +700,50 @@ deleteFood(meal,index){
     this.render();
 
     this.updateUI();
+
+},
+
+editFood(meal,index){
+
+    const food=this.state.day[meal][index];
+
+    const modal=document.getElementById("modal");
+
+    modal.classList.remove("hidden");
+
+    modal.innerHTML=`
+
+<div class="sheet">
+
+<h2>Editar cantidad</h2>
+
+<p style="margin:20px 0;font-weight:600;">
+
+${food.nombre}
+
+</p>
+
+<p>
+
+🚧 Próximamente podrás modificar gramos, ml o raciones.
+
+</p>
+
+<div class="mt-20">
+
+<button class="action-btn"
+
+onclick="App.showFoods('${meal}')">
+
+Aceptar
+
+</button>
+
+</div>
+
+</div>
+
+`;
 
 },
 
