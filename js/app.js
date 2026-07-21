@@ -707,6 +707,42 @@ editFood(meal,index){
 
     const food=this.state.day[meal][index];
 
+    const nombre=food.nombre;
+
+    let unidad="";
+    let cantidad="";
+
+    let match=nombre.match(/(\d+(?:[.,]\d+)?)\s*g\b/i);
+
+    if(match){
+
+        unidad="g";
+        cantidad=match[1].replace(",", ".");
+
+    }else{
+
+        match=nombre.match(/(\d+(?:[.,]\d+)?)\s*ml\b/i);
+
+        if(match){
+
+            unidad="ml";
+            cantidad=match[1].replace(",", ".");
+
+        }else{
+
+            match=nombre.match(/(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i);
+
+            if(match){
+
+                unidad="raciones";
+                cantidad=match[1].replace(",", ".");
+
+            }
+
+        }
+
+    }
+
     const modal=document.getElementById("modal");
 
     modal.classList.remove("hidden");
@@ -719,23 +755,58 @@ editFood(meal,index){
 
 <p style="margin:20px 0;font-weight:600;">
 
-${food.nombre}
+${nombre}
 
 </p>
 
+${
+unidad
+?
+`
+<input
+id="editCantidad"
+type="number"
+step="0.1"
+value="${cantidad}"
+style="
+width:100%;
+padding:14px;
+font-size:18px;
+border-radius:12px;
+border:1px solid #ccc;
+">
+
+<p style="margin-top:10px;text-align:center;">
+
+${unidad}
+
+</p>
+`
+:
+`
 <p>
 
-🚧 Próximamente podrás modificar gramos, ml o raciones.
+Este alimento todavía no se puede editar automáticamente.
 
 </p>
+`
+}
 
 <div class="mt-20">
 
-<button class="action-btn"
-
+<button
+class="action-btn"
 onclick="App.showFoods('${meal}')">
 
-Aceptar
+Cancelar
+
+</button>
+
+<button
+class="action-btn"
+onclick="alert('La siguiente fase recalculará automáticamente los valores.')">
+
+Guardar
 
 </button>
 
