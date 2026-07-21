@@ -888,7 +888,7 @@ saveEditedFood(meal,index,unidad){
 
     this.updateUI();
 
-}
+},
 
 clearMeal(meal){
 
