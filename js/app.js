@@ -804,7 +804,7 @@ Cancelar
 
 <button
 class="action-btn"
-onclick="App.saveEditedFood('${meal}',${index},'${unidad}')"
+onclick="App.saveEditedFood('${meal}',${index},'${unidad}')">
 
 Guardar
 
