@@ -1211,7 +1211,7 @@ html += `
 
 <button
 class="action-btn"
-onclick="App.pasteActivity()">
+onclick="App.showActivityPaste()">
 
 🏃 Actualizar actividad
 
@@ -1247,10 +1247,17 @@ modal.innerHTML = html;
 
 },
 
-pasteActivity(){
+importActivity(){
 
-    const texto = prompt(
-`Pega aquí el informe de actividad:
+    const texto = document.getElementById("activityInput").value.trim();
+
+if (!texto) {
+
+    this.toast("No has pegado ningún informe");
+
+    return;
+
+}
 
 📊 INFORME DE ACTIVIDAD
 
@@ -1300,6 +1307,53 @@ Ejercicio: ${ejercicio} min
 De pie: ${dePie} h`
     );
 
+},
+
+showActivityPaste(){
+
+    const modal=document.getElementById("modal");
+
+    modal.classList.remove("hidden");
+
+    modal.innerHTML=`
+    <div class="sheet">
+
+        <h2 class="text-center">🏃 Pegar actividad</h2>
+
+        <p class="text-center">
+            Pega aquí el informe de Apple Salud o Apple Watch.
+        </p>
+
+        <textarea
+            id="activityInput"
+            rows="12"
+            style="width:100%;margin-top:16px;"
+            placeholder="Movimiento 205 kcal
+Ejercicio 8 min
+De pie 7 h
+Calorías totales 1588 kcal"></textarea>
+
+        <div class="mt-20">
+
+            <button
+                class="action-btn"
+                onclick="App.importActivity()">
+
+                Actualizar actividad
+
+            </button>
+
+            <button
+                class="action-btn danger"
+                onclick="App.closeModal()">
+
+                Cancelar
+
+            </button>
+
+        </div>
+
+    </div>`;
 },
 
 copyReport(){
