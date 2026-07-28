@@ -1211,7 +1211,7 @@ html += `
 
 <button
 class="action-btn"
-onclick="App.showActivityPaste()"
+onclick="App.showActivityPaste()">
 
 🏃 Actualizar actividad
 
@@ -1259,16 +1259,6 @@ if (!texto) {
 
 }
 
-📊 INFORME DE ACTIVIDAD
-
-Movimiento: 205 kcal
-Ejercicio: 8 min
-De pie: 7 h
-Calorías totales: 1218 kcal`
-    );
-
-    if(!texto) return;
-
     const numero = (regex)=>{
         const m = texto.match(regex);
         return m ? parseFloat(m[1].replace(",", ".")) : 0;
@@ -1299,13 +1289,13 @@ Calorías totales: 1218 kcal`
 
     DB.saveDay(this.state.day);
 
-    alert(
-`✅ Actividad guardada
+this.closeModal();
 
-Movimiento: ${movimiento} kcal
-Ejercicio: ${ejercicio} min
-De pie: ${dePie} h`
-    );
+this.render();
+
+this.updateUI();
+
+this.toast("Actividad actualizada");
 
 },
 
