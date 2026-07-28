@@ -83,7 +83,7 @@ render() {
                 <div class="progress-center">
                     <div class="progress-value" id="kcalValue">0</div>
                     <div class="progress-label" id="kcalLabel">
-                        de ${this.state.settings.objetivoKcal} kcal
+                        de ${this.getTargetCalories()} kcal
                     </div>
                 </div>
             </button>
@@ -154,21 +154,41 @@ render() {
     },
 
     updateUI() {
-        const total = this.getCalories();
-        const target = this.state.settings.objetivoKcal;
-        const pct = target > 0 ? Math.min(total / target, 1) : 0;
-        const ring = document.querySelector(".progress-ring");
-        const circumference = 2 * Math.PI * 96;
 
-        if (ring) {
-            ring.style.strokeDasharray = `${circumference * pct} ${circumference}`;
-        }
+    const total = this.getCalories();
 
-        const kcalValue = document.getElementById("kcalValue");
-        const kcalLabel = document.getElementById("kcalLabel");
-        if (kcalValue) kcalValue.textContent = Math.round(total);
-        if (kcalLabel) kcalLabel.textContent = `de ${target} kcal`;
-    },
+    const target = this.getTargetCalories();
+
+    const pct = target > 0 ? Math.min(total / target, 1) : 0;
+
+    const ring = document.querySelector(".progress-ring");
+
+    const circumference = 2 * Math.PI * 96;
+
+    if (ring) {
+
+        ring.style.strokeDasharray =
+            `${circumference * pct} ${circumference}`;
+
+    }
+
+    const kcalValue = document.getElementById("kcalValue");
+
+    const kcalLabel = document.getElementById("kcalLabel");
+
+    if (kcalValue) {
+
+        kcalValue.textContent = Math.round(total);
+
+    }
+
+    if (kcalLabel) {
+
+        kcalLabel.textContent = `de ${Math.round(target)} kcal`;
+
+    }
+
+},
 
     getCalories() {
         return this.getMealCalories("desayuno") + this.getMealCalories("comida") + this.getMealCalories("merienda") + this.getMealCalories("cena");
