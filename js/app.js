@@ -1120,7 +1120,20 @@ Cerrar
 
 pasteActivity(){
 
-    alert("Próximamente podrás pegar aquí el informe de actividad.");
+    const texto = prompt(
+`Pega aquí el informe de actividad:
+
+📊 INFORME DE ACTIVIDAD
+
+Movimiento: 205 kcal
+Ejercicio: 8 min
+De pie: 7 h
+Calorías totales: 1218 kcal`
+    );
+
+    if(!texto) return;
+
+    alert(texto);
 
 },
 
