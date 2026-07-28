@@ -173,6 +173,17 @@ render() {
     getCalories() {
         return this.getMealCalories("desayuno") + this.getMealCalories("comida") + this.getMealCalories("merienda") + this.getMealCalories("cena");
     },
+    
+    getTargetCalories(){
+
+    const base = this.state.settings.objetivoKcal;
+
+    const movimiento =
+        this.state.day?.actividad?.movimiento || 0;
+
+    return base + movimiento;
+
+},
 
     getMacroValue(key){
 
