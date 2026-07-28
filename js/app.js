@@ -1082,6 +1082,14 @@ Sin alimentos
 
 <button
 class="action-btn"
+onclick="App.pasteActivity()">
+
+🏃 Pegar informe de actividad
+
+</button>
+
+<button
+class="action-btn"
 onclick="App.copyReport()">
 
 📋 Copiar para ChatGPT
@@ -1107,6 +1115,12 @@ Cerrar
     modal.classList.remove("hidden");
 
     modal.innerHTML=html;
+
+},
+
+pasteActivity(){
+
+    alert("Próximamente podrás pegar aquí el informe de actividad.");
 
 },
 
