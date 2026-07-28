@@ -68,81 +68,104 @@ render() {
         <section class="card dashboard">
 
             <div class="dashboard-top">
-                <div class="dashboard-copy center">
+                <div class="dashboard-copy">
                     <h1 class="title">${this.getGreeting()}</h1>
                     <p class="date">${this.formatDate()}</p>
                 </div>
             </div>
 
-            <div class="dashboard-main">
+            <div class="dashboard-body">
 
-                <div class="dashboard-left">
+                <div class="progress-wrap">
 
-                    <button class="progress" type="button" onclick="App.openReport()">
+                    <button class="progress"
+                            type="button"
+                            onclick="App.openReport()">
 
                         <svg viewBox="0 0 220 220">
-                            <circle class="progress-track" cx="110" cy="110" r="96"></circle>
-                            <circle class="progress-ring" cx="110" cy="110" r="96"></circle>
+
+                            <circle
+                                class="progress-track"
+                                cx="110"
+                                cy="110"
+                                r="96">
+                            </circle>
+
+                            <circle
+                                class="progress-ring"
+                                cx="110"
+                                cy="110"
+                                r="96">
+                            </circle>
+
                         </svg>
 
                         <div class="progress-center">
-                            <div class="progress-value" id="kcalValue">0</div>
-                            <div class="progress-label" id="kcalLabel">
-                                de ${this.getTargetCalories()} kcal
+
+                            <div
+                                class="progress-value"
+                                id="kcalValue">
+
+                                0
+
                             </div>
+
+                            <div
+                                class="progress-label"
+                                id="kcalLabel">
+
+                                de ${this.getTargetCalories()} kcal
+
+                            </div>
+
                         </div>
 
                     </button>
 
                 </div>
 
-                <div class="dashboard-right">
+                <div class="dashboard-macros">
 
-                    ${this.renderMacro("Proteínas","🥩","proteinas",this.state.settings.macros.proteinas,"g")}
+                    ${this.renderMacro(
+                        "Proteínas",
+                        "🥩",
+                        "proteinas",
+                        this.state.settings.macros.proteinas,
+                        "g"
+                    )}
 
-                    ${this.renderMacro("Hidratos","🍚","hidratos",this.state.settings.macros.hidratos,"g")}
+                    ${this.renderMacro(
+                        "Hidratos",
+                        "🍚",
+                        "hidratos",
+                        this.state.settings.macros.hidratos,
+                        "g"
+                    )}
 
-                    ${this.renderMacro("Grasas","🥑","grasas",this.state.settings.macros.grasas,"g")}
+                    ${this.renderMacro(
+                        "Grasas",
+                        "🥑",
+                        "grasas",
+                        this.state.settings.macros.grasas,
+                        "g"
+                    )}
 
                 </div>
-
-            </div>
-
-            <div class="dashboard-stats">
-
-                <article class="stat-card">
-                    <div>🎯 Objetivo base</div>
-                    <strong>${this.getBaseCalories()}</strong>
-                    <small>kcal</small>
-                </article>
-
-                <article class="stat-card">
-                    <div>🏃 Actividad</div>
-                    <strong>+${this.getActivity().movimiento}</strong>
-                    <small>kcal</small>
-                </article>
-
-                <article class="stat-card">
-                    <div>🔥 Gasto total</div>
-                    <strong>${this.getActivity().caloriasTotales}</strong>
-                    <small>kcal</small>
-                </article>
-
-                <article class="stat-card">
-                    <div>✅ Restantes</div>
-                    <strong>${Math.round(this.getRemainingCalories())}</strong>
-                    <small>kcal</small>
-                </article>
 
             </div>
 
         </section>
 
         <section class="meals">
+
             ${this.mealCard("🍳","Desayuno","desayuno")}
+
             ${this.mealCard("🍝","Comida","comida")}
+
             ${this.mealCard("🍓","Merienda","merienda")}
+
             ${this.mealCard("🥗","Cena","cena")}
+
         </section>
     `;
 
