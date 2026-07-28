@@ -205,6 +205,34 @@ render() {
 
 },
 
+getBaseCalories(){
+
+    return this.state.settings.objetivoKcal;
+
+},
+
+getActivity(){
+
+    return this.state.day?.actividad || {
+
+        movimiento:0,
+        ejercicio:0,
+        dePie:0,
+        caloriasTotales:0
+
+    };
+
+},
+
+getRemainingCalories(){
+
+    return Math.max(
+        0,
+        this.getTargetCalories()-this.getCalories()
+    );
+
+},
+
     getMacroValue(key){
 
     let total=0;
@@ -949,22 +977,28 @@ closeModal(){
 
 openReport(){
 
-    const total=this.getCalories();
+    const total = this.getCalories();
 
-    const objetivo=this.state.settings.objetivoKcal;
+    const objetivo = this.getTargetCalories();
 
-    const proteinas=this.getMacroValue("proteinas");
-    const hidratos=this.getMacroValue("hidratos");
-    const grasas=this.getMacroValue("grasas");
+    const actividad = this.getActivity();
 
-    const comidas=[
+    const restante = this.getRemainingCalories();
+
+    const proteinas = this.getMacroValue("proteinas");
+
+    const hidratos = this.getMacroValue("hidratos");
+
+    const grasas = this.getMacroValue("grasas");
+
+    const comidas = [
         {icono:"🍳",titulo:"Desayuno",key:"desayuno"},
         {icono:"🍝",titulo:"Comida",key:"comida"},
         {icono:"🍓",titulo:"Merienda",key:"merienda"},
         {icono:"🥗",titulo:"Cena",key:"cena"}
     ];
 
-    let html=`
+    let html = `
 
 <div class="sheet">
 
@@ -982,9 +1016,73 @@ Resumen diario
 
 <div class="report-calories">
 
-🔥 <strong>${total}</strong>
+🔥 <strong>${Math.round(total)}</strong>
 
-<span>/ ${objetivo} kcal</span>
+<span>/ ${Math.round(objetivo)} kcal</span>
+
+</div>
+
+<div class="report-macros">
+
+<div class="report-macro">
+
+<span>🎯 Objetivo base</span>
+
+<strong>${this.getBaseCalories()} kcal</strong>
+
+</div>
+
+<div class="report-macro">
+
+<span>🏃 Actividad</span>
+
+<strong>+${actividad.movimiento} kcal</strong>
+
+</div>
+
+<div class="report-macro">
+
+<span>✅ Restantes</span>
+
+<strong>${Math.round(restante)} kcal</strong>
+
+</div>
+
+</div>
+
+<div class="report-macros">
+
+<div class="report-macro">
+
+<span>🚶 Movimiento</span>
+
+<strong>${actividad.movimiento} kcal</strong>
+
+</div>
+
+<div class="report-macro">
+
+<span>🏋️ Ejercicio</span>
+
+<strong>${actividad.ejercicio} min</strong>
+
+</div>
+
+<div class="report-macro">
+
+<span>🧍 De pie</span>
+
+<strong>${actividad.dePie} h</strong>
+
+</div>
+
+<div class="report-macro">
+
+<span>🕒 Actualizado</span>
+
+<strong>${actividad.actualizada || "--:--"}</strong>
+
+</div>
 
 </div>
 
@@ -1017,14 +1115,13 @@ Resumen diario
 </div>
 
 `;
+comidas.forEach(comida=>{
 
-    comidas.forEach(comida=>{
+    const foods = this.state.day[comida.key] || [];
 
-        const foods=this.state.day[comida.key]||[];
+    let totalMeal = 0;
 
-        let totalMeal=0;
-
-        html+=`
+    html += `
 
 <div class="report-meal">
 
@@ -1036,9 +1133,9 @@ ${comida.icono} ${comida.titulo}
 
 `;
 
-        if(!foods.length){
+    if(!foods.length){
 
-            html+=`
+        html += `
 
 <div class="report-empty">
 
@@ -1048,66 +1145,67 @@ Sin alimentos
 
 `;
 
-        }else{
+    }else{
 
-            foods.forEach(food=>{
+        foods.forEach(food=>{
 
-                totalMeal+=Number(food.kcal||0);
+            totalMeal += Number(food.kcal || 0);
 
-                html+=`
-                <div class="report-food">
+            html += `
 
-    <div class="report-food-header">
+<div class="report-food">
 
-        <span class="report-food-time">
+<div class="report-food-header">
 
-            ${food.hora || "--:--"}
+<span class="report-food-time">
 
-        </span>
+${food.hora || "--:--"}
 
-        <span class="report-food-name">
+</span>
 
-            ${food.nombre}
+<span class="report-food-name">
 
-        </span>
+${food.nombre}
 
-    </div>
+</span>
 
-    <div class="report-food-kcal">
+</div>
 
-        ${food.kcal} kcal
+<div class="report-food-kcal">
 
-    </div>
+${food.kcal} kcal
+
+</div>
 
 </div>
 
 `;
 
-            });
+        });
 
-            html+=`
+        html += `
 
 <div class="report-meal-total">
 
 <span>Total ${comida.titulo}</span>
 
-<strong>${totalMeal} kcal</strong>
+<strong>${totalMeal.toFixed(1)} kcal</strong>
 
 </div>
 
 `;
 
-        }
+    }
 
-        html+=`
+    html += `
 
 </div>
 
 `;
 
-    });
+});
 
-    html+=`
+html += `
 
 <div class="mt-20">
 
@@ -1115,7 +1213,7 @@ Sin alimentos
 class="action-btn"
 onclick="App.pasteActivity()">
 
-🏃 Pegar informe de actividad
+🏃 Actualizar actividad
 
 </button>
 
@@ -1141,11 +1239,11 @@ Cerrar
 
 `;
 
-    const modal=document.getElementById("modal");
+const modal = document.getElementById("modal");
 
-    modal.classList.remove("hidden");
+modal.classList.remove("hidden");
 
-    modal.innerHTML=html;
+modal.innerHTML = html;
 
 },
 
@@ -1179,11 +1277,18 @@ Calorías totales: 1218 kcal`
     }
 
     this.state.day.actividad = {
-        movimiento,
-        ejercicio,
-        dePie,
-        caloriasTotales
-    };
+
+    movimiento,
+    ejercicio,
+    dePie,
+    caloriasTotales,
+
+    actualizada: new Date().toLocaleTimeString("es-ES",{
+        hour:"2-digit",
+        minute:"2-digit"
+    })
+
+};
 
     DB.saveDay(this.state.day);
 
