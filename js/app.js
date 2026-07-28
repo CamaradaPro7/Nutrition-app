@@ -1350,11 +1350,9 @@ copyReport(){
 
     texto += `Restantes: ${restante.toFixed(1)} kcal\n\n`;
 
-    texto += `Proteínas: ${proteinas} g\n`;
-
-    texto += `Hidratos: ${hidratos} g\n`;
-
-    texto += `Grasas: ${grasas} g\n\n`;
+    texto+=`Proteínas: ${proteinas.toFixed(1)} g\n`;
+texto+=`Hidratos: ${hidratos.toFixed(1)} g\n`;
+texto+=`Grasas: ${grasas.toFixed(1)} g\n`;
 
     const comidas = [
 
