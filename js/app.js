@@ -255,6 +255,11 @@ render() {
 
 },
 
+refresh() {
+
+    this.refresh();
+}
+
     getCalories() {
         return this.getMealCalories("desayuno") + this.getMealCalories("comida") + this.getMealCalories("merienda") + this.getMealCalories("cena");
     },
@@ -549,9 +554,7 @@ savePastedFood(meal){
 
     this.closeModal();
 
-    this.render();
-
-    this.updateUI();
+    this.refresh();
 
 },
 
@@ -694,9 +697,7 @@ setTimeout(() => {
 
     DB.saveDay(this.state.day);
 
-    this.render();
-
-    this.updateUI();
+    this.refresh();
 
 },
 
@@ -821,9 +822,7 @@ deleteFood(meal,index){
 
     this.showFoods(meal);
 
-    this.render();
-
-    this.updateUI();
+    this.refresh();
 
 },
 
@@ -1008,9 +1007,7 @@ saveEditedFood(meal,index,unidad){
 
     this.showFoods(meal);
 
-    this.render();
-
-    this.updateUI();
+    this.refresh();
 
 },
 
@@ -1022,9 +1019,7 @@ clearMeal(meal){
 
     DB.saveDay(this.state.day);
 
-    this.render();
-
-    this.updateUI();
+    this.refresh();
 
     this.closeModal();
 
@@ -1356,9 +1351,7 @@ if (!texto) {
 
 this.closeModal();
 
-this.render();
-
-this.updateUI();
+this.refresh();
 
 this.toast("Actividad actualizada");
 
