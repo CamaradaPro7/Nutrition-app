@@ -1211,7 +1211,7 @@ html += `
 
 <button
 class="action-btn"
-onclick="App.showActivityPaste()">
+onclick="App.showActivityPaste()"
 
 🏃 Actualizar actividad
 
