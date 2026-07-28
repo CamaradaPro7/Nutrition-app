@@ -1304,59 +1304,103 @@ De pie: ${dePie} h`
 
 copyReport(){
 
-    const comidas=[
-        ["DESAYUNO","desayuno"],
-        ["COMIDA","comida"],
-        ["MERIENDA","merienda"],
-        ["CENA","cena"]
+    const actividad = this.getActivity();
+
+    const objetivoBase = this.getBaseCalories();
+
+    const objetivo = this.getTargetCalories();
+
+    const consumido = this.getCalories();
+
+    const restante = this.getRemainingCalories();
+
+    const proteinas = this.getMacroValue("proteinas");
+
+    const hidratos = this.getMacroValue("hidratos");
+
+    const grasas = this.getMacroValue("grasas");
+
+    let texto = "";
+
+    texto += "RESUMEN DIARIO\n\n";
+
+    texto += this.formatDate()+"\n\n";
+
+    texto += "🔥 NUTRICIÓN\n\n";
+
+    texto += `Consumido: ${consumido.toFixed(1)} kcal\n\n`;
+
+    texto += "🏃 ACTIVIDAD\n\n";
+
+    texto += `Movimiento: ${actividad.movimiento} kcal\n`;
+
+    texto += `Ejercicio: ${actividad.ejercicio} min\n`;
+
+    texto += `De pie: ${actividad.dePie} h\n`;
+
+    texto += `Actualizado: ${actividad.actualizada || "--:--"}\n\n`;
+
+    texto += "🎯 BALANCE\n\n";
+
+    texto += `Objetivo base: ${objetivoBase} kcal\n`;
+
+    texto += `Actividad: +${actividad.movimiento} kcal\n`;
+
+    texto += `Objetivo hoy: ${objetivo} kcal\n`;
+
+    texto += `Restantes: ${restante.toFixed(1)} kcal\n\n`;
+
+    texto += `Proteínas: ${proteinas} g\n`;
+
+    texto += `Hidratos: ${hidratos} g\n`;
+
+    texto += `Grasas: ${grasas} g\n\n`;
+
+    const comidas = [
+
+        {titulo:"DESAYUNO",key:"desayuno"},
+
+        {titulo:"COMIDA",key:"comida"},
+
+        {titulo:"MERIENDA",key:"merienda"},
+
+        {titulo:"CENA",key:"cena"}
+
     ];
 
-    let texto="";
+    comidas.forEach(comida=>{
 
-    texto+="RESUMEN DIARIO\n\n";
+        texto += comida.titulo+"\n";
 
-    texto+=this.formatDate()+"\n\n";
-
-    texto+=`Objetivo: ${this.state.settings.objetivoKcal} kcal\n`;
-    texto+=`Consumido: ${this.getCalories()} kcal\n`;
-    texto+=`Restante: ${Math.max(0,this.state.settings.objetivoKcal-this.getCalories())} kcal\n\n`;
-
-    texto+=`Proteínas: ${this.getMacroValue("proteinas").toFixed(1)} g\n`;
-texto+=`Hidratos: ${this.getMacroValue("hidratos").toFixed(1)} g\n`;
-texto+=`Grasas: ${this.getMacroValue("grasas").toFixed(1)} g\n\n`;
-
-    comidas.forEach(([titulo,key])=>{
-
-        texto+=titulo+"\n";
-
-        const foods=this.state.day[key]||[];
+        const foods = this.state.day[comida.key] || [];
 
         if(!foods.length){
 
-            texto+="Sin alimentos\n\n";
+            texto += "Sin alimentos\n\n";
+
             return;
 
         }
 
-        let total=0;
+        let total = 0;
 
         foods.forEach(food=>{
 
-            texto+=`• ${food.hora || "--:--"} - ${food.nombre} (${food.kcal} kcal)\n`;
+            total += Number(food.kcal || 0);
 
-            total+=Number(food.kcal);
+            texto += `• ${food.hora || "--:--"} - ${food.nombre} (${food.kcal} kcal)\n`;
 
         });
 
-        texto+=`Total ${titulo.toLowerCase()}: ${total} kcal\n\n`;
+        texto += `Total ${comida.titulo.toLowerCase()}: ${total.toFixed(1)} kcal\n\n`;
 
     });
 
     navigator.clipboard.writeText(texto);
 
-    alert("✅ Informe copiado");
+    this.toast("Resumen copiado");
 
-},
+}
 
 };
 
