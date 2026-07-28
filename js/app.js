@@ -1133,7 +1133,36 @@ Calorías totales: 1218 kcal`
 
     if(!texto) return;
 
-    alert(texto);
+    const numero = (regex)=>{
+        const m = texto.match(regex);
+        return m ? parseFloat(m[1].replace(",", ".")) : 0;
+    };
+
+    const movimiento = numero(/Movimiento:\s*([\d.,]+)/i);
+    const ejercicio = numero(/Ejercicio:\s*([\d.,]+)/i);
+    const dePie = numero(/De pie:\s*([\d.,]+)/i);
+    const caloriasTotales = numero(/Calor[ií]as totales:\s*([\d.,]+)/i);
+
+    if(!this.state.day.actividad){
+        this.state.day.actividad = {};
+    }
+
+    this.state.day.actividad = {
+        movimiento,
+        ejercicio,
+        dePie,
+        caloriasTotales
+    };
+
+    DB.saveDay(this.state.day);
+
+    alert(
+`✅ Actividad guardada
+
+Movimiento: ${movimiento} kcal
+Ejercicio: ${ejercicio} min
+De pie: ${dePie} h`
+    );
 
 },
 
