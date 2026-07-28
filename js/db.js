@@ -22,14 +22,21 @@ const DB = {
     },
 
     emptyDay() {
-        return {
-            id: this.today(),
-            desayuno: [],
-            comida: [],
-            merienda: [],
-            cena: []
-        };
-    },
+    return {
+        id: this.today(),
+        desayuno: [],
+        comida: [],
+        merienda: [],
+        cena: [],
+
+        actividad: {
+            movimiento: 0,
+            ejercicio: 0,
+            dePie: 0,
+            caloriasTotales: 0
+        }
+    };
+},
 
     getDay(id) {
         try {
