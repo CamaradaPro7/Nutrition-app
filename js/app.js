@@ -1,4 +1,4 @@
-"use strict";
+"use "use strict";
 
 /* ==========================================================
    MI NUTRICIÓN NEXT
@@ -22,23 +22,20 @@ const App = {
     async init() {
         try {
             DB.open();
+            this.state.today = DB.today();
+            let day = DB.getDay(this.state.today);
 
-this.state.today = DB.today();
+            if (!day) {
+                day = DB.emptyDay();
+                DB.saveDay(day);
+            }
 
-let day = DB.getDay(this.state.today);
+            this.state.day = day;
+            const settings = DB.getSettings();
 
-if (!day) {
-    day = DB.emptyDay();
-    DB.saveDay(day);
-}
-
-this.state.day = day;
-
-const settings = DB.getSettings();
-
-if (settings) {
-    this.state.settings = settings;
-}
+            if (settings) {
+                this.state.settings = settings;
+            }
             this.render();
             this.bindEvents();
             this.updateUI();
@@ -60,193 +57,96 @@ if (settings) {
         }
     },
 
-render() {
+    render() {
+        const app = document.getElementById("app");
 
-    const app = document.getElementById("app");
-
-    app.innerHTML = `
-        <section class="card dashboard">
-
-            <div class="dashboard-top">
-                <div class="dashboard-copy">
-                    <h1 class="title">${this.getGreeting()}</h1>
-                    <p class="date">${this.formatDate()}</p>
+        app.innerHTML = `
+            <section class="card dashboard">
+                <div class="dashboard-top">
+                    <div class="dashboard-copy">
+                        <h1 class="title">${this.getGreeting()}</h1>
+                        <p class="date">${this.formatDate()}</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="dashboard-grid">
-
-    <div class="dashboard-left">
-
-                <div class="progress-wrap">
-
-                    <button class="progress"
-                            type="button"
-                            onclick="App.openReport()">
-
-                        <svg viewBox="0 0 220 220">
-
-                            <circle
-                                class="progress-track"
-                                cx="110"
-                                cy="110"
-                                r="96">
-                            </circle>
-
-                            <circle
-                                class="progress-ring"
-                                cx="110"
-                                cy="110"
-                                r="96">
-                            </circle>
-
-                        </svg>
-
-                        <div class="progress-center">
-
-                            <div
-                                class="progress-value"
-                                id="kcalValue">
-
-                                0
-
-                            </div>
-
-                            <div
-                                class="progress-label"
-                                id="kcalLabel">
-
-                                de ${this.getTargetCalories()} kcal
-
-                            </div>
-
+                <div class="dashboard-grid">
+                    <div class="dashboard-left">
+                        <div class="progress-wrap">
+                            <button class="progress" type="button" onclick="App.openReport()">
+                                <svg viewBox="0 0 220 220">
+                                    <circle class="progress-track" cx="110" cy="110" r="96"></circle>
+                                    <circle class="progress-ring" cx="110" cy="110" r="96"></circle>
+                                </svg>
+                                <div class="progress-center">
+                                    <div class="progress-value" id="kcalValue">0</div>
+                                    <div class="progress-label" id="kcalLabel">de ${this.getTargetCalories()} kcal</div>
+                                </div>
+                            </button>
                         </div>
-
-                    </button>
-
-</div>
-
-</div>
-
-<div class="dashboard-right">
-
-    <div class="dashboard-macros">
-
-                    ${this.renderMacro(
-                        "Proteínas",
-                        "🥩",
-                        "proteinas",
-                        this.state.settings.macros.proteinas,
-                        "g"
-                    )}
-
-                    ${this.renderMacro(
-                        "Hidratos",
-                        "🍚",
-                        "hidratos",
-                        this.state.settings.macros.hidratos,
-                        "g"
-                    )}
-
-                    ${this.renderMacro(
-                        "Grasas",
-                        "🥑",
-                        "grasas",
-                        this.state.settings.macros.grasas,
-                        "g"
-                    )}
-
-                </div>
-
-            </div>
-            
-            <div class="dashboard-stats">
-
-    <div class="stat-card">
-    <div class="stat-title">Objetivo</div>
-    <div class="stat-value">
-        ${this.getTargetCalories()} kcal
-    </div>
-</div>
-
-<div class="stat-card">
-    <div class="stat-title">Actividad</div>
-    <div class="stat-value">
-        ${this.getActivity().movimiento} kcal
-    </div>
-</div>
-
-<div class="stat-card">
-    <div class="stat-title">Gasto</div>
-    <div class="stat-value">
-        ${this.getTargetCalories()} kcal
-    </div>
-</div>
-
-<div class="stat-card">
-    <div class="stat-title">Restantes</div>
-    <div class="stat-value">
-        ${this.getRemainingCalories()} kcal
-    </div>
-</div>
-        </div>
-    </div>
-    
-        </section>
-
-        <section class="meals">
-
-            ${this.mealCard("🍳","Desayuno","desayuno")}
-
-            ${this.mealCard("🍝","Comida","comida")}
-
-            ${this.mealCard("🍓","Merienda","merienda")}
-
-            ${this.mealCard("🥗","Cena","cena")}
-
-        </section>
-    `;
-
-},
-
-    renderMacro(label, emoji, key, target, unit) {
-
-    const current = this.getMacroValue(key);
-
-    const percent = target > 0
-        ? Math.min((current / target) * 100, 100)
-        : 0;
-
-    return `
-        <article class="macro">
-
-            <div class="macro-top">
-
-                <div class="macro-emoji">${emoji}</div>
-
-                <div class="macro-info">
-
-                    <div class="macro-label">${label}</div>
-
-                    <div class="macro-value">
-                        ${Math.round(current)} ${unit}
                     </div>
 
+                    <div class="dashboard-right">
+                        <div class="dashboard-macros">
+                            ${this.renderMacro("Proteínas", "🥩", "proteinas", this.state.settings.macros.proteinas, "g")}
+                            ${this.renderMacro("Hidratos", "🍚", "hidratos", this.state.settings.macros.hidratos, "g")}
+                            ${this.renderMacro("Grasas", "🥑", "grasas", this.state.settings.macros.grasas, "g")}
+                        </div>
+                    </div>
                 </div>
 
-            </div>
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-title">Objetivo base</div>
+                        <div class="stat-value">${this.getBaseCalories()}</div>
+                        <div class="stat-unit">kcal</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Actividad</div>
+                        <div class="stat-value">+${this.getActivity().movimiento}</div>
+                        <div class="stat-unit">kcal</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Gasto total</div>
+                        <div class="stat-value">${this.getActivity().caloriasTotales || 1699}</div>
+                        <div class="stat-unit">kcal</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Restantes</div>
+                        <div class="stat-value">${this.getRemainingCalories()}</div>
+                        <div class="stat-unit">kcal</div>
+                    </div>
+                </div>
+            </section>
 
-            <div class="macro-bar">
-                <div class="macro-fill" style="width:${percent}%"></div>
-            </div>
+            <section class="meals">
+                ${this.mealCard("🍳", "Desayuno", "desayuno")}
+                ${this.mealCard("🍝", "Comida", "comida")}
+                ${this.mealCard("🍓", "Merienda", "merienda")}
+                ${this.mealCard("🥗", "Cena", "cena")}
+            </section>
+        `;
+    },
 
-            <div class="macro-target">
-                de ${target} ${unit}
-            </div>
+    renderMacro(label, emoji, key, target, unit) {
+        const current = this.getMacroValue(key);
+        const percent = target > 0 ? Math.min((current / target) * 100, 100) : 0;
 
-        </article>
-    `;
-},
+        return `
+            <article class="macro">
+                <div class="macro-top">
+                    <div class="macro-emoji">${emoji}</div>
+                    <div class="macro-info">
+                        <div class="macro-label">${label}</div>
+                        <div class="macro-value">${Math.round(current)} ${unit}</div>
+                    </div>
+                </div>
+                <div class="macro-bar">
+                    <div class="macro-fill" style="width:${percent}%"></div>
+                </div>
+                <div class="macro-target">de ${target} ${unit}</div>
+            </article>
+        `;
+    },
 
     mealCard(icono, nombre, id) {
         return `
@@ -269,109 +169,69 @@ render() {
     },
 
     updateUI() {
+        const total = this.getCalories();
+        const target = this.getTargetCalories();
+        const pct = target > 0 ? Math.min(total / target, 1) : 0;
+        const ring = document.querySelector(".progress-ring");
+        const circumference = 2 * Math.PI * 96;
 
-    const total = this.getCalories();
+        if (ring) {
+            ring.style.strokeDasharray = `${circumference * pct} ${circumference}`;
+        }
 
-    const target = this.getTargetCalories();
+        const kcalValue = document.getElementById("kcalValue");
+        const kcalLabel = document.getElementById("kcalLabel");
 
-    const pct = target > 0 ? Math.min(total / target, 1) : 0;
+        if (kcalValue) {
+            kcalValue.textContent = Math.round(total);
+        }
 
-    const ring = document.querySelector(".progress-ring");
+        if (kcalLabel) {
+            kcalLabel.textContent = `de ${Math.round(target)} kcal`;
+        }
+    },
 
-    const circumference = 2 * Math.PI * 96;
-
-    if (ring) {
-
-        ring.style.strokeDasharray =
-            `${circumference * pct} ${circumference}`;
-
-    }
-
-    const kcalValue = document.getElementById("kcalValue");
-
-    const kcalLabel = document.getElementById("kcalLabel");
-
-    if (kcalValue) {
-
-        kcalValue.textContent = Math.round(total);
-
-    }
-
-    if (kcalLabel) {
-
-        kcalLabel.textContent = `de ${Math.round(target)} kcal`;
-
-    }
-
-},
-
-refresh() {
-
-    this.render();
-    this.updateUI();
-
-},
+    refresh() {
+        this.render();
+        this.updateUI();
+    },
 
     getCalories() {
         return this.getMealCalories("desayuno") + this.getMealCalories("comida") + this.getMealCalories("merienda") + this.getMealCalories("cena");
     },
     
     getTargetCalories(){
+        const base = this.state.settings.objetivoKcal;
+        const movimiento = this.state.day?.actividad?.movimiento || 0;
+        return base + movimiento;
+    },
 
-    const base = this.state.settings.objetivoKcal;
+    getBaseCalories(){
+        return this.state.settings.objetivoKcal;
+    },
 
-    const movimiento =
-        this.state.day?.actividad?.movimiento || 0;
+    getActivity(){
+        return this.state.day?.actividad || {
+            movimiento: 0,
+            ejercicio: 0,
+            dePie: 0,
+            caloriasTotales: 0
+        };
+    },
 
-    return base + movimiento;
-
-},
-
-getBaseCalories(){
-
-    return this.state.settings.objetivoKcal;
-
-},
-
-getActivity(){
-
-    return this.state.day?.actividad || {
-
-        movimiento:0,
-        ejercicio:0,
-        dePie:0,
-        caloriasTotales:0
-
-    };
-
-},
-
-getRemainingCalories(){
-
-    return Math.max(
-        0,
-        this.getTargetCalories()-this.getCalories()
-    );
-
-},
+    getRemainingCalories(){
+        return Math.max(0, this.getTargetCalories() - this.getCalories());
+    },
 
     getMacroValue(key){
-
-    let total=0;
-
-    ["desayuno","comida","merienda","cena"].forEach(meal=>{
-
-        this.state.day[meal].forEach(food=>{
-
-            total+=Number(food[key]||0);
-
+        let total = 0;
+        ["desayuno", "comida", "merienda", "cena"].forEach(meal => {
+            (this.state.day[meal] || []).forEach(food => {
+                total += Number(food[key] || 0);
+            });
         });
-
-    });
-
-    return total;
-
-},
+        return total;
+    },
 
     getMealCalories(meal) {
         const items = this.state.day?.[meal] || [];
@@ -394,1168 +254,466 @@ getRemainingCalories(){
     },
     
     getGreeting() {
-
-    const h = new Date().getHours();
-
-    if (h < 12) return "Buenos días";
-    if (h < 20) return "Buenas tardes";
-
-    return "Buenas noches";
-},
+        const h = new Date().getHours();
+        if (h < 12) return "Buenos días";
+        if (h < 20) return "Buenas tardes";
+        return "Buenas noches";
+    },
 
     openMeal(meal) {
-
-    const modal = document.getElementById("modal");
-
-    const titulo = meal.charAt(0).toUpperCase() + meal.slice(1);
-
-    modal.classList.remove("hidden");
-
-    modal.innerHTML = `
-
-<div class="sheet">
-
-    <h2 class="text-center">${titulo}</h2>
-
-    <div class="mt-20">
-
-        <button class="action-btn"
-            onclick="App.pasteFood('${meal}')">
-
-            📋 Pegar desde ChatGPT
-
-        </button>
-        
-        <button class="action-btn"
-    onclick="App.showLibrary('${meal}')">
-
-    📚 Biblioteca
-
-</button>
-
-        <button class="action-btn"
-            onclick="App.showFoods('${meal}')">
-
-            📄 Ver alimentos
-
-        </button>
-
-        <button class="action-btn danger"
-            onclick="App.clearMeal('${meal}')">
-
-            🗑 Vaciar comida
-
-        </button>
-
-    </div>
-
-    <div class="mt-20 center">
-
-        <button onclick="App.closeModal()">
-
-            Cerrar
-
-        </button>
-
-    </div>
-
-</div>
-
-`;
-
-},
-
-pasteFood(meal){
-
-    const modal=document.getElementById("modal");
-
-    const titulo=meal.charAt(0).toUpperCase()+meal.slice(1);
-
-    modal.innerHTML=`
-
-<div class="sheet">
-
-<h2>${titulo}</h2>
-
-<textarea id="foodText"
-placeholder="Pega aquí uno o varios alimentos copiados desde ChatGPT..."
-style="
-width:100%;
-height:260px;
-padding:16px;
-border:1px solid #ddd;
-border-radius:18px;
-font-size:16px;
-resize:none;
-"></textarea>
-
-<div class="mt-20">
-
-<button class="action-btn"
-onclick="App.savePastedFood('${meal}')">
-
-Guardar alimentos
-
-</button>
-
-<button class="action-btn danger"
-onclick="App.openMeal('${meal}')">
-
-Cancelar
-
-</button>
-
-</div>
-
-</div>
-
-`;
-
-},
-
-savePastedFood(meal){
-
-    const texto = document.getElementById("foodText").value.trim();
-
-    if(!texto) return;
-
-    const bloques = texto.split(/\n\s*\n/);
-
-    const ahora = new Date();
-    
-    let biblioteca = DB.getLibrary();
-
-    const fecha = ahora.toISOString().slice(0,10);
-
-    const hora = ahora.toLocaleTimeString("es-ES",{
-        hour:"2-digit",
-        minute:"2-digit"
-    });
-
-    bloques.forEach(bloque => {
-
-    const lineas = bloque.trim().split("\n");
-
-    const nombre = lineas[0].trim();
-
-    const numero = (valor) =>
-        parseFloat(
-            (valor || "0")
-                .replace(/\./g, "")
-                .replace(",", ".")
-        );
-
-    const kcal = numero((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i) || [])[1]);
-
-    const proteinas = numero((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i) || [])[1]);
-
-    let hidratos = 0;
-
-    const carbo = bloque.match(/Carbohidratos:\s*([\d.,]+)/i);
-    const hidra = bloque.match(/Hidratos:\s*([\d.,]+)/i);
-
-    if (carbo) {
-        hidratos = numero(carbo[1]);
-    } else if (hidra) {
-        hidratos = numero(hidra[1]);
-    }
-
-    const grasas = numero((bloque.match(/Grasas:\s*([\d.,]+)/i) || [])[1]);
-
-    const existe = biblioteca.some(
-        food => food.nombre.toLowerCase() === nombre.toLowerCase()
-    );
-
-    if (!existe) {
-        biblioteca.push({
-            nombre,
-            kcal,
-            proteinas,
-            hidratos,
-            grasas
-        });
-    }
-
-    this.state.day[meal].push({
-
-        nombre,
-
-        kcal,
-
-        proteinas,
-
-        hidratos,
-
-        grasas,
-
-        fecha,
-
-        hora,
-
-        comida: meal,
-
-        origen: bloque.trim()
-
-    });
-
-});
-    
-    DB.saveLibrary(biblioteca);
-
-DB.saveDay(this.state.day);
-
-this.closeModal();
-
-this.refresh();
-
-},
-
-showLibrary(meal){
-    
-    const biblioteca = [...DB.getLibrary()].sort((a, b) =>
-    a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" })
-);
-
-    const modal = document.getElementById("modal");
-
-    const titulo = meal.charAt(0).toUpperCase() + meal.slice(1);
-
-    modal.classList.remove("hidden");
-
-    modal.innerHTML = `
-
-<div class="sheet">
-
-<h2>📚 Biblioteca</h2>
-
-<input
-    id="librarySearch"
-    type="text"
-    placeholder="🔍 Buscar alimento..."
-    oninput="App.filterLibrary()"
-    style="
-        width:100%;
-        padding:12px;
-        margin:15px 0;
-        border:1px solid #ddd;
-        border-radius:12px;
-        font-size:16px;
-    ">
-
-<div class="food-list">
-
-${
-biblioteca.length
-?
-biblioteca.map((food,index)=>`
-
-<div class="food-item"
-     onclick="App.addLibraryFood('${meal}','${food.nombre}', this)"
-     style="cursor:pointer;">
-
-<div>
-
-<div class="food-name">${food.nombre}</div>
-
-<div class="food-kcal">
-
-${food.kcal} kcal ·
-P ${food.proteinas} g ·
-C ${food.hidratos} g ·
-G ${food.grasas} g
-
-</div>
-
-</div>
-
-<button class="delete-btn"
-onclick="event.stopPropagation(); App.deleteLibraryFood('${food.nombre}','${meal}')">
-
-✕
-
-</button>
-
-</div>
-
-`).join("")
-:
-"<p class='text-center'>Biblioteca vacía</p>"
-}
-
-</div>
-
-<div class="mt-20">
-
-<button class="action-btn" onclick="App.closeModal()">
-    ✅ Listo
-</button>
-
-</div>
-
-</div>
-
-`;
-
-},
-
-filterLibrary() {
-    const search = document.getElementById('librarySearch').value.toLowerCase();
-
-    document.querySelectorAll('.food-item').forEach(item => {
-        const text = item.textContent.toLowerCase();
-
-        if (text.includes(search)) {
-            item.style.display = '';
-        } else {
-            item.style.display = 'none';
-        }
-    });
-},
-
-addLibraryFood(meal, nombre, element){
-
-    const biblioteca = DB.getLibrary();
-const food = biblioteca.find(f => f.nombre === nombre);
-
-    element.style.background = "#e8f6ea";
-element.style.transition = "0.2s";
-
-setTimeout(() => {
-    element.style.background = "";
-}, 200);
-
-    if (!food) return;
-
-    const ahora = new Date();
-
-    this.state.day[meal].push({
-
-        ...food,
-
-        fecha: ahora.toISOString().slice(0,10),
-
-        hora: ahora.toLocaleTimeString("es-ES",{
-            hour:"2-digit",
-            minute:"2-digit"
-        }),
-
-        comida: meal
-
-    });
-
-    DB.saveDay(this.state.day);
-
-this.refresh();
-
-},
-
-deleteLibraryFood(nombre, meal){
-
-    if(!confirm("¿Eliminar este alimento de la biblioteca?")) return;
-
-    let biblioteca = DB.getLibrary();
-
-    biblioteca = biblioteca.filter(
-        food => food.nombre !== nombre
-    );
-
-    DB.saveLibrary(biblioteca);
-
-    this.showLibrary(meal);
-
-},
-
-showFoods(meal){
-
-    const modal=document.getElementById("modal");
-
-    const foods=this.state.day[meal]||[];
-
-    const titulo=meal.charAt(0).toUpperCase()+meal.slice(1);
-
-    modal.classList.remove("hidden");
-
-    modal.innerHTML=`
-
-<div class="sheet">
-
-<h2>${titulo}</h2>
-
-<div class="food-list">
-
-${
-foods.length
-?
-foods.map((food,index)=>`
-
-<div class="food-item">
-
-<div>
-
-<div class="food-name">${food.nombre}</div>
-
-<div class="food-kcal">
-
-🕒 ${food.hora || "--:--"}
-
-<br>
-
-${food.kcal} kcal ·
-P ${food.proteinas} g ·
-C ${food.hidratos} g ·
-G ${food.grasas} g
-
-</div>
-
-</div>
-
-<div style="display:flex;flex-direction:column;gap:6px;">
-
-<button class="delete-btn"
-onclick="App.editFood('${meal}',${index})">
-
-✏️
-
-</button>
-
-<button class="delete-btn"
-onclick="App.deleteFood('${meal}',${index})">
-
-✕
-
-</button>
-
-</div>
-
-</div>
-
-`).join("")
-:
-"<p class='text-center'>Sin alimentos</p>"
-}
-
-</div>
-
-<div class="mt-20">
-
-<button class="action-btn"
-
-onclick="App.pasteFood('${meal}')">
-
-📋 Añadir alimentos
-
-</button>
-
-<button class="action-btn danger"
-
-onclick="App.closeModal()">
-
-Cerrar
-
-</button>
-
-</div>
-
-</div>
-
-`;
-
-},
-
-deleteFood(meal,index){
-
-    this.state.day[meal].splice(index,1);
-
-    DB.saveDay(this.state.day);
-
-this.showFoods(meal);
-
-this.refresh();
-
-},
-
-editFood(meal,index){
-
-    const food=this.state.day[meal][index];
-
-    const nombre=food.nombre;
-
-    let unidad="";
-    let cantidad="";
-
-    let match=nombre.match(/(\d+(?:[.,]\d+)?)\s*g\b/i);
-
-    if(match){
-
-        unidad="g";
-        cantidad=match[1].replace(",", ".");
-
-    }else{
-
-        match=nombre.match(/(\d+(?:[.,]\d+)?)\s*ml\b/i);
-
-        if(match){
-
-            unidad="ml";
-            cantidad=match[1].replace(",", ".");
-
-        }else{
-
-            match=nombre.match(/(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i);
-
-            if(match){
-
-                unidad="raciones";
-                cantidad=match[1].replace(",", ".");
-
+        const modal = document.getElementById("modal");
+        const titulo = meal.charAt(0).toUpperCase() + meal.slice(1);
+        modal.classList.remove("hidden");
+        modal.innerHTML = `
+            <div class="sheet">
+                <h2 class="text-center">${titulo}</h2>
+                <div class="mt-20">
+                    <button class="action-btn" onclick="App.pasteFood('${meal}')">📋 Pegar desde ChatGPT</button>
+                    <button class="action-btn" onclick="App.showLibrary('${meal}')">📚 Biblioteca</button>
+                    <button class="action-btn" onclick="App.showFoods('${meal}')">📄 Ver alimentos</button>
+                    <button class="action-btn danger" onclick="App.clearMeal('${meal}')">🗑 Vaciar comida</button>
+                </div>
+                <div class="mt-20 center">
+                    <button onclick="App.closeModal()">Cerrar</button>
+                </div>
+            </div>
+        `;
+    },
+
+    pasteFood(meal){
+        const modal = document.getElementById("modal");
+        const titulo = meal.charAt(0).toUpperCase() + meal.slice(1);
+        modal.innerHTML = `
+            <div class="sheet">
+                <h2>${titulo}</h2>
+                <textarea id="foodText" placeholder="Pega aquí uno o varios alimentos copiados desde ChatGPT..." style="width:100%;height:260px;padding:16px;border:1px solid #ddd;border-radius:18px;font-size:16px;resize:none;"></textarea>
+                <div class="mt-20">
+                    <button class="action-btn" onclick="App.savePastedFood('${meal}')">Guardar alimentos</button>
+                    <button class="action-btn danger" onclick="App.openMeal('${meal}')">Cancelar</button>
+                </div>
+            </div>
+        `;
+    },
+
+    savePastedFood(meal){
+        const texto = document.getElementById("foodText").value.trim();
+        if(!texto) return;
+
+        const bloques = texto.split(/\n\s*\n/);
+        const ahora = new Date();
+        let biblioteca = DB.getLibrary();
+        const fecha = ahora.toISOString().slice(0,10);
+        const hora = ahora.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+
+        bloques.forEach(bloque => {
+            const lineas = bloque.trim().split("\n");
+            const nombre = lineas[0].trim();
+            const numero = (valor) => parseFloat((valor || "0").replace(/\./g, "").replace(",", "."));
+
+            const kcal = numero((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i) || [])[1]);
+            const proteinas = numero((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i) || [])[1]);
+
+            let hidratos = 0;
+            const carbo = bloque.match(/Carbohidratos:\s*([\d.,]+)/i);
+            const hidra = bloque.match(/Hidratos:\s*([\d.,]+)/i);
+
+            if (carbo) hidratos = numero(carbo[1]);
+            else if (hidra) hidratos = numero(hidra[1]);
+
+            const grasas = numero((bloque.match(/Grasas:\s*([\d.,]+)/i) || [])[1]);
+
+            const existe = biblioteca.some(food => food.nombre.toLowerCase() === nombre.toLowerCase());
+            if (!existe) {
+                biblioteca.push({ nombre, kcal, proteinas, hidratos, grasas });
             }
 
-        }
-
-    }
-
-    const modal=document.getElementById("modal");
-
-    modal.classList.remove("hidden");
-
-    modal.innerHTML=`
-
-<div class="sheet">
-
-<h2>Editar cantidad</h2>
-
-<p style="margin:20px 0;font-weight:600;">
-
-${nombre}
-
-</p>
-
-${
-unidad
-?
-`
-<input
-id="editCantidad"
-type="number"
-step="0.1"
-value="${cantidad}"
-style="
-width:100%;
-padding:14px;
-font-size:18px;
-border-radius:12px;
-border:1px solid #ccc;
-">
-
-<p style="margin-top:10px;text-align:center;">
-
-${unidad}
-
-</p>
-`
-:
-`
-<p>
-
-Este alimento todavía no se puede editar automáticamente.
-
-</p>
-`
-}
-
-<div class="mt-20">
-
-<button
-class="action-btn"
-onclick="App.showFoods('${meal}')">
-
-Cancelar
-
-</button>
-
-<button
-class="action-btn"
-onclick="App.saveEditedFood('${meal}',${index},'${unidad}')">
-
-Guardar
-
-</button>
-
-</div>
-
-</div>
-
-`;
-
-},
-
-saveEditedFood(meal,index,unidad){
-
-    const food=this.state.day[meal][index];
-
-    const nuevo=parseFloat(
-        document.getElementById("editCantidad").value.replace(",",".")
-    );
-
-    if(isNaN(nuevo) || nuevo<=0){
-        alert("Cantidad no válida");
-        return;
-    }
-
-    let match;
-
-    if(unidad==="g"){
-        match=food.nombre.match(/(\d+(?:[.,]\d+)?)\s*g/i);
-    }else if(unidad==="ml"){
-        match=food.nombre.match(/(\d+(?:[.,]\d+)?)\s*ml/i);
-    }else{
-        match=food.nombre.match(/(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i);
-    }
-
-    if(!match){
-        alert("No se pudo calcular.");
-        return;
-    }
-
-    const anterior=parseFloat(match[1].replace(",","."));
-
-    const factor=nuevo/anterior;
-
-    food.kcal=+(food.kcal*factor).toFixed(1);
-    food.proteinas=+(food.proteinas*factor).toFixed(1);
-    food.hidratos=+(food.hidratos*factor).toFixed(1);
-    food.grasas=+(food.grasas*factor).toFixed(1);
-
-    if(unidad==="g"){
-
-        food.nombre=food.nombre.replace(
-            /(\d+(?:[.,]\d+)?)\s*g/i,
-            `${nuevo} g`
-        );
-
-    }else if(unidad==="ml"){
-
-        food.nombre=food.nombre.replace(
-            /(\d+(?:[.,]\d+)?)\s*ml/i,
-            `${nuevo} ml`
-        );
-
-    }else{
-
-        const texto=nuevo===1 ? "ración" : "raciones";
-
-        food.nombre=food.nombre.replace(
-            /(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i,
-            `${nuevo} ${texto}`
-        );
-
-    }
-
-    DB.saveDay(this.state.day);
-
-this.showFoods(meal);
-
-this.refresh();
-
-},
-
-clearMeal(meal){
-
-    if(!confirm("¿Vaciar esta comida?")) return;
-
-    this.state.day[meal]=[];
-
-    DB.saveDay(this.state.day);
-
-    this.refresh();
-
-    this.closeModal();
-
-},
-
-closeModal(){
-
-    const modal=document.getElementById("modal");
-
-    modal.classList.add("hidden");
-
-    modal.innerHTML="";
-
-},
-
-openReport(){
-
-    const total = this.getCalories();
-
-    const objetivo = this.getTargetCalories();
-
-    const actividad = this.getActivity();
-
-    const restante = this.getRemainingCalories();
-
-    const proteinas = this.getMacroValue("proteinas");
-
-    const hidratos = this.getMacroValue("hidratos");
-
-    const grasas = this.getMacroValue("grasas");
-
-    const comidas = [
-        {icono:"🍳",titulo:"Desayuno",key:"desayuno"},
-        {icono:"🍝",titulo:"Comida",key:"comida"},
-        {icono:"🍓",titulo:"Merienda",key:"merienda"},
-        {icono:"🥗",titulo:"Cena",key:"cena"}
-    ];
-
-    let html = `
-
-<div class="sheet">
-
-<h2 class="text-center">
-
-Resumen diario
-
-</h2>
-
-<div class="report-date">
-
-📅 ${this.formatDate()}
-
-</div>
-
-<div class="report-calories">
-
-🔥 <strong>${Math.round(total)}</strong>
-
-<span>/ ${Math.round(objetivo)} kcal</span>
-
-</div>
-
-<div class="report-macros">
-
-<div class="report-macro">
-
-<span>🎯 Objetivo base</span>
-
-<strong>${this.getBaseCalories()} kcal</strong>
-
-</div>
-
-<div class="report-macro">
-
-<span>🏃 Actividad</span>
-
-<strong>+${actividad.movimiento} kcal</strong>
-
-</div>
-
-<div class="report-macro">
-
-<span>✅ Restantes</span>
-
-<strong>${Math.round(restante)} kcal</strong>
-
-</div>
-
-</div>
-
-<div class="report-macros">
-
-<div class="report-macro">
-
-<span>🚶 Movimiento</span>
-
-<strong>${actividad.movimiento} kcal</strong>
-
-</div>
-
-<div class="report-macro">
-
-<span>🏋️ Ejercicio</span>
-
-<strong>${actividad.ejercicio} min</strong>
-
-</div>
-
-<div class="report-macro">
-
-<span>🧍 De pie</span>
-
-<strong>${actividad.dePie} h</strong>
-
-</div>
-
-<div class="report-macro">
-
-<span>🕒 Actualizado</span>
-
-<strong>${actividad.actualizada || "--:--"}</strong>
-
-</div>
-
-</div>
-
-<div class="report-macros">
-
-<div class="report-macro">
-
-<span>🥩 Proteínas</span>
-
-<strong>${proteinas} / ${this.state.settings.macros.proteinas} g</strong>
-
-</div>
-
-<div class="report-macro">
-
-<span>🍚 Hidratos</span>
-
-<strong>${hidratos} / ${this.state.settings.macros.hidratos} g</strong>
-
-</div>
-
-<div class="report-macro">
-
-<span>🥑 Grasas</span>
-
-<strong>${grasas} / ${this.state.settings.macros.grasas} g</strong>
-
-</div>
-
-</div>
-
-`;
-comidas.forEach(comida=>{
-
-    const foods = this.state.day[comida.key] || [];
-
-    let totalMeal = 0;
-
-    html += `
-
-<div class="report-meal">
-
-<div class="report-meal-title">
-
-${comida.icono} ${comida.titulo}
-
-</div>
-
-`;
-
-    if(!foods.length){
-
-        html += `
-
-<div class="report-empty">
-
-Sin alimentos
-
-</div>
-
-`;
-
-    }else{
-
-        foods.forEach(food=>{
-
-            totalMeal += Number(food.kcal || 0);
-
-            html += `
-
-<div class="report-food">
-
-<div class="report-food-header">
-
-<span class="report-food-time">
-
-${food.hora || "--:--"}
-
-</span>
-
-<span class="report-food-name">
-
-${food.nombre}
-
-</span>
-
-</div>
-
-<div class="report-food-kcal">
-
-${food.kcal} kcal
-
-</div>
-
-</div>
-
-`;
-
+            this.state.day[meal].push({
+                nombre, kcal, proteinas, hidratos, grasas, fecha, hora, comida: meal, origen: bloque.trim()
+            });
         });
 
-        html += `
-
-<div class="report-meal-total">
-
-<span>Total ${comida.titulo}</span>
-
-<strong>${totalMeal.toFixed(1)} kcal</strong>
-
-</div>
-
-`;
-
-    }
-
-    html += `
-
-</div>
-
-`;
-
-});
-
-html += `
-
-<div class="mt-20">
-
-<button
-class="action-btn"
-onclick="App.showActivityPaste()">
-
-🏃 Actualizar actividad
-
-</button>
-
-<button
-class="action-btn"
-onclick="App.copyReport()">
-
-📋 Copiar para ChatGPT
-
-</button>
-
-<button
-class="action-btn danger"
-onclick="App.closeModal()">
-
-Cerrar
-
-</button>
-
-</div>
-
-</div>
-
-`;
-
-const modal = document.getElementById("modal");
-
-modal.classList.remove("hidden");
-
-modal.innerHTML = html;
-
-},
-
-importActivity(){
-
-    const texto = document.getElementById("activityInput").value.trim();
-
-if (!texto) {
-
-    this.toast("No has pegado ningún informe");
-
-    return;
-
-}
-
-    const numero = (regex)=>{
-        const m = texto.match(regex);
-        return m ? parseFloat(m[1].replace(",", ".")) : 0;
-    };
-
-    const movimiento = numero(/Movimiento:\s*([\d.,]+)/i);
-    const ejercicio = numero(/Ejercicio:\s*([\d.,]+)/i);
-    const dePie = numero(/De pie:\s*([\d.,]+)/i);
-    const caloriasTotales = numero(/Calor[ií]as totales:\s*([\d.,]+)/i);
-
-    if(!this.state.day.actividad){
-        this.state.day.actividad = {};
-    }
-
-    this.state.day.actividad = {
-
-    movimiento,
-    ejercicio,
-    dePie,
-    caloriasTotales,
-
-    actualizada: new Date().toLocaleTimeString("es-ES",{
-        hour:"2-digit",
-        minute:"2-digit"
-    })
-
-};
-
-    DB.saveDay(this.state.day);
-
-this.closeModal();
-
-this.refresh();
-
-this.toast("Actividad actualizada");
-
-},
-
-showActivityPaste(){
-
-    const modal=document.getElementById("modal");
-
-    modal.classList.remove("hidden");
-
-    modal.innerHTML=`
-    <div class="sheet">
-
-        <h2 class="text-center">🏃 Pegar actividad</h2>
-
-        <p class="text-center">
-            Pega aquí el informe de Apple Salud o Apple Watch.
-        </p>
-
-        <textarea
-            id="activityInput"
-            rows="12"
-            style="width:100%;margin-top:16px;"
-            placeholder="Movimiento 205 kcal
-Ejercicio 8 min
-De pie 7 h
-Calorías totales 1588 kcal"></textarea>
-
-        <div class="mt-20">
-
-            <button
-                class="action-btn"
-                onclick="App.importActivity()">
-
-                Actualizar actividad
-
-            </button>
-
-            <button
-                class="action-btn danger"
-                onclick="App.closeModal()">
-
-                Cancelar
-
-            </button>
-
-        </div>
-
-    </div>`;
-},
-
-copyReport(){
-
-    const actividad = this.getActivity();
-
-    const objetivoBase = this.getBaseCalories();
-
-    const objetivo = this.getTargetCalories();
-
-    const consumido = this.getCalories();
-
-    const restante = this.getRemainingCalories();
-
-    const proteinas = this.getMacroValue("proteinas");
-
-    const hidratos = this.getMacroValue("hidratos");
-
-    const grasas = this.getMacroValue("grasas");
-
-    let texto = "";
-
-    texto += "RESUMEN DIARIO\n\n";
-
-    texto += this.formatDate()+"\n\n";
-
-    texto += "🔥 NUTRICIÓN\n\n";
-
-    texto += `Consumido: ${consumido.toFixed(1)} kcal\n\n`;
-
-    texto += "🏃 ACTIVIDAD\n\n";
-
-    texto += `Movimiento: ${actividad.movimiento} kcal\n`;
-
-    texto += `Ejercicio: ${actividad.ejercicio} min\n`;
-
-    texto += `De pie: ${actividad.dePie} h\n`;
-
-    texto += `Actualizado: ${actividad.actualizada || "--:--"}\n\n`;
-
-    texto += "🎯 BALANCE\n\n";
-
-    texto += `Objetivo base: ${objetivoBase} kcal\n`;
-
-    texto += `Actividad: +${actividad.movimiento} kcal\n`;
-
-    texto += `Objetivo hoy: ${objetivo} kcal\n`;
-
-    texto += `Restantes: ${restante.toFixed(1)} kcal\n\n`;
-
-    texto+=`Proteínas: ${proteinas.toFixed(1)} g\n`;
-texto+=`Hidratos: ${hidratos.toFixed(1)} g\n`;
-texto += `Grasas: ${grasas.toFixed(1)} g\n\n`;
-
-    const comidas = [
-
-        {titulo:"DESAYUNO",key:"desayuno"},
-
-        {titulo:"COMIDA",key:"comida"},
-
-        {titulo:"MERIENDA",key:"merienda"},
-
-        {titulo:"CENA",key:"cena"}
-
-    ];
-
-    comidas.forEach(comida=>{
-
-        texto += comida.titulo+"\n";
-
-        const foods = this.state.day[comida.key] || [];
-
-        if(!foods.length){
-
-            texto += "Sin alimentos\n\n";
-
+        DB.saveLibrary(biblioteca);
+        DB.saveDay(this.state.day);
+        this.closeModal();
+        this.refresh();
+    },
+
+    showLibrary(meal){
+        const biblioteca = [...DB.getLibrary()].sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" }));
+        const modal = document.getElementById("modal");
+        modal.classList.remove("hidden");
+
+        modal.innerHTML = `
+            <div class="sheet">
+                <h2>📚 Biblioteca</h2>
+                <input id="librarySearch" type="text" placeholder="🔍 Buscar alimento..." oninput="App.filterLibrary()" style="width:100%;padding:12px;margin:15px 0;border:1px solid #ddd;border-radius:12px;font-size:16px;">
+                <div class="food-list">
+                    ${biblioteca.length ? biblioteca.map((food, index) => `
+                        <div class="food-item" onclick="App.addLibraryFood('${meal}','${food.nombre}', this)" style="cursor:pointer;">
+                            <div>
+                                <div class="food-name">${food.nombre}</div>
+                                <div class="food-kcal">${food.kcal} kcal · P ${food.proteinas} g · C ${food.hidratos} g · G ${food.grasas} g</div>
+                            </div>
+                            <button class="delete-btn" onclick="event.stopPropagation(); App.deleteLibraryFood('${food.nombre}','${meal}')">✕</button>
+                        </div>
+                    `).join("") : "<p class='text-center'>Biblioteca vacía</p>"}
+                </div>
+                <div class="mt-20">
+                    <button class="action-btn" onclick="App.closeModal()">✅ Listo</button>
+                </div>
+            </div>
+        `;
+    },
+
+    filterLibrary() {
+        const search = document.getElementById('librarySearch').value.toLowerCase();
+        document.querySelectorAll('.food-item').forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(search) ? '' : 'none';
+        });
+    },
+
+    addLibraryFood(meal, nombre, element){
+        const biblioteca = DB.getLibrary();
+        const food = biblioteca.find(f => f.nombre === nombre);
+        element.style.background = "#e8f6ea";
+        element.style.transition = "0.2s";
+
+        setTimeout(() => { element.style.background = ""; }, 200);
+        if (!food) return;
+
+        const ahora = new Date();
+        this.state.day[meal].push({
+            ...food,
+            fecha: ahora.toISOString().slice(0,10),
+            hora: ahora.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }),
+            comida: meal
+        });
+
+        DB.saveDay(this.state.day);
+        this.refresh();
+    },
+
+    deleteLibraryFood(nombre, meal){
+        if(!confirm("¿Eliminar este alimento de la biblioteca?")) return;
+        let biblioteca = DB.getLibrary();
+        biblioteca = biblioteca.filter(food => food.nombre !== nombre);
+        DB.saveLibrary(biblioteca);
+        this.showLibrary(meal);
+    },
+
+    showFoods(meal){
+        const modal = document.getElementById("modal");
+        const foods = this.state.day[meal] || [];
+        const titulo = meal.charAt(0).toUpperCase() + meal.slice(1);
+        modal.classList.remove("hidden");
+
+        modal.innerHTML = `
+            <div class="sheet">
+                <h2>${titulo}</h2>
+                <div class="food-list">
+                    ${foods.length ? foods.map((food, index) => `
+                        <div class="food-item">
+                            <div>
+                                <div class="food-name">${food.nombre}</div>
+                                <div class="food-kcal">🕒 ${food.hora || "--:--"}<br>${food.kcal} kcal · P ${food.proteinas} g · C ${food.hidratos} g · G ${food.grasas} g</div>
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:6px;">
+                                <button class="delete-btn" onclick="App.editFood('${meal}',${index})">✏️</button>
+                                <button class="delete-btn" onclick="App.deleteFood('${meal}',${index})">✕</button>
+                            </div>
+                        </div>
+                    `).join("") : "<p class='text-center'>Sin alimentos</p>"}
+                </div>
+                <div class="mt-20">
+                    <button class="action-btn" onclick="App.pasteFood('${meal}')">📋 Añadir alimentos</button>
+                    <button class="action-btn danger" onclick="App.closeModal()">Cerrar</button>
+                </div>
+            </div>
+        `;
+    },
+
+    deleteFood(meal, index){
+        this.state.day[meal].splice(index, 1);
+        DB.saveDay(this.state.day);
+        this.showFoods(meal);
+        this.refresh();
+    },
+
+    editFood(meal, index){
+        const food = this.state.day[meal][index];
+        const nombre = food.nombre;
+        let unidad = "";
+        let cantidad = "";
+
+        let match = nombre.match(/(\d+(?:[.,]\d+)?)\s*g\b/i);
+        if (match) {
+            unidad = "g";
+            cantidad = match[1].replace(",", ".");
+        } else {
+            match = nombre.match(/(\d+(?:[.,]\d+)?)\s*ml\b/i);
+            if (match) {
+                unidad = "ml";
+                cantidad = match[1].replace(",", ".");
+            } else {
+                match = nombre.match(/(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i);
+                if (match) {
+                    unidad = "raciones";
+                    cantidad = match[1].replace(",", ".");
+                }
+            }
+        }
+
+        const modal = document.getElementById("modal");
+        modal.classList.remove("hidden");
+        modal.innerHTML = `
+            <div class="sheet">
+                <h2>Editar cantidad</h2>
+                <p style="margin:20px 0;font-weight:600;">${nombre}</p>
+                ${unidad ? `
+                    <input id="editCantidad" type="number" step="0.1" value="${cantidad}" style="width:100%;padding:14px;font-size:18px;border-radius:12px;border:1px solid #ccc;">
+                    <p style="margin-top:10px;text-align:center;">${unidad}</p>
+                ` : `<p>Este alimento todavía no se puede editar automáticamente.</p>`}
+                <div class="mt-20">
+                    <button class="action-btn" onclick="App.showFoods('${meal}')">Cancelar</button>
+                    <button class="action-btn" onclick="App.saveEditedFood('${meal}',${index},'${unidad}')">Guardar</button>
+                </div>
+            </div>
+        `;
+    },
+
+    saveEditedFood(meal, index, unidad){
+        const food = this.state.day[meal][index];
+        const nuevo = parseFloat(document.getElementById("editCantidad").value.replace(",", "."));
+
+        if (isNaN(nuevo) || nuevo <= 0) {
+            alert("Cantidad no válida");
             return;
-
         }
 
-        let total = 0;
+        let match;
+        if (unidad === "g") match = food.nombre.match(/(\d+(?:[.,]\d+)?)\s*g/i);
+        else if (unidad === "ml") match = food.nombre.match(/(\d+(?:[.,]\d+)?)\s*ml/i);
+        else match = food.nombre.match(/(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i);
 
-        foods.forEach(food=>{
+        if (!match) {
+            alert("No se pudo calcular.");
+            return;
+        }
 
-            total += Number(food.kcal || 0);
+        const anterior = parseFloat(match[1].replace(",", "."));
+        const factor = nuevo / anterior;
 
-            texto += `• ${food.hora || "--:--"} - ${food.nombre} (${food.kcal} kcal)\n`;
+        food.kcal = +(food.kcal * factor).toFixed(1);
+        food.proteinas = +(food.proteinas * factor).toFixed(1);
+        food.hidratos = +(food.hidratos * factor).toFixed(1);
+        food.grasas = +(food.grasas * factor).toFixed(1);
 
+        if (unidad === "g") food.nombre = food.nombre.replace(/(\d+(?:[.,]\d+)?)\s*g/i, `${nuevo} g`);
+        else if (unidad === "ml") food.nombre = food.nombre.replace(/(\d+(?:[.,]\d+)?)\s*ml/i, `${nuevo} ml`);
+        else {
+            const texto = nuevo === 1 ? "ración" : "raciones";
+            food.nombre = food.nombre.replace(/(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i, `${nuevo} ${texto}`);
+        }
+
+        DB.saveDay(this.state.day);
+        this.showFoods(meal);
+        this.refresh();
+    },
+
+    clearMeal(meal){
+        if(!confirm("¿Vaciar esta comida?")) return;
+        this.state.day[meal] = [];
+        DB.saveDay(this.state.day);
+        this.refresh();
+        this.closeModal();
+    },
+
+    closeModal(){
+        const modal = document.getElementById("modal");
+        modal.classList.add("hidden");
+        modal.innerHTML = "";
+    },
+
+    openReport(){
+        const total = this.getCalories();
+        const objetivo = this.getTargetCalories();
+        const actividad = this.getActivity();
+        const restante = this.getRemainingCalories();
+        const proteinas = this.getMacroValue("proteinas");
+        const hidratos = this.getMacroValue("hidratos");
+        const grasas = this.getMacroValue("grasas");
+
+        const comidas = [
+            {icono:"🍳",titulo:"Desayuno",key:"desayuno"},
+            {icono:"🍝",titulo:"Comida",key:"comida"},
+            {icono:"🍓",titulo:"Merienda",key:"merienda"},
+            {icono:"🥗",titulo:"Cena",key:"cena"}
+        ];
+
+        let html = `
+            <div class="sheet">
+                <h2 class="text-center">Resumen diario</h2>
+                <div class="report-date">📅 ${this.formatDate()}</div>
+                <div class="report-calories">🔥 <strong>${Math.round(total)}</strong> <span>/ ${Math.round(objetivo)} kcal</span></div>
+                
+                <div class="report-macros">
+                    <div class="report-macro"><span>🎯 Objetivo base</span><strong>${this.getBaseCalories()} kcal</strong></div>
+                    <div class="report-macro"><span>🏃 Actividad</span><strong>+${actividad.movimiento} kcal</strong></div>
+                    <div class="report-macro"><span>✅ Restantes</span><strong>${Math.round(restante)} kcal</strong></div>
+                </div>
+
+                <div class="report-macros">
+                    <div class="report-macro"><span>🚶 Movimiento</span><strong>${actividad.movimiento} kcal</strong></div>
+                    <div class="report-macro"><span>🏋️ Ejercicio</span><strong>${actividad.ejercicio} min</strong></div>
+                    <div class="report-macro"><span>🧍 De pie</span><strong>${actividad.dePie} h</strong></div>
+                    <div class="report-macro"><span>🕒 Actualizado</span><strong>${actividad.actualizada || "--:--"}</strong></div>
+                </div>
+
+                <div class="report-macros">
+                    <div class="report-macro"><span>🥩 Proteínas</span><strong>${proteinas} / ${this.state.settings.macros.proteinas} g</strong></div>
+                    <div class="report-macro"><span>🍚 Hidratos</span><strong>${hidratos} / ${this.state.settings.macros.hidratos} g</strong></div>
+                    <div class="report-macro"><span>🥑 Grasas</span><strong>${grasas} / ${this.state.settings.macros.grasas} g</strong></div>
+                </div>
+        `;
+
+        comidas.forEach(comida => {
+            const foods = this.state.day[comida.key] || [];
+            let totalMeal = 0;
+            html += `<div class="report-meal"><div class="report-meal-title">${comida.icono} ${comida.titulo}</div>`;
+
+            if(!foods.length){
+                html += `<div class="report-empty">Sin alimentos</div>`;
+            } else {
+                foods.forEach(food => {
+                    totalMeal += Number(food.kcal || 0);
+                    html += `
+                        <div class="report-food">
+                            <div class="report-food-header">
+                                <span class="report-food-time">${food.hora || "--:--"}</span>
+                                <span class="report-food-name">${food.nombre}</span>
+                            </div>
+                            <div class="report-food-kcal">${food.kcal} kcal</div>
+                        </div>
+                    `;
+                });
+                html += `<div class="report-meal-total"><span>Total ${comida.titulo}</span><strong>${totalMeal.toFixed(1)} kcal</strong></div>`;
+            }
+            html += `</div>`;
         });
 
-        texto += `Total ${comida.titulo.toLowerCase()}: ${Number(total.toFixed(1))} kcal\n\n`;
+        html += `
+            <div class="mt-20">
+                <button class="action-btn" onclick="App.showActivityPaste()">🏃 Actualizar actividad</button>
+                <button class="action-btn" onclick="App.copyReport()">📋 Copiar para ChatGPT</button>
+                <button class="action-btn danger" onclick="App.closeModal()">Cerrar</button>
+            </div>
+            </div>
+        `;
 
-    });
+        const modal = document.getElementById("modal");
+        modal.classList.remove("hidden");
+        modal.innerHTML = html;
+    },
 
-    navigator.clipboard.writeText(texto);
+    importActivity(){
+        const texto = document.getElementById("activityInput").value.trim();
+        if (!texto) {
+            this.toast("No has pegado ningún informe");
+            return;
+        }
 
-    this.toast("Resumen copiado");
+        const numero = (regex) => {
+            const m = texto.match(regex);
+            return m ? parseFloat(m[1].replace(",", ".")) : 0;
+        };
 
-},
+        const movimiento = numero(/Movimiento:\s*([\d.,]+)/i);
+        const ejercicio = numero(/Ejercicio:\s*([\d.,]+)/i);
+        const dePie = numero(/De pie:\s*([\d.,]+)/i);
+        const caloriasTotales = numero(/Calor[ií]as totales:\s*([\d.,]+)/i);
 
-toast(message){
+        if(!this.state.day.actividad){
+            this.state.day.actividad = {};
+        }
 
-    alert(message);
+        this.state.day.actividad = {
+            movimiento,
+            ejercicio,
+            dePie,
+            caloriasTotales,
+            actualizada: new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })
+        };
 
-}
+        DB.saveDay(this.state.day);
+        this.closeModal();
+        this.refresh();
+        this.toast("Actividad actualizada");
+    },
 
+    showActivityPaste(){
+        const modal = document.getElementById("modal");
+        modal.classList.remove("hidden");
+        modal.innerHTML = `
+            <div class="sheet">
+                <h2 class="text-center">🏃 Pegar actividad</h2>
+                <p class="text-center">Pega aquí el informe de Apple Salud o Apple Watch.</p>
+                <textarea id="activityInput" rows="12" style="width:100%;margin-top:16px;" placeholder="Movimiento 205 kcal\nEjercicio 8 min\nDe pie 7 h\nCalorías totales 1588 kcal"></textarea>
+                <div class="mt-20">
+                    <button class="action-btn" onclick="App.importActivity()">Actualizar actividad</button>
+                    <button class="action-btn danger" onclick="App.closeModal()">Cancelar</button>
+                </div>
+            </div>
+        `;
+    },
+
+    copyReport(){
+        const actividad = this.getActivity();
+        const objetivoBase = this.getBaseCalories();
+        const objetivo = this.getTargetCalories();
+        const consumido = this.getCalories();
+        const restante = this.getRemainingCalories();
+        const proteinas = this.getMacroValue("proteinas");
+        const hidratos = this.getMacroValue("hidratos");
+        const grasas = this.getMacroValue("grasas");
+
+        let texto = "RESUMEN DIARIO\n\n" + this.formatDate() + "\n\n🔥 NUTRICIÓN\n\n";
+        texto += `Consumido: ${consumido.toFixed(1)} kcal\n\n🏃 ACTIVIDAD\n\n`;
+        texto += `Movimiento: ${actividad.movimiento} kcal\nEjercicio: ${actividad.ejercicio} min\nDe pie: ${actividad.dePie} h\nActualizado: ${actividad.actualizada || "--:--"}\n\n`;
+        texto += `🎯 BALANCE\n\nObjetivo base: ${objetivoBase} kcal\nActividad: +${actividad.movimiento} kcal\nObjetivo hoy: ${objetivo} kcal\nRestantes: ${restante.toFixed(1)} kcal\n\n`;
+        texto += `Proteínas: ${proteinas.toFixed(1)} g\nHidratos: ${hidratos.toFixed(1)} g\nGrasas: ${grasas.toFixed(1)} g\n\n`;
+
+        const comidas = [
+            {titulo:"DESAYUNO", key:"desayuno"},
+            {titulo:"COMIDA", key:"comida"},
+            {titulo:"MERIENDA", key:"merienda"},
+            {titulo:"CENA", key:"cena"}
+        ];
+
+        comidas.forEach(comida => {
+            texto += comida.titulo + "\n";
+            const foods = this.state.day[comida.key] || [];
+
+            if(!foods.length){
+                texto += "Sin alimentos\n\n";
+                return;
+            }
+
+            let total = 0;
+            foods.forEach(food => {
+                total += Number(food.kcal || 0);
+                texto += `• ${food.hora || "--:--"} - ${food.nombre} (${food.kcal} kcal)\n`;
+            });
+            texto += `Total ${comida.titulo.toLowerCase()}: ${Number(total.toFixed(1))} kcal\n\n`;
+        });
+
+        navigator.clipboard.writeText(texto);
+        this.toast("Resumen copiado");
+    },
+
+    toast(message){
+        alert(message);
+    }
 };
 
 document.addEventListener("DOMContentLoaded", () => App.init());
