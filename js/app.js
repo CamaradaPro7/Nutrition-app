@@ -74,7 +74,9 @@ render() {
                 </div>
             </div>
 
-            <div class="dashboard-body">
+            <div class="dashboard-grid">
+
+    <div class="dashboard-left">
 
                 <div class="progress-wrap">
 
@@ -122,9 +124,13 @@ render() {
 
                     </button>
 
-                </div>
+</div>
 
-                <div class="dashboard-macros">
+</div>
+
+<div class="dashboard-right">
+
+    <div class="dashboard-macros">
 
                     ${this.renderMacro(
                         "Proteínas",
