@@ -552,14 +552,11 @@ savePastedFood(meal){
     
     DB.saveLibrary(biblioteca);
 
-    DB.saveDay(this.state.day);
+DB.saveDay(this.state.day);
 
-    this.closeModal();
+this.closeModal();
 
-    refresh() {
-
-    this.render();
-    this.updateUI();
+this.refresh();
 
 },
 
@@ -643,10 +640,6 @@ onclick="event.stopPropagation(); App.deleteLibraryFood('${food.nombre}','${meal
     ✅ Listo
 </button>
 
-Volver
-
-</button>
-
 </div>
 
 </div>
@@ -702,10 +695,7 @@ setTimeout(() => {
 
     DB.saveDay(this.state.day);
 
-    refresh() {
-
-    this.render();
-    this.updateUI();
+this.refresh();
 
 },
 
@@ -828,12 +818,9 @@ deleteFood(meal,index){
 
     DB.saveDay(this.state.day);
 
-    this.showFoods(meal);
+this.showFoods(meal);
 
-    refresh() {
-
-    this.render();
-    this.updateUI();
+this.refresh();
 
 },
 
@@ -1016,12 +1003,9 @@ saveEditedFood(meal,index,unidad){
 
     DB.saveDay(this.state.day);
 
-    this.showFoods(meal);
+this.showFoods(meal);
 
-    refresh() {
-
-    this.render();
-    this.updateUI();
+this.refresh();
 
 },
 
@@ -1513,6 +1497,12 @@ texto += `Grasas: ${grasas.toFixed(1)} g\n\n`;
     navigator.clipboard.writeText(texto);
 
     this.toast("Resumen copiado");
+
+},
+
+toast(message){
+
+    alert(message);
 
 }
 
