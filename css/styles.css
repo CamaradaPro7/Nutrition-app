@@ -212,6 +212,54 @@ select{
     color:var(--text-light);
 }
 
+.macro{
+    padding:12px;
+    border-radius:18px;
+}
+
+.macro-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.macro-info{
+    flex:1;
+}
+
+.macro-label{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    color:#6e7788;
+}
+
+.macro-value{
+    margin-top:2px;
+    font-size:18px;
+    font-weight:800;
+}
+
+.macro-bar{
+    height:6px;
+    margin-top:10px;
+    border-radius:999px;
+    background:#e8edf5;
+    overflow:hidden;
+}
+
+.macro-fill{
+    height:100%;
+    border-radius:999px;
+    background:#4f8df7;
+}
+
+.macro-target{
+    margin-top:6px;
+    font-size:12px;
+    color:#6e7788;
+}
+
 .macros{
     display:grid;
     grid-template-columns:repeat(3,1fr);
