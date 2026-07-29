@@ -222,27 +222,27 @@ select{
 .macro{
     background:var(--card-soft);
     border:1px solid var(--line);
-    border-radius:20px;
-    padding:14px 10px 12px;
+    border-radius:18px;
+    padding:10px;
+    min-height:78px;
     box-shadow:var(--shadow-soft);
 }
 
 .macro-head{
     display:flex;
-    flex-direction:column;
+    flex-direction:row;
     align-items:center;
-    justify-content:center;
-    gap:6px;
-    text-align:center;
+    gap:10px;
+    text-align:left;
 }
 
 .macro-emoji{
-    font-size:24px;
+    font-size:20px;
     line-height:1;
 }
 
 .macro-label{
-    font-size:12px;
+    font-size:10px;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:.08em;
@@ -250,7 +250,7 @@ select{
 }
 
 .macro-value{
-    font-size:20px;
+    font-size:16px;
     font-weight:800;
     color:var(--text);
 }
