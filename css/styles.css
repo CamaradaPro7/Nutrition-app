@@ -91,7 +91,7 @@ select{
 }
 
 .dashboard-right{
-    width:150px;
+    width:125px;
 }
 
 .dashboard-right .dashboard-macros{
@@ -156,8 +156,8 @@ select{
 
 .progress{
     position:relative;
-    width:220px;
-    height:220px;
+    width:170px;
+    height:170px;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -187,8 +187,8 @@ select{
 }
 
 .progress-center{
-    width:146px;
-    height:146px;
+    width:112px;
+    height:112px;
     border-radius:50%;
     background:#fff;
     box-shadow:inset 0 0 0 1px rgba(233,237,243,.9);
@@ -199,8 +199,8 @@ select{
     text-align:center;
 }
 
-.progress-value{
-    font-size:54px;
+.progress-value{ 
+    font-size:42px;
     line-height:1;
     font-weight:800;
     letter-spacing:-.04em;
