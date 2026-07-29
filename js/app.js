@@ -181,23 +181,35 @@ render() {
 
     const current = this.getMacroValue(key);
 
+    const percent = target > 0
+        ? Math.min((current / target) * 100, 100)
+        : 0;
+
     return `
         <article class="macro">
 
-            <div class="macro-head">
+            <div class="macro-top">
 
-                <div class="macro-emoji">
-                    ${emoji}
+                <div class="macro-emoji">${emoji}</div>
+
+                <div class="macro-info">
+
+                    <div class="macro-label">${label}</div>
+
+                    <div class="macro-value">
+                        ${Math.round(current)} ${unit}
+                    </div>
+
                 </div>
 
-                <div class="macro-label">
-                    ${label}
-                </div>
+            </div>
 
-                <div class="macro-value">
-                    ${Math.round(current)} ${unit}
-                </div>
+            <div class="macro-bar">
+                <div class="macro-fill" style="width:${percent}%"></div>
+            </div>
 
+            <div class="macro-target">
+                de ${target} ${unit}
             </div>
 
         </article>
