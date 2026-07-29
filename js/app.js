@@ -1,4 +1,4 @@
-"use strict";
+use strict";
 
 /* ==========================================================
    MI NUTRICIÓN NEXT
@@ -130,7 +130,7 @@ render() {
 
                 <div class="stat-card">
                     <div class="stat-title">Gasto total</div>
-                    <div class="stat-value">${this.getCalories().toFixed(0)} kcal</div>
+                    <div class="stat-value">${this.getActivity().caloriasTotales} kcal</div>
                 </div>
 
                 <div class="stat-card">
@@ -140,37 +140,6 @@ render() {
 
             </div>
 
-            <div class="dashboard-stats">
-
-    <div class="stat-card">
-    <div class="stat-title">Objetivo</div>
-    <div class="stat-value">
-        ${this.getTargetCalories()} kcal
-    </div>
-</div>
-
-<div class="stat-card">
-    <div class="stat-title">Actividad</div>
-    <div class="stat-value">
-        ${this.getActivity().movimiento} kcal
-    </div>
-</div>
-
-<div class="stat-card">
-    <div class="stat-title">Gasto</div>
-    <div class="stat-value">
-        ${this.getTargetCalories()} kcal
-    </div>
-</div>
-
-<div class="stat-card">
-    <div class="stat-title">Restantes</div>
-    <div class="stat-value">
-        ${this.getRemainingCalories()} kcal
-    </div>
-        </div>
-    </div>
-    
         </section>
 
         <section class="meals">
