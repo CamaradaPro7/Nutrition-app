@@ -77,6 +77,30 @@ select{
     padding:26px 22px 22px;
 }
 
+.dashboard-grid{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-top:22px;
+}
+
+.dashboard-left{
+    flex:1;
+    display:flex;
+    justify-content:center;
+}
+
+.dashboard-right{
+    width:150px;
+}
+
+.dashboard-right .dashboard-macros{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:0;
+}
+
 .dashboard-top{
     display:flex;
     justify-content:center;
