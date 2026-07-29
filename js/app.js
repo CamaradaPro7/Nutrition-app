@@ -163,29 +163,35 @@ render() {
             <div class="dashboard-stats">
 
     <div class="stat-card">
-        <div class="stat-title">Objetivo</div>
-        <div class="stat-value">${this.getTargetCalories()} kcal</div>
+    <div class="stat-title">Objetivo</div>
+    <div class="stat-value">
+        ${this.getTargetCalories()} kcal
     </div>
-
-    <div class="stat-card">
-        <div class="stat-title">Actividad</div>
-        <div class="stat-value">${this.state.settings.activity || 0} kcal</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-title">Gasto</div>
-        <div class="stat-value">${this.getTargetCalories()} kcal</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-title">Restantes</div>
-        <div class="stat-value">
-            ${this.getTargetCalories() - this.getConsumedCalories()} kcal
-        </div>
-    </div>
-
 </div>
 
+<div class="stat-card">
+    <div class="stat-title">Actividad</div>
+    <div class="stat-value">
+        ${this.getActivity().movimiento} kcal
+    </div>
+</div>
+
+<div class="stat-card">
+    <div class="stat-title">Gasto</div>
+    <div class="stat-value">
+        ${this.getTargetCalories()} kcal
+    </div>
+</div>
+
+<div class="stat-card">
+    <div class="stat-title">Restantes</div>
+    <div class="stat-value">
+        ${this.getRemainingCalories()} kcal
+    </div>
+</div>
+        </div>
+    </div>
+    
         </section>
 
         <section class="meals">
