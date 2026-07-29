@@ -635,7 +635,7 @@ openReport() {
     const modal = document.getElementById("modal");
     modal.classList.remove("hidden");
     modal.innerHTML = html;
-}
+},
 
     importActivity(){
         const texto = document.getElementById("activityInput").value.trim();
