@@ -169,7 +169,7 @@ render() {
         </section>
     `;
 
-}
+},
 
     renderMacro(label, emoji, key, target, unit) {
 
