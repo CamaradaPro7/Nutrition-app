@@ -541,7 +541,7 @@ openReport() {
     const actividad = this.getActivity();
     const restante = this.getRemainingCalories();
 
-    // Redondeo a 1 decimal para evitar decimales infinitos como 39.89999999999999
+    // Redondeo a 1 decimal para evitar decimales infinitos (ej. 39.89999999999999)
     const proteinas = Number(this.getMacroValue("proteinas").toFixed(1));
     const hidratos = Number(this.getMacroValue("hidratos").toFixed(1));
     const grasas = Number(this.getMacroValue("grasas").toFixed(1));
@@ -553,36 +553,39 @@ openReport() {
         { icono: "🥗", titulo: "Cena", key: "cena" }
     ];
 
+    const rowStyle = "display:flex; justify-content:space-between; align-items:center; padding:6px 0;";
+    const boxStyle = "background:#f8f9fa; border-radius:12px; padding:12px; margin-top:16px;";
+
     let html = `
     <div class="sheet">
-        <h2 class="text-center">Resumen diario</h2>
-        <p class="report-date text-center">📅 ${this.formatDate()}</p>
+        <h2 style="text-align:center; margin-bottom:4px;">Resumen diario</h2>
+        <p style="text-align:center; color:#666; margin:0 0 16px 0;">📅 ${this.formatDate()}</p>
 
-        <div class="report-calories text-center mt-20">
-            <span style="font-size: 28px; font-weight: bold;">🔥 ${Math.round(total)}</span>
-            <span style="font-size: 18px; color: #666;"> / ${Math.round(objetivo)} kcal</span>
+        <div style="text-align:center; margin-bottom:16px;">
+            <span style="font-size:28px; font-weight:bold;">🔥 ${Math.round(total)}</span>
+            <span style="font-size:18px; color:#666;"> / ${Math.round(objetivo)} kcal</span>
         </div>
 
-        <div class="report-section mt-20">
-            <div class="report-row"><span>🎯 Objetivo base</span><strong>${this.getBaseCalories()} kcal</strong></div>
-            <div class="report-row"><span>🏃 Actividad</span><strong>+${actividad.movimiento} kcal</strong></div>
-            <div class="report-row"><span>✅ Restantes</span><strong>${Math.round(restante)} kcal</strong></div>
+        <div style="${boxStyle}">
+            <div style="${rowStyle}"><span>🎯 Objetivo base</span><strong>${this.getBaseCalories()} kcal</strong></div>
+            <div style="${rowStyle}"><span>🏃 Actividad</span><strong>+${actividad.movimiento} kcal</strong></div>
+            <div style="${rowStyle}"><span>✅ Restantes</span><strong>${Math.round(restante)} kcal</strong></div>
         </div>
 
-        <div class="report-section mt-20">
-            <div class="report-row"><span>🚶 Movimiento</span><strong>${actividad.movimiento} kcal</strong></div>
-            <div class="report-row"><span>🏋️ Ejercicio</span><strong>${actividad.ejercicio} min</strong></div>
-            <div class="report-row"><span>🧍 De pie</span><strong>${actividad.dePie} h</strong></div>
-            <div class="report-row"><span>🕒 Actualizado</span><strong>${actividad.actualizada || "--:--"}</strong></div>
+        <div style="${boxStyle}">
+            <div style="${rowStyle}"><span>🚶 Movimiento</span><strong>${actividad.movimiento} kcal</strong></div>
+            <div style="${rowStyle}"><span>🏋️ Ejercicio</span><strong>${actividad.ejercicio} min</strong></div>
+            <div style="${rowStyle}"><span>🧍 De pie</span><strong>${actividad.dePie} h</strong></div>
+            <div style="${rowStyle}"><span>🕒 Actualizado</span><strong>${actividad.actualizada || "--:--"}</strong></div>
         </div>
 
-        <div class="report-section mt-20">
-            <div class="report-row"><span>🥩 Proteínas</span><strong>${proteinas} / ${this.state.settings.macros.proteinas} g</strong></div>
-            <div class="report-row"><span>🍚 Hidratos</span><strong>${hidratos} / ${this.state.settings.macros.hidratos} g</strong></div>
-            <div class="report-row"><span>🥑 Grasas</span><strong>${grasas} / ${this.state.settings.macros.grasas} g</strong></div>
+        <div style="${boxStyle}">
+            <div style="${rowStyle}"><span>🥩 Proteínas</span><strong>${proteinas} / ${this.state.settings.macros.proteinas} g</strong></div>
+            <div style="${rowStyle}"><span>🍚 Hidratos</span><strong>${hidratos} / ${this.state.settings.macros.hidratos} g</strong></div>
+            <div style="${rowStyle}"><span>🥑 Grasas</span><strong>${grasas} / ${this.state.settings.macros.grasas} g</strong></div>
         </div>
 
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+        <hr style="margin:20px 0; border:0; border-top:1px solid #eee;">
     `;
 
     comidas.forEach(comida => {
@@ -590,31 +593,31 @@ openReport() {
         let totalMeal = 0;
 
         html += `
-        <div class="report-meal mt-20">
-            <h3 class="report-meal-title" style="margin-bottom: 10px;">${comida.icono} ${comida.titulo}</h3>
+        <div style="margin-top:16px;">
+            <h3 style="margin-bottom:8px; font-size:18px;">${comida.icono} ${comida.titulo}</h3>
         `;
 
         if (!foods.length) {
-            html += `<div class="report-empty" style="color: #888;">Sin alimentos</div>`;
+            html += `<div style="color:#888; font-size:14px; padding:4px 0;">Sin alimentos</div>`;
         } else {
             foods.forEach(food => {
                 const kcalItem = Number(food.kcal || 0);
                 totalMeal += kcalItem;
 
                 html += `
-                <div class="report-food" style="margin-bottom: 8px;">
-                    <div>
-                        <span class="report-food-time" style="color:#888; font-size:12px;">${food.hora || "--:--"}</span>
-                        <span class="report-food-name">${food.nombre}</span>
+                <div style="${rowStyle} border-bottom:1px solid #f0f0f0;">
+                    <div style="display:flex; flex-direction:column;">
+                        <span style="font-weight:500;">${food.nombre}</span>
+                        <span style="color:#888; font-size:12px;">🕒 ${food.hora || "--:--"}</span>
                     </div>
-                    <div class="report-food-kcal" style="font-weight: 600;">${kcalItem} kcal</div>
+                    <div style="font-weight:600;">${kcalItem} kcal</div>
                 </div>
                 `;
             });
 
             html += `
-            <div class="report-meal-total" style="margin-top: 8px; font-weight: bold;">
-                <span>Total ${comida.titulo}: </span>
+            <div style="${rowStyle} font-weight:bold; margin-top:4px;">
+                <span>Total ${comida.titulo}</span>
                 <span>${Number(totalMeal.toFixed(1))} kcal</span>
             </div>
             `;
@@ -624,7 +627,7 @@ openReport() {
     });
 
     html += `
-        <div class="mt-20">
+        <div class="mt-20" style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
             <button class="action-btn" onclick="App.showActivityPaste()">🏃 Actualizar actividad</button>
             <button class="action-btn" onclick="App.copyReport()">📋 Copiar para ChatGPT</button>
             <button class="action-btn danger" onclick="App.closeModal()">Cerrar</button>
@@ -635,7 +638,7 @@ openReport() {
     const modal = document.getElementById("modal");
     modal.classList.remove("hidden");
     modal.innerHTML = html;
-},
+}
 
     importActivity(){
         const texto = document.getElementById("activityInput").value.trim();
