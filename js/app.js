@@ -74,92 +74,72 @@ render() {
                 </div>
             </div>
 
-            <div class="dashboard-grid">
+                        <div class="dashboard-grid">
 
-    <div class="dashboard-left">
+                <div class="dashboard-left">
 
-                <div class="progress-wrap">
+                    <div class="progress-wrap">
 
-                    <button class="progress"
-                            type="button"
-                            onclick="App.openReport()">
+                        <button class="progress"
+                                type="button"
+                                onclick="App.openReport()">
 
-                        <svg viewBox="0 0 220 220">
+                            <svg viewBox="0 0 220 220">
 
-                            <circle
-                                class="progress-track"
-                                cx="110"
-                                cy="110"
-                                r="96">
-                            </circle>
+                                <circle class="progress-track" cx="110" cy="110" r="96"></circle>
+                                <circle class="progress-ring" cx="110" cy="110" r="96"></circle>
 
-                            <circle
-                                class="progress-ring"
-                                cx="110"
-                                cy="110"
-                                r="96">
-                            </circle>
+                            </svg>
 
-                        </svg>
-
-                        <div class="progress-center">
-
-                            <div
-                                class="progress-value"
-                                id="kcalValue">
-
-                                0
-
+                            <div class="progress-center">
+                                <div class="progress-value" id="kcalValue">0</div>
+                                <div class="progress-label" id="kcalLabel">de ${this.getTargetCalories()} kcal</div>
                             </div>
 
-                            <div
-                                class="progress-label"
-                                id="kcalLabel">
+                        </button>
 
-                                de ${this.getTargetCalories()} kcal
+                    </div>
 
-                            </div>
+                </div>
 
-                        </div>
+                <div class="dashboard-right">
 
-                    </button>
+                    <div class="dashboard-macros">
 
-</div>
+                        ${this.renderMacro("Proteínas", "🥩", "proteinas", this.state.settings.macros.proteinas, "g")}
+                        ${this.renderMacro("Hidratos", "🍚", "hidratos", this.state.settings.macros.hidratos, "g")}
+                        ${this.renderMacro("Grasas", "🥑", "grasas", this.state.settings.macros.grasas, "g")}
 
-</div>
-
-<div class="dashboard-right">
-
-    <div class="dashboard-macros">
-
-                    ${this.renderMacro(
-                        "Proteínas",
-                        "🥩",
-                        "proteinas",
-                        this.state.settings.macros.proteinas,
-                        "g"
-                    )}
-
-                    ${this.renderMacro(
-                        "Hidratos",
-                        "🍚",
-                        "hidratos",
-                        this.state.settings.macros.hidratos,
-                        "g"
-                    )}
-
-                    ${this.renderMacro(
-                        "Grasas",
-                        "🥑",
-                        "grasas",
-                        this.state.settings.macros.grasas,
-                        "g"
-                    )}
+                    </div>
 
                 </div>
 
             </div>
-            
+
+            <div class="dashboard-stats">
+
+                <div class="stat-card">
+                    <div class="stat-title">Objetivo base</div>
+                    <div class="stat-value">${this.getBaseCalories()} kcal</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">Actividad</div>
+                    <div class="stat-value">+${this.getActivity().movimiento} kcal</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">Gasto total</div>
+                    <div class="stat-value">${this.getCalories().toFixed(0)} kcal</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">Restantes</div>
+                    <div class="stat-value">${this.getRemainingCalories().toFixed(0)} kcal</div>
+                </div>
+
+            </div>
+
             <div class="dashboard-stats">
 
     <div class="stat-card">
@@ -188,7 +168,6 @@ render() {
     <div class="stat-value">
         ${this.getRemainingCalories()} kcal
     </div>
-</div>
         </div>
     </div>
     
