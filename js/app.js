@@ -60,7 +60,7 @@ const App = {
         }
     },
 
-    render() {
+        render() {
         const app = document.getElementById("app");
 
         app.innerHTML = `
@@ -95,24 +95,24 @@ const App = {
                         ${this.renderMacro("Grasas", "🥑", "grasas", this.state.settings.macros.grasas, "g")}
                     </div>
                 </div>
-                
-                <div class="dashboard-stats">
-                    <div class="stat-card">
-                        <div class="stat-title">Objetivo</div>
-                        <div class="stat-value">${this.getTargetCalories()} kcal</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">Actividad</div>
-                        <div class="stat-value">${this.getActivity().movimiento} kcal</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">Gasto</div>
-                        <div class="stat-value">${this.getTargetCalories()} kcal</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">Restantes</div>
-                        <div class="stat-value">${this.getRemainingCalories()} kcal</div>
-                    </div>
+            </div>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-title">Objetivo</div>
+                    <div class="stat-value">${this.getTargetCalories()} kcal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Actividad</div>
+                    <div class="stat-value">${this.getActivity().movimiento} kcal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Gasto</div>
+                    <div class="stat-value">${this.getTargetCalories()} kcal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Restantes</div>
+                    <div class="stat-value">${this.getRemainingCalories()} kcal</div>
                 </div>
             </div>
         </section>
