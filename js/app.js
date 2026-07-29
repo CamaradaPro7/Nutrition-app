@@ -535,86 +535,107 @@ const App = {
         modal.innerHTML = "";
     },
 
-    openReport(){
-        const total = this.getCalories();
-        const objetivo = this.getTargetCalories();
-        const actividad = this.getActivity();
-        const restante = this.getRemainingCalories();
-        const proteinas = this.getMacroValue("proteinas");
-        const hidratos = this.getMacroValue("hidratos");
-        const grasas = this.getMacroValue("grasas");
+openReport() {
+    const total = this.getCalories();
+    const objetivo = this.getTargetCalories();
+    const actividad = this.getActivity();
+    const restante = this.getRemainingCalories();
 
-        const comidas = [
-            {icono:"🍳",titulo:"Desayuno",key:"desayuno"},
-            {icono:"🍝",titulo:"Comida",key:"comida"},
-            {icono:"🍓",titulo:"Merienda",key:"merienda"},
-            {icono:"🥗",titulo:"Cena",key:"cena"}
-        ];
+    // Redondeo a 1 decimal para evitar decimales infinitos como 39.89999999999999
+    const proteinas = Number(this.getMacroValue("proteinas").toFixed(1));
+    const hidratos = Number(this.getMacroValue("hidratos").toFixed(1));
+    const grasas = Number(this.getMacroValue("grasas").toFixed(1));
 
-        let html = `
-            <div class="sheet">
-                <h2 class="text-center">Resumen diario</h2>
-                <div class="report-date">📅 ${this.formatDate()}</div>
-                <div class="report-calories">🔥 <strong>${Math.round(total)}</strong> <span>/ ${Math.round(objetivo)} kcal</span></div>
-                
-                <div class="report-macros">
-                    <div class="report-macro"><span>🎯 Objetivo base</span><strong>${this.getBaseCalories()} kcal</strong></div>
-                    <div class="report-macro"><span>🏃 Actividad</span><strong>+${actividad.movimiento} kcal</strong></div>
-                    <div class="report-macro"><span>✅ Restantes</span><strong>${Math.round(restante)} kcal</strong></div>
-                </div>
+    const comidas = [
+        { icono: "🍳", titulo: "Desayuno", key: "desayuno" },
+        { icono: "🍝", titulo: "Comida", key: "comida" },
+        { icono: "🍓", titulo: "Merienda", key: "merienda" },
+        { icono: "🥗", titulo: "Cena", key: "cena" }
+    ];
 
-                <div class="report-macros">
-                    <div class="report-macro"><span>🚶 Movimiento</span><strong>${actividad.movimiento} kcal</strong></div>
-                    <div class="report-macro"><span>🏋️ Ejercicio</span><strong>${actividad.ejercicio} min</strong></div>
-                    <div class="report-macro"><span>🧍 De pie</span><strong>${actividad.dePie} h</strong></div>
-                    <div class="report-macro"><span>🕒 Actualizado</span><strong>${actividad.actualizada || "--:--"}</strong></div>
-                </div>
+    let html = `
+    <div class="sheet">
+        <h2 class="text-center">Resumen diario</h2>
+        <p class="report-date text-center">📅 ${this.formatDate()}</p>
 
-                <div class="report-macros">
-                    <div class="report-macro"><span>🥩 Proteínas</span><strong>${proteinas} / ${this.state.settings.macros.proteinas} g</strong></div>
-                    <div class="report-macro"><span>🍚 Hidratos</span><strong>${hidratos} / ${this.state.settings.macros.hidratos} g</strong></div>
-                    <div class="report-macro"><span>🥑 Grasas</span><strong>${grasas} / ${this.state.settings.macros.grasas} g</strong></div>
-                </div>
-        `;
+        <div class="report-calories text-center mt-20">
+            <span style="font-size: 28px; font-weight: bold;">🔥 ${Math.round(total)}</span>
+            <span style="font-size: 18px; color: #666;"> / ${Math.round(objetivo)} kcal</span>
+        </div>
 
-        comidas.forEach(comida => {
-            const foods = this.state.day[comida.key] || [];
-            let totalMeal = 0;
-            html += `<div class="report-meal"><div class="report-meal-title">${comida.icono} ${comida.titulo}</div>`;
+        <div class="report-section mt-20">
+            <div class="report-row"><span>🎯 Objetivo base</span><strong>${this.getBaseCalories()} kcal</strong></div>
+            <div class="report-row"><span>🏃 Actividad</span><strong>+${actividad.movimiento} kcal</strong></div>
+            <div class="report-row"><span>✅ Restantes</span><strong>${Math.round(restante)} kcal</strong></div>
+        </div>
 
-            if(!foods.length){
-                html += `<div class="report-empty">Sin alimentos</div>`;
-            } else {
-                foods.forEach(food => {
-                    totalMeal += Number(food.kcal || 0);
-                    html += `
-                        <div class="report-food">
-                            <div class="report-food-header">
-                                <span class="report-food-time">${food.hora || "--:--"}</span>
-                                <span class="report-food-name">${food.nombre}</span>
-                            </div>
-                            <div class="report-food-kcal">${food.kcal} kcal</div>
-                        </div>
-                    `;
-                });
-                html += `<div class="report-meal-total"><span>Total ${comida.titulo}</span><strong>${totalMeal.toFixed(1)} kcal</strong></div>`;
-            }
-            html += `</div>`;
-        });
+        <div class="report-section mt-20">
+            <div class="report-row"><span>🚶 Movimiento</span><strong>${actividad.movimiento} kcal</strong></div>
+            <div class="report-row"><span>🏋️ Ejercicio</span><strong>${actividad.ejercicio} min</strong></div>
+            <div class="report-row"><span>🧍 De pie</span><strong>${actividad.dePie} h</strong></div>
+            <div class="report-row"><span>🕒 Actualizado</span><strong>${actividad.actualizada || "--:--"}</strong></div>
+        </div>
+
+        <div class="report-section mt-20">
+            <div class="report-row"><span>🥩 Proteínas</span><strong>${proteinas} / ${this.state.settings.macros.proteinas} g</strong></div>
+            <div class="report-row"><span>🍚 Hidratos</span><strong>${hidratos} / ${this.state.settings.macros.hidratos} g</strong></div>
+            <div class="report-row"><span>🥑 Grasas</span><strong>${grasas} / ${this.state.settings.macros.grasas} g</strong></div>
+        </div>
+
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+    `;
+
+    comidas.forEach(comida => {
+        const foods = this.state.day[comida.key] || [];
+        let totalMeal = 0;
 
         html += `
-            <div class="mt-20">
-                <button class="action-btn" onclick="App.showActivityPaste()">🏃 Actualizar actividad</button>
-                <button class="action-btn" onclick="App.copyReport()">📋 Copiar para ChatGPT</button>
-                <button class="action-btn danger" onclick="App.closeModal()">Cerrar</button>
-            </div>
-            </div>
+        <div class="report-meal mt-20">
+            <h3 class="report-meal-title" style="margin-bottom: 10px;">${comida.icono} ${comida.titulo}</h3>
         `;
 
-        const modal = document.getElementById("modal");
-        modal.classList.remove("hidden");
-        modal.innerHTML = html;
-    },
+        if (!foods.length) {
+            html += `<div class="report-empty" style="color: #888;">Sin alimentos</div>`;
+        } else {
+            foods.forEach(food => {
+                const kcalItem = Number(food.kcal || 0);
+                totalMeal += kcalItem;
+
+                html += `
+                <div class="report-food" style="margin-bottom: 8px;">
+                    <div>
+                        <span class="report-food-time" style="color:#888; font-size:12px;">${food.hora || "--:--"}</span>
+                        <span class="report-food-name">${food.nombre}</span>
+                    </div>
+                    <div class="report-food-kcal" style="font-weight: 600;">${kcalItem} kcal</div>
+                </div>
+                `;
+            });
+
+            html += `
+            <div class="report-meal-total" style="margin-top: 8px; font-weight: bold;">
+                <span>Total ${comida.titulo}: </span>
+                <span>${Number(totalMeal.toFixed(1))} kcal</span>
+            </div>
+            `;
+        }
+
+        html += `</div>`;
+    });
+
+    html += `
+        <div class="mt-20">
+            <button class="action-btn" onclick="App.showActivityPaste()">🏃 Actualizar actividad</button>
+            <button class="action-btn" onclick="App.copyReport()">📋 Copiar para ChatGPT</button>
+            <button class="action-btn danger" onclick="App.closeModal()">Cerrar</button>
+        </div>
+    </div>
+    `;
+
+    const modal = document.getElementById("modal");
+    modal.classList.remove("hidden");
+    modal.innerHTML = html;
+}
 
     importActivity(){
         const texto = document.getElementById("activityInput").value.trim();
