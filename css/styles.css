@@ -570,7 +570,7 @@ select{
 }
 
 .dashboard{
-    overflow:hidden;
+    overflow:visible;
 }
 
 .card{
