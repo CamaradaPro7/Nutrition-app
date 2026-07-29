@@ -257,8 +257,10 @@ render() {
 
 refresh() {
 
-    this.refresh();
-}
+    this.render();
+    this.updateUI();
+
+},
 
     getCalories() {
         return this.getMealCalories("desayuno") + this.getMealCalories("comida") + this.getMealCalories("merienda") + this.getMealCalories("cena");
@@ -554,7 +556,10 @@ savePastedFood(meal){
 
     this.closeModal();
 
-    this.refresh();
+    refresh() {
+
+    this.render();
+    this.updateUI();
 
 },
 
@@ -697,7 +702,10 @@ setTimeout(() => {
 
     DB.saveDay(this.state.day);
 
-    this.refresh();
+    refresh() {
+
+    this.render();
+    this.updateUI();
 
 },
 
@@ -822,7 +830,10 @@ deleteFood(meal,index){
 
     this.showFoods(meal);
 
-    this.refresh();
+    refresh() {
+
+    this.render();
+    this.updateUI();
 
 },
 
@@ -1007,7 +1018,10 @@ saveEditedFood(meal,index,unidad){
 
     this.showFoods(meal);
 
-    this.refresh();
+    refresh() {
+
+    this.render();
+    this.updateUI();
 
 },
 
