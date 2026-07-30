@@ -12,7 +12,7 @@ const App = {
         settings: {
             objetivoKcal: 2200,
             macros: {
-                proteinas: 150,
+                proteinas: 100,
                 hidratos: 220,
                 grasas: 70
             }
