@@ -60,12 +60,13 @@ const App = {
         }
     },
 
-            render() {
+    render() {
         const app = document.getElementById("app");
 
         const objetivoBase = this.getBaseCalories();
         const actividad = this.getActivity().movimiento;
-        const gastoTotal = objetivoBase + actividad;
+        const gastoTotal = actividad; // El gasto generado empieza en 0 y sube con la actividad
+        const objetivoTotal = objetivoBase + actividad;
 
         app.innerHTML = `
         <section class="card dashboard">
@@ -86,7 +87,7 @@ const App = {
                             </svg>
                             <div class="progress-center">
                                 <div class="progress-value" id="kcalValue">0</div>
-                                <div class="progress-label" id="kcalLabel">de ${gastoTotal} kcal</div>
+                                <div class="progress-label" id="kcalLabel">de ${objetivoTotal} kcal</div>
                             </div>
                         </button>
                     </div>
