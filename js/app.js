@@ -653,31 +653,72 @@ const App = {
         modal.innerHTML = html;
     },
 
-    showActivityPaste() {
+        showActivityPaste() {
         const modal = document.getElementById("modal");
         modal.classList.remove("hidden");
         modal.innerHTML = `
         <div class="sheet">
             <h2 class="text-center">🏃 Cargar actividad</h2>
-            <p class="text-center" style="font-size:14px;color:#666;margin-bottom:16px;">Sube una captura de pantalla de Apple Salud / Fitness o pega el informe en texto.</p>
+            <p class="text-center" style="font-size:14px;color:#666;margin-bottom:16px;">Pega una imagen copiada o selecciona una captura de pantalla.</p>
             
-            <div style="display:flex;flex-direction:column;gap:12px;">
-                <label class="action-btn" style="text-align:center;cursor:pointer;background:#4a90e2;color:#fff;">
-                    📷 Seleccionar captura de pantalla
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <button class="action-btn" onclick="App.pasteFromClipboard()" style="background:#34c759;color:#fff;">
+                    📋 Pegar captura del portapapeles
+                </button>
+                <label class="action-btn" style="text-align:center;cursor:pointer;background:#007aff;color:#fff;">
+                    📷 Seleccionar captura guardada
                     <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="App.processScreenshot(event)">
                 </label>
-                <div id="ocrStatus" style="text-align:center;font-size:14px;color:#007aff;font-weight:600;display:none;"></div>
+                <div id="ocrStatus" style="text-align:center;font-size:14px;color:#007aff;font-weight:600;display:none;margin-top:5px;"></div>
             </div>
 
             <div style="margin:16px 0;text-align:center;color:#aaa;font-size:12px;">— O PEGA EL TEXTO —</div>
 
-            <textarea id="activityInput" rows="6" style="width:100%;border-radius:12px;padding:10px;border:1px solid #ddd;" placeholder="Movimiento 357 kcal&#10;Ejercicio 60 min&#10;De pie 6 h&#10;Calorías totales 1119 kcal"></textarea>
+            <textarea id="activityInput" rows="5" style="width:100%;border-radius:12px;padding:10px;border:1px solid #ddd;" placeholder="Movimiento 357 kcal&#10;Ejercicio 60 min&#10;De pie 6 h&#10;Calorías totales 1119 kcal"></textarea>
             
             <div class="mt-20" style="margin-top:16px;">
                 <button class="action-btn" onclick="App.importActivity()">Actualizar actividad</button>
                 <button class="action-btn danger" onclick="App.closeModal()">Cancelar</button>
             </div>
         </div>`;
+    },
+    
+        async pasteFromClipboard() {
+        const statusDiv = document.getElementById("ocrStatus");
+        statusDiv.style.display = "block";
+        statusDiv.style.color = "#007aff";
+        statusDiv.textContent = "⌛ Leyendo portapapeles...";
+
+        try {
+            if (!navigator.clipboard || !navigator.clipboard.read) {
+                throw new Error("El navegador no soporta lectura directa de imágenes del portapapeles.");
+            }
+
+            const items = await navigator.clipboard.read();
+            let imageFile = null;
+
+            for (const item of items) {
+                const imageType = item.types.find(type => type.startsWith("image/"));
+                if (imageType) {
+                    const blob = await item.getType(imageType);
+                    imageFile = new File([blob], "clipboard.png", { type: imageType });
+                    break;
+                }
+            }
+
+            if (!imageFile) {
+                statusDiv.style.color = "#d9534f";
+                statusDiv.textContent = "⚠️ No hay ninguna imagen copiada en el portapapeles.";
+                return;
+            }
+
+            // Crear evento simulado para reutilizar la lógica de procesamiento
+            this.processScreenshot({ target: { files: [imageFile] } });
+        } catch (error) {
+            console.error(error);
+            statusDiv.style.color = "#d9534f";
+            statusDiv.textContent = "❌ No se pudo acceder a la imagen del portapapeles. Selecciona el archivo o usa Safari/Chrome.";
+        }
     },
 
     async processScreenshot(event) {
