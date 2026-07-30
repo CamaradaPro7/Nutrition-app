@@ -64,9 +64,13 @@ const App = {
         const app = document.getElementById("app");
 
         const objetivoBase = this.getBaseCalories();
-        const actividad = this.getActivity().movimiento;
-        const gastoTotal = actividad; // El gasto generado empieza en 0 y sube con la actividad
-        const objetivoTotal = objetivoBase + actividad;
+        const actividad = this.getActivity();
+        const movimiento = actividad.movimiento || 0;
+        
+        // Gasto total: toma "caloriasTotales" (basal + movimiento) pegado desde Apple Salud.
+        // Si no hay dato aún, muestra 0 al inicio del día.
+        const gastoTotal = actividad.caloriasTotales || 0; 
+        const objetivoTotal = objetivoBase + movimiento;
 
         app.innerHTML = `
         <section class="card dashboard">
@@ -109,7 +113,7 @@ const App = {
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Actividad</div>
-                    <div class="stat-value">${actividad} kcal</div>
+                    <div class="stat-value">${movimiento} kcal</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Gasto</div>
