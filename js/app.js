@@ -66,9 +66,6 @@ const App = {
         const objetivoBase = this.getBaseCalories();
         const actividad = this.getActivity();
         const movimiento = actividad.movimiento || 0;
-        
-        // Gasto total: toma "caloriasTotales" (basal + movimiento) pegado desde Apple Salud.
-        // Si no hay dato aún, muestra 0 al inicio del día.
         const gastoTotal = actividad.caloriasTotales || 0; 
         const objetivoTotal = objetivoBase + movimiento;
 
@@ -633,7 +630,7 @@ const App = {
 
                 html += `
                 <div style="${rowStyle} font-weight:bold; margin-top:4px;">
-                    <span>Total ${comida.titulo}</span>
+                    <span>Total ${comida.titulo.toLowerCase()}</span>
                     <span>${Number(totalMeal.toFixed(1))} kcal</span>
                 </div>
                 `;
@@ -656,11 +653,96 @@ const App = {
         modal.innerHTML = html;
     },
 
+    showActivityPaste() {
+        const modal = document.getElementById("modal");
+        modal.classList.remove("hidden");
+        modal.innerHTML = `
+        <div class="sheet">
+            <h2 class="text-center">🏃 Cargar actividad</h2>
+            <p class="text-center" style="font-size:14px;color:#666;margin-bottom:16px;">Sube una captura de pantalla de Apple Salud / Fitness o pega el informe en texto.</p>
+            
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                <label class="action-btn" style="text-align:center;cursor:pointer;background:#4a90e2;color:#fff;">
+                    📷 Seleccionar captura de pantalla
+                    <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="App.processScreenshot(event)">
+                </label>
+                <div id="ocrStatus" style="text-align:center;font-size:14px;color:#007aff;font-weight:600;display:none;"></div>
+            </div>
+
+            <div style="margin:16px 0;text-align:center;color:#aaa;font-size:12px;">— O PEGA EL TEXTO —</div>
+
+            <textarea id="activityInput" rows="6" style="width:100%;border-radius:12px;padding:10px;border:1px solid #ddd;" placeholder="Movimiento 357 kcal&#10;Ejercicio 60 min&#10;De pie 6 h&#10;Calorías totales 1119 kcal"></textarea>
+            
+            <div class="mt-20" style="margin-top:16px;">
+                <button class="action-btn" onclick="App.importActivity()">Actualizar actividad</button>
+                <button class="action-btn danger" onclick="App.closeModal()">Cancelar</button>
+            </div>
+        </div>`;
+    },
+
+    async processScreenshot(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const statusDiv = document.getElementById("ocrStatus");
+        statusDiv.style.display = "block";
+        statusDiv.textContent = "⌛ Leyendo captura de pantalla...";
+
+        try {
+            if (typeof Tesseract === "undefined") {
+                throw new Error("Librería Tesseract.js no cargada.");
+            }
+
+            const worker = await Tesseract.createWorker("spa");
+            const ret = await worker.recognize(file);
+            await worker.terminate();
+
+            const text = ret.data.text;
+            this.parseOCRText(text);
+            statusDiv.textContent = "✅ ¡Datos extraídos con éxito!";
+        } catch (error) {
+            console.error(error);
+            statusDiv.style.color = "#d9534f";
+            statusDiv.textContent = "❌ Error al leer la imagen. Inténtalo pegando texto.";
+        }
+    },
+
+    parseOCRText(rawText) {
+        let movimiento = 0;
+        let ejercicio = 0;
+        let dePie = 0;
+        let caloriasTotales = 0;
+
+        // 1. Movimiento (ej. 357/600 KCAL o Movimiento 357)
+        const matchMov = rawText.match(/Movimiento[\s\S]*?(\d+)\s*\/\s*\d+/i) || rawText.match(/Movimiento[:\s]+(\d+)/i) || rawText.match(/(\d+)\s*\/\s*\d+\s*KCAL/i);
+        if (matchMov) movimiento = parseFloat(matchMov[1]);
+
+        // 2. Calorías totales / Gasto (ej. TOTAL: 1119 KCAL o Calorias totales 1119)
+        const matchTot = rawText.match(/TOTAL:\s*(\d+)\s*KCAL/i) || rawText.match(/Calor[ií]as\s*totales[:\s]+(\d+)/i);
+        if (matchTot) caloriasTotales = parseFloat(matchTot[1]);
+
+        // 3. Ejercicio (ej. 60/30 MIN o Ejercicio 60)
+        const matchEjer = rawText.match(/Ejercicio[\s\S]*?(\d+)\s*\/\s*\d+/i) || rawText.match(/Ejercicio[:\s]+(\d+)/i) || rawText.match(/(\d+)\s*\/\s*\d+\s*MIN/i);
+        if (matchEjer) ejercicio = parseFloat(matchEjer[1]);
+
+        // 4. De pie (ej. 6/12 H o De pie 6)
+        const matchPie = rawText.match(/De\s*pie[\s\S]*?(\d+)\s*\/\s*\d+/i) || rawText.match(/De\s*pie[:\s]+(\d+)/i) || rawText.match(/(\d+)\s*\/\s*\d+\s*H/i);
+        if (matchPie) dePie = parseFloat(matchPie[1]);
+
+        // Autocompletar el campo de texto con los resultados estructurados
+        let resultText = `Movimiento ${movimiento} kcal\n`;
+        resultText += `Ejercicio ${ejercicio} min\n`;
+        resultText += `De pie ${dePie} h\n`;
+        if (caloriasTotales) resultText += `Calorías totales ${caloriasTotales} kcal`;
+
+        document.getElementById("activityInput").value = resultText;
+    },
+
     importActivity() {
         const texto = document.getElementById("activityInput").value.trim();
 
         if (!texto) {
-            this.toast("No has pegado ningún informe");
+            this.toast("No hay información de actividad para actualizar");
             return;
         }
 
@@ -669,10 +751,10 @@ const App = {
             return m ? parseFloat(m[1].replace(",", ".")) : 0;
         };
 
-        const movimiento = numero(/Movimiento:\s*([\d.,]+)/i);
-        const ejercicio = numero(/Ejercicio:\s*([\d.,]+)/i);
-        const dePie = numero(/De pie:\s*([\d.,]+)/i);
-        const caloriasTotales = numero(/Calor[ií]as totales:\s*([\d.,]+)/i);
+        const movimiento = numero(/Movimiento:\s*([\d.,]+)/i) || numero(/Movimiento\s+([\d.,]+)/i);
+        const ejercicio = numero(/Ejercicio:\s*([\d.,]+)/i) || numero(/Ejercicio\s+([\d.,]+)/i);
+        const dePie = numero(/De pie:\s*([\d.,]+)/i) || numero(/De pie\s+([\d.,]+)/i);
+        const caloriasTotales = numero(/Calor[ií]as totales:\s*([\d.,]+)/i) || numero(/Calor[ií]as totales\s+([\d.,]+)/i);
 
         if (!this.state.day.actividad) {
             this.state.day.actividad = {};
@@ -690,21 +772,6 @@ const App = {
         this.closeModal();
         this.refresh();
         this.toast("Actividad actualizada");
-    },
-
-    showActivityPaste() {
-        const modal = document.getElementById("modal");
-        modal.classList.remove("hidden");
-        modal.innerHTML = `
-        <div class="sheet">
-            <h2 class="text-center">🏃 Pegar actividad</h2>
-            <p class="text-center">Pega aquí el informe de Apple Salud o Apple Watch.</p>
-            <textarea id="activityInput" rows="12" style="width:100%;margin-top:16px;" placeholder="Movimiento 205 kcal\nEjercicio 8 min\nDe pie 7 h\nCalorías totales 1588 kcal"></textarea>
-            <div class="mt-20">
-                <button class="action-btn" onclick="App.importActivity()">Actualizar actividad</button>
-                <button class="action-btn danger" onclick="App.closeModal()">Cancelar</button>
-            </div>
-        </div>`;
     },
 
     copyReport() {
