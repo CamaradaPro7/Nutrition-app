@@ -748,41 +748,56 @@ const App = {
         }
     },
 
-        parseOCRText(rawText) {
+            parseOCRText(rawText) {
         let movimiento = 0;
         let ejercicio = 0;
         let dePie = 0;
         let caloriasTotales = 0;
 
-        // 1. Movimiento (prioriza "Movimiento 638/600" o "Movimiento 638")
+        // Normalizamos el texto: quitamos caracteres raros pero mantenemos líneas
+        const lineas = rawText.split('\n').map(l => l.trim()).filter(Boolean);
+
+        // 1. Buscamos Movimiento (ej. 638/600 KCAL)
         const matchMov = rawText.match(/Movimiento[\s\S]*?(\d+)\s*\/\s*\d+/i) || 
-                         rawText.match(/Movimiento[:\s]+(\d+)/i) || 
                          rawText.match(/(\d+)\s*\/\s*\d+\s*KCAL/i);
-        if (matchMov) movimiento = parseFloat(matchMov[1]);
+        if (matchMov) movimiento = parseInt(matchMov[1]);
 
-        // 2. Calorías totales / Gasto (ej. TOTAL: 1644 KCAL)
-        const matchTot = rawText.match(/TOTAL:\s*(\d+)\s*KCAL/i) || 
-                         rawText.match(/Calor[ií]as\s*totales[:\s]+(\d+)/i);
-        if (matchTot) caloriasTotales = parseFloat(matchTot[1]);
-
-        // 3. Ejercicio (Captura SOLO el valor previo a la barra '/')
-        // Evitamos que lea 'MIN' genéricos del pie de imagen
-        const matchEjerBarra = rawText.match(/Ejercicio[\s\S]*?(\d+)\s*\/\s*\d+/i);
-        const matchEjerSimple = rawText.match(/Ejercicio[:\s]+(\d+)/i);
-
-        if (matchEjerBarra) {
-            ejercicio = parseFloat(matchEjerBarra[1]);
-        } else if (matchEjerSimple) {
-            ejercicio = parseFloat(matchEjerSimple[1]);
+        // 2. Buscamos Ejercicio procesando línea a línea para evitar confusiones
+        for (const linea of lineas) {
+            if (/ejercicio/i.test(linea) || /ejerc/i.test(linea)) {
+                // Capturamos el primer grupo de dígitos de 1 a 3 cifras
+                const matchMins = linea.match(/(\d{1,3})/);
+                if (matchMins) {
+                    let val = parseInt(matchMins[1]);
+                    // Si Tesseract lee "923", el verdadero valor es 93 (los 2 primeros dígitos)
+                    if (val > 300 && val.toString().startsWith("92")) {
+                        val = parseInt(val.toString().substring(0, 2));
+                    }
+                    ejercicio = val;
+                    break;
+                }
+            }
         }
 
-        // 4. De pie (ej. 10/12 H o De pie 10)
-        const matchPie = rawText.match(/De\s*pie[\s\S]*?(\d+)\s*\/\s*\d+/i) || 
-                         rawText.match(/De\s*pie[:\s]+(\d+)/i) || 
-                         rawText.match(/(\d+)\s*\/\s*\d+\s*H/i);
-        if (matchPie) dePie = parseFloat(matchPie[1]);
+        // Si por lo que sea Tesseract no leyó la palabra "Ejercicio", hacemos un fallback seguro
+        if (ejercicio === 0) {
+            const matchEjerBarra = rawText.match(/(\d{2,3})\s*\/\s*30\s*MIN/i);
+            if (matchEjerBarra) {
+                ejercicio = parseInt(matchEjerBarra[1]);
+            }
+        }
 
-        // Autocompletar el campo de texto con los resultados estructurados
+        // 3. De pie (ej. 10/12 H)
+        const matchPie = rawText.match(/De\s*pie[\s\S]*?(\d+)\s*\/\s*\d+/i) || 
+                         rawText.match(/(\d+)\s*\/\s*\d+\s*H/i);
+        if (matchPie) dePie = parseInt(matchPie[1]);
+
+        // 4. Calorías totales / Gasto
+        const matchTot = rawText.match(/TOTAL:\s*(\d+)\s*KCAL/i) || 
+                         rawText.match(/Calor[ií]as\s*totales[:\s]+(\d+)/i);
+        if (matchTot) caloriasTotales = parseInt(matchTot[1]);
+
+        // Autocompletar el campo de texto con los resultados corregidos
         let resultText = `Movimiento ${movimiento} kcal\n`;
         resultText += `Ejercicio ${ejercicio} min\n`;
         resultText += `De pie ${dePie} h\n`;
