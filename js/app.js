@@ -748,26 +748,38 @@ const App = {
         }
     },
 
-    parseOCRText(rawText) {
+        parseOCRText(rawText) {
         let movimiento = 0;
         let ejercicio = 0;
         let dePie = 0;
         let caloriasTotales = 0;
 
-        // 1. Movimiento (ej. 357/600 KCAL o Movimiento 357)
-        const matchMov = rawText.match(/Movimiento[\s\S]*?(\d+)\s*\/\s*\d+/i) || rawText.match(/Movimiento[:\s]+(\d+)/i) || rawText.match(/(\d+)\s*\/\s*\d+\s*KCAL/i);
+        // 1. Movimiento (prioriza "Movimiento 638/600" o "Movimiento 638")
+        const matchMov = rawText.match(/Movimiento[\s\S]*?(\d+)\s*\/\s*\d+/i) || 
+                         rawText.match(/Movimiento[:\s]+(\d+)/i) || 
+                         rawText.match(/(\d+)\s*\/\s*\d+\s*KCAL/i);
         if (matchMov) movimiento = parseFloat(matchMov[1]);
 
-        // 2. Calorías totales / Gasto (ej. TOTAL: 1119 KCAL o Calorias totales 1119)
-        const matchTot = rawText.match(/TOTAL:\s*(\d+)\s*KCAL/i) || rawText.match(/Calor[ií]as\s*totales[:\s]+(\d+)/i);
+        // 2. Calorías totales / Gasto (ej. TOTAL: 1644 KCAL)
+        const matchTot = rawText.match(/TOTAL:\s*(\d+)\s*KCAL/i) || 
+                         rawText.match(/Calor[ií]as\s*totales[:\s]+(\d+)/i);
         if (matchTot) caloriasTotales = parseFloat(matchTot[1]);
 
-        // 3. Ejercicio (ej. 60/30 MIN o Ejercicio 60)
-        const matchEjer = rawText.match(/Ejercicio[\s\S]*?(\d+)\s*\/\s*\d+/i) || rawText.match(/Ejercicio[:\s]+(\d+)/i) || rawText.match(/(\d+)\s*\/\s*\d+\s*MIN/i);
-        if (matchEjer) ejercicio = parseFloat(matchEjer[1]);
+        // 3. Ejercicio (Captura SOLO el valor previo a la barra '/')
+        // Evitamos que lea 'MIN' genéricos del pie de imagen
+        const matchEjerBarra = rawText.match(/Ejercicio[\s\S]*?(\d+)\s*\/\s*\d+/i);
+        const matchEjerSimple = rawText.match(/Ejercicio[:\s]+(\d+)/i);
 
-        // 4. De pie (ej. 6/12 H o De pie 6)
-        const matchPie = rawText.match(/De\s*pie[\s\S]*?(\d+)\s*\/\s*\d+/i) || rawText.match(/De\s*pie[:\s]+(\d+)/i) || rawText.match(/(\d+)\s*\/\s*\d+\s*H/i);
+        if (matchEjerBarra) {
+            ejercicio = parseFloat(matchEjerBarra[1]);
+        } else if (matchEjerSimple) {
+            ejercicio = parseFloat(matchEjerSimple[1]);
+        }
+
+        // 4. De pie (ej. 10/12 H o De pie 10)
+        const matchPie = rawText.match(/De\s*pie[\s\S]*?(\d+)\s*\/\s*\d+/i) || 
+                         rawText.match(/De\s*pie[:\s]+(\d+)/i) || 
+                         rawText.match(/(\d+)\s*\/\s*\d+\s*H/i);
         if (matchPie) dePie = parseFloat(matchPie[1]);
 
         // Autocompletar el campo de texto con los resultados estructurados
