@@ -224,8 +224,8 @@ const App = {
         };
     },
 
-    getRemainingCalories() {
-        return Math.max(0, this.getTargetCalories() - this.getCalories());
+        getRemainingCalories() {
+        return Math.round(Math.max(0, this.getTargetCalories() - this.getCalories()));
     },
 
     getMacroValue(key) {
