@@ -748,56 +748,52 @@ const App = {
         }
     },
 
-            parseOCRText(rawText) {
+        parseOCRText(rawText) {
         let movimiento = 0;
         let ejercicio = 0;
         let dePie = 0;
         let caloriasTotales = 0;
 
-        // Normalizamos el texto: quitamos caracteres raros pero mantenemos líneas
-        const lineas = rawText.split('\n').map(l => l.trim()).filter(Boolean);
-
-        // 1. Buscamos Movimiento (ej. 638/600 KCAL)
+        // 1. Movimiento (ej. 638/600 KCAL)
         const matchMov = rawText.match(/Movimiento[\s\S]*?(\d+)\s*\/\s*\d+/i) || 
                          rawText.match(/(\d+)\s*\/\s*\d+\s*KCAL/i);
         if (matchMov) movimiento = parseInt(matchMov[1]);
 
-        // 2. Buscamos Ejercicio procesando línea a línea para evitar confusiones
-        for (const linea of lineas) {
-            if (/ejercicio/i.test(linea) || /ejerc/i.test(linea)) {
-                // Capturamos el primer grupo de dígitos de 1 a 3 cifras
-                const matchMins = linea.match(/(\d{1,3})/);
-                if (matchMins) {
-                    let val = parseInt(matchMins[1]);
-                    // Si Tesseract lee "923", el verdadero valor es 93 (los 2 primeros dígitos)
-                    if (val > 300 && val.toString().startsWith("92")) {
-                        val = parseInt(val.toString().substring(0, 2));
-                    }
-                    ejercicio = val;
-                    break;
-                }
-            }
-        }
-
-        // Si por lo que sea Tesseract no leyó la palabra "Ejercicio", hacemos un fallback seguro
-        if (ejercicio === 0) {
-            const matchEjerBarra = rawText.match(/(\d{2,3})\s*\/\s*30\s*MIN/i);
-            if (matchEjerBarra) {
-                ejercicio = parseInt(matchEjerBarra[1]);
-            }
-        }
-
-        // 3. De pie (ej. 10/12 H)
-        const matchPie = rawText.match(/De\s*pie[\s\S]*?(\d+)\s*\/\s*\d+/i) || 
-                         rawText.match(/(\d+)\s*\/\s*\d+\s*H/i);
-        if (matchPie) dePie = parseInt(matchPie[1]);
-
-        // 4. Calorías totales / Gasto
+        // 2. Calorías totales / Gasto (ej. TOTAL: 1644 KCAL)
         const matchTot = rawText.match(/TOTAL:\s*(\d+)\s*KCAL/i) || 
                          rawText.match(/Calor[ií]as\s*totales[:\s]+(\d+)/i);
         if (matchTot) caloriasTotales = parseInt(matchTot[1]);
 
-        // Autocompletar el campo de texto con los resultados corregidos
+        // 3. Ejercicio: Tratamiento específico para fallos de OCR en Apple Watch
+        // Buscamos la sección de Ejercicio
+        const bloqueEjer = rawText.match(/Ejercicio[\s\S]*?MIN/i) || rawText.match(/(\d+[\d\s\/]*MIN)/i);
+        
+        if (bloqueEjer) {
+            const textoEjer = bloqueEjer[0];
+            // Si Tesseract lee "923/30" o "93/30", capturamos lo que hay antes de la barra
+            const matchBarra = textoEjer.match(/(\d+)\s*\/\s*(\d+)/);
+            if (matchBarra) {
+                let numStr = matchBarra[1]; // ej. "923" o "93"
+                const meta = matchBarra[2]; // ej. "30"
+
+                // Si la cifra capturada tiene 3 dígitos y termina en las dos últimas cifras de 'meta' o tiene un 2 fantasma
+                if (numStr.length === 3 && numStr.includes('2')) {
+                    // Si el objetivo es 30 y lee 923, el '2' es la barra / mal leída por Tesseract
+                    numStr = numStr.replace('2', '');
+                }
+                ejercicio = parseInt(numStr);
+            } else {
+                const matchSimple = textoEjer.match(/(\d+)/);
+                if (matchSimple) ejercicio = parseInt(matchSimple[1]);
+            }
+        }
+
+        // 4. De pie (ej. 10/12 H)
+        const matchPie = rawText.match(/De\s*pie[\s\S]*?(\d+)\s*\/\s*\d+/i) || 
+                         rawText.match(/(\d+)\s*\/\s*\d+\s*H/i);
+        if (matchPie) dePie = parseInt(matchPie[1]);
+
+        // Autocompletar el campo de texto
         let resultText = `Movimiento ${movimiento} kcal\n`;
         resultText += `Ejercicio ${ejercicio} min\n`;
         resultText += `De pie ${dePie} h\n`;
