@@ -302,13 +302,16 @@ const App = {
         `;
     },
 
-        savePastedFood(meal) {
+            savePastedFood(meal) {
         const texto = document.getElementById("foodText").value.trim();
         if (!texto) return;
 
         const bloques = texto.split(/\n\s*\n/);
         const ahora = new Date();
-        let biblioteca = DB.getLibrary();
+        
+        // Asegurar que obtenemos un array válido de la biblioteca
+        let biblioteca = DB.getLibrary() || [];
+        
         const fecha = ahora.toISOString().slice(0, 10);
         const hora = ahora.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
 
@@ -318,7 +321,7 @@ const App = {
 
             const numero = (valor) => parseFloat((valor || "0").replace(/\./g, "").replace(",", "."));
 
-            // 1. Intentar buscar formato clásico (Calorías: 30, Proteínas: 0.2...)
+            // 1. Formato clásico (Calorías: 30, Proteínas: 0.2...)
             let kcal = numero((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i) || [])[1]);
             let proteinas = numero((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i) || [])[1]);
             let hidratos = 0;
@@ -330,7 +333,7 @@ const App = {
 
             let grasas = numero((bloque.match(/Grasas:\s*([\d.,]+)/i) || [])[1]);
 
-            // 2. Si dio 0 kcal, probar con formato en una sola línea (ej: "30 kcal · P 0.2 g · C 7.1 g · G 0.1 g")
+            // 2. Formato en una sola línea (ej: "30 kcal · P 0.2 g · C 7.1 g · G 0.1 g")
             if (kcal === 0) {
                 const matchKcal = bloque.match(/([\d.,]+)\s*kcal/i);
                 if (matchKcal) kcal = numero(matchKcal[1]);
@@ -345,10 +348,18 @@ const App = {
                 if (matchG) grasas = numero(matchG[1]);
             }
 
-            const existe = biblioteca.some(food => food.nombre.toLowerCase() === nombre.toLowerCase());
+            // 3. Normalizar array e insertar/actualizar en Biblioteca
+            const indexBiblioteca = biblioteca.findIndex(food => food.nombre.toLowerCase() === nombre.toLowerCase());
 
-            if (!existe) {
+            if (indexBiblioteca === -1) {
                 biblioteca.push({ nombre, kcal, proteinas, hidratos, grasas });
+            } else {
+                biblioteca[indexBiblioteca] = { nombre, kcal, proteinas, hidratos, grasas };
+            }
+
+            // 4. Guardar en el día actual
+            if (!this.state.day[meal]) {
+                this.state.day[meal] = [];
             }
 
             this.state.day[meal].push({
@@ -356,7 +367,10 @@ const App = {
             });
         });
 
+        // Guardado explícito de biblioteca y día
+        DB.saveLibrary(biblioteca);
         DB.saveDay(this.state.day);
+        
         this.closeModal();
         this.refresh();
     },
