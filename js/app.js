@@ -302,7 +302,7 @@ const App = {
         `;
     },
 
-    savePastedFood(meal) {
+        savePastedFood(meal) {
         const texto = document.getElementById("foodText").value.trim();
         if (!texto) return;
 
@@ -318,9 +318,9 @@ const App = {
 
             const numero = (valor) => parseFloat((valor || "0").replace(/\./g, "").replace(",", "."));
 
-            const kcal = numero((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i) || [])[1]);
-            const proteinas = numero((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i) || [])[1]);
-
+            // 1. Intentar buscar formato clásico (Calorías: 30, Proteínas: 0.2...)
+            let kcal = numero((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i) || [])[1]);
+            let proteinas = numero((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i) || [])[1]);
             let hidratos = 0;
             const carbo = bloque.match(/Carbohidratos:\s*([\d.,]+)/i);
             const hidra = bloque.match(/Hidratos:\s*([\d.,]+)/i);
@@ -328,7 +328,22 @@ const App = {
             if (carbo) hidratos = numero(carbo[1]);
             else if (hidra) hidratos = numero(hidra[1]);
 
-            const grasas = numero((bloque.match(/Grasas:\s*([\d.,]+)/i) || [])[1]);
+            let grasas = numero((bloque.match(/Grasas:\s*([\d.,]+)/i) || [])[1]);
+
+            // 2. Si dio 0 kcal, probar con formato en una sola línea (ej: "30 kcal · P 0.2 g · C 7.1 g · G 0.1 g")
+            if (kcal === 0) {
+                const matchKcal = bloque.match(/([\d.,]+)\s*kcal/i);
+                if (matchKcal) kcal = numero(matchKcal[1]);
+
+                const matchP = bloque.match(/\bP\s*([\d.,]+)\s*g/i);
+                if (matchP) proteinas = numero(matchP[1]);
+
+                const matchC = bloque.match(/\b[CH]\s*([\d.,]+)\s*g/i);
+                if (matchC) hidratos = numero(matchC[1]);
+
+                const matchG = bloque.match(/\bG\s*([\d.,]+)\s*g/i);
+                if (matchG) grasas = numero(matchG[1]);
+            }
 
             const existe = biblioteca.some(food => food.nombre.toLowerCase() === nombre.toLowerCase());
 
@@ -341,7 +356,6 @@ const App = {
             });
         });
 
-        DB.saveLibrary(biblioteca);
         DB.saveDay(this.state.day);
         this.closeModal();
         this.refresh();
