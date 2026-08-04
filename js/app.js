@@ -19,7 +19,7 @@ const App = {
         }
     },
 
-        async init() {
+            async init() {
         try {
             DB.open();
 
@@ -31,17 +31,24 @@ const App = {
                 DB.saveDay(day);
             }
 
-            // 🧹 SANITIZACIÓN AUTOMÁTICA DEL DÍA ACTUAL
+            // 🧹 REPARACIÓN Y RECALCULO DE MACROS EN BASE A LAS CALORÍAS REALES
             ["desayuno", "comida", "merienda", "cena"].forEach(meal => {
                 if (day[meal] && Array.isArray(day[meal])) {
                     day[meal].forEach(food => {
                         const kcal = Number(food.kcal || 0);
+                        let p = Number(food.proteinas || 0);
+                        let h = Number(food.hidratos || 0);
+                        let g = Number(food.grasas || 0);
+
+                        // Si la suma de las calorías de sus macros excede las calorías del alimento (con un 20% de margen)
+                        // o es 0, recalculamos los macros con la proporción estándar real (15% P / 55% H / 30% G)
+                        const kcalMacros = (p * 4) + (h * 4) + (g * 9);
                         
-                        // Si las calorías del macronutriente superan el doble de las calorías totales del alimento,
-                        // significa que el macro se guardó mal. Lo saneamos a 0 para corregir el histórico.
-                        if (Number(food.proteinas) * 4 > kcal * 2) food.proteinas = 0;
-                        if (Number(food.hidratos) * 4 > kcal * 2) food.hidratos = 0;
-                        if (Number(food.grasas) * 9 > kcal * 2) food.grasas = 0;
+                        if (kcalMacros > kcal * 1.2 || kcalMacros === 0) {
+                            food.proteinas = +((kcal * 0.20) / 4).toFixed(1);
+                            food.hidratos = +((kcal * 0.50) / 4).toFixed(1);
+                            food.grasas = +((kcal * 0.30) / 9).toFixed(1);
+                        }
                     });
                 }
             });
@@ -57,7 +64,7 @@ const App = {
             this.render();
             this.bindEvents();
             this.updateUI();
-            console.log("✅ Mi Nutrición NEXT iniciada con datos limpios");
+            console.log("✅ Mi Nutrición NEXT iniciada con macros reparados");
         } catch (error) {
             console.error(error);
             document.body.innerHTML = `
@@ -243,7 +250,7 @@ const App = {
         return Math.round(Math.max(0, this.getTargetCalories() - this.getCalories()));
     },
 
-        getMacroValue(key) {
+            getMacroValue(key) {
         let total = 0;
         ["desayuno", "comida", "merienda", "cena"].forEach(meal => {
             (this.state.day[meal] || []).forEach(food => {
