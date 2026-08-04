@@ -450,28 +450,31 @@ const App = {
         this.refresh();
     },
 
-    editFood(meal, index) {
+        editFood(meal, index) {
         const food = this.state.day[meal][index];
         const nombre = food.nombre;
 
         let unidad = "";
         let cantidad = "";
 
+        // 1. Probar primero gramos (g)
         let match = nombre.match(/(\d+(?:[.,]\d+)?)\s*g\b/i);
 
         if (match) {
             unidad = "g";
             cantidad = match[1].replace(",", ".");
         } else {
+            // 2. Probar mililitros (ml)
             match = nombre.match(/(\d+(?:[.,]\d+)?)\s*ml\b/i);
             if (match) {
                 unidad = "ml";
                 cantidad = match[1].replace(",", ".");
             } else {
-                match = nombre.match(/(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i);
+                // 3. Captura UNIVERSAL: Cualquier número seguido de cualquier texto/unidad (ración, rodaja, unidad, loncha, etc.)
+                match = nombre.match(/(\d+(?:[.,]\d+)?)\s*([a-záéíóúñ]+)\b/i);
                 if (match) {
-                    unidad = "raciones";
                     cantidad = match[1].replace(",", ".");
+                    unidad = match[2]; // Captura la palabra exacta usada
                 }
             }
         }
@@ -484,7 +487,7 @@ const App = {
                 <p style="margin:20px 0;font-weight:600;">${nombre}</p>
                 ${unidad ? `
                     <input id="editCantidad" type="number" step="0.1" value="${cantidad}" style="width:100%;padding:14px;font-size:18px;border-radius:12px;border:1px solid #ccc;">
-                    <p style="margin-top:10px;text-align:center;">${unidad}</p>
+                    <p style="margin-top:10px;text-align:center;font-weight:bold;color:#666;">${unidad}</p>
                 ` : `<p>Este alimento todavía no se puede editar automáticamente.</p>`}
                 <div class="mt-20">
                     <button class="action-btn" onclick="App.showFoods('${meal}')">Cancelar</button>
@@ -503,32 +506,26 @@ const App = {
             return;
         }
 
-        let match;
-        if (unidad === "g") match = food.nombre.match(/(\d+(?:[.,]\d+)?)\s*g/i);
-        else if (unidad === "ml") match = food.nombre.match(/(\d+(?:[.,]\d+)?)\s*ml/i);
-        else match = food.nombre.match(/(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i);
+        // Crear expresión regular dinámica con la unidad exacta que tenía el alimento
+        const regex = new RegExp(`(\\d+(?:[.,]\\d+)?)\\s*${unidad}`, "i");
+        const match = food.nombre.match(regex);
 
         if (!match) {
-            alert("No se pudo calcular.");
+            alert("No se pudo recalcular la cantidad.");
             return;
         }
 
         const anterior = parseFloat(match[1].replace(",", "."));
-        const factor = nuevo / anterior;
+        const factor = anterior > 0 ? nuevo / anterior : 1;
 
+        // Recalcular nutrientes proporcionalmente
         food.kcal = +(food.kcal * factor).toFixed(1);
         food.proteinas = +(food.proteinas * factor).toFixed(1);
         food.hidratos = +(food.hidratos * factor).toFixed(1);
         food.grasas = +(food.grasas * factor).toFixed(1);
 
-        if (unidad === "g") {
-            food.nombre = food.nombre.replace(/(\d+(?:[.,]\d+)?)\s*g/i, `${nuevo} g`);
-        } else if (unidad === "ml") {
-            food.nombre = food.nombre.replace(/(\d+(?:[.,]\d+)?)\s*ml/i, `${nuevo} ml`);
-        } else {
-            const texto = nuevo === 1 ? "ración" : "raciones";
-            food.nombre = food.nombre.replace(/(\d+(?:[.,]\d+)?)\s*raci[oó]n(?:es)?/i, `${nuevo} ${texto}`);
-        }
+        // Reemplazar la cantidad en el texto manteniendo la unidad original
+        food.nombre = food.nombre.replace(regex, `${nuevo} ${unidad}`);
 
         DB.saveDay(this.state.day);
         this.showFoods(meal);
