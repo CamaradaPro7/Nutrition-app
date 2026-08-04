@@ -302,14 +302,13 @@ const App = {
         `;
     },
 
-            savePastedFood(meal) {
+        savePastedFood(meal) {
         const texto = document.getElementById("foodText").value.trim();
         if (!texto) return;
 
         const bloques = texto.split(/\n\s*\n/);
         const ahora = new Date();
         
-        // Asegurar que obtenemos un array válido de la biblioteca
         let biblioteca = DB.getLibrary() || [];
         
         const fecha = ahora.toISOString().slice(0, 10);
@@ -319,42 +318,31 @@ const App = {
             const lineas = bloque.trim().split("\n");
             const nombre = lineas[0].trim();
 
-            const numero = (valor) => {
-    if (!valor) return 0;
-    // Si contiene comas (formato ES), convierte la coma en punto decimal
-    // Si ya trae punto (formato EN), no elimina el punto para no multiplicar por 100/1000
-    let v = valor.trim().replace(",", ".");
-    return parseFloat(v) || 0;
-};
-
-            // 1. Formato clásico (Calorías: 30, Proteínas: 0.2...)
-            let kcal = numero((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i) || [])[1]);
-            let proteinas = numero((bloque.match(/Prote[ií]nas:\s*([\d.,]+)/i) || [])[1]);
+            let kcal = 0;
+            let proteinas = 0;
             let hidratos = 0;
-            const carbo = bloque.match(/Carbohidratos:\s*([\d.,]+)/i);
-            const hidra = bloque.match(/Hidratos:\s*([\d.,]+)/i);
+            let grasas = 0;
 
-            if (carbo) hidratos = numero(carbo[1]);
-            else if (hidra) hidratos = numero(hidra[1]);
-
-            let grasas = numero((bloque.match(/Grasas:\s*([\d.,]+)/i) || [])[1]);
-
-            // 2. Formato en una sola línea (ej: "30 kcal · P 0.2 g · C 7.1 g · G 0.1 g")
-            if (kcal === 0) {
-                const matchKcal = bloque.match(/([\d.,]+)\s*kcal/i);
-                if (matchKcal) kcal = numero(matchKcal[1]);
-
-                const matchP = bloque.match(/\bP\s*([\d.,]+)\s*g/i);
-                if (matchP) proteinas = numero(matchP[1]);
-
-                const matchC = bloque.match(/\b[CH]\s*([\d.,]+)\s*g/i);
-                if (matchC) hidratos = numero(matchC[1]);
-
-                const matchG = bloque.match(/\bG\s*([\d.,]+)\s*g/i);
-                if (matchG) grasas = numero(matchG[1]);
+            // 1. EXTRAER CALORÍAS (Busca explícitamente X kcal)
+            const matchKcal = bloque.match(/([\d.,]+)\s*kcal/i);
+            if (matchKcal) {
+                kcal = parseFloat(matchKcal[1].replace(',', '.')) || 0;
             }
 
-            // 3. Normalizar array e insertar/actualizar en Biblioteca
+            // 2. EXTRAER MACRONUTRIENTES EXPLÍCITOS
+            // Formato 1: Proteínas: 12 g / P: 12 g / P 12 g
+            const matchP = bloque.match(/(?:Prote[ií]nas|Proteina|\bP)\s*:?\s*([\d.,]+)\s*g/i);
+            if (matchP) proteinas = parseFloat(matchP[1].replace(',', '.')) || 0;
+
+            // Formato 2: Hidratos: 40 g / Carbohidratos: 40 g / C: 40 g / H: 40 g
+            const matchC = bloque.match(/(?:Carbohidratos|Hidratos|\b[CH])\s*:?\s*([\d.,]+)\s*g/i);
+            if (matchC) hidratos = parseFloat(matchC[1].replace(',', '.')) || 0;
+
+            // Formato 3: Grasas: 10 g / G: 10 g
+            const matchG = bloque.match(/(?:Grasas|Grasa|\bG)\s*:?\s*([\d.,]+)\s*g/i);
+            if (matchG) grasas = parseFloat(matchG[1].replace(',', '.')) || 0;
+
+            // 3. Normalizar e insertar en la biblioteca
             const indexBiblioteca = biblioteca.findIndex(food => food.nombre.toLowerCase() === nombre.toLowerCase());
 
             if (indexBiblioteca === -1) {
@@ -373,7 +361,6 @@ const App = {
             });
         });
 
-        // Guardado explícito de biblioteca y día
         DB.saveLibrary(biblioteca);
         DB.saveDay(this.state.day);
         
