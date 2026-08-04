@@ -23,18 +23,7 @@ const App = {
         try {
             DB.open();
 
-            // 🧹 LIMPIEZA AUTOMÁTICA DE MACROS EN LA BIBLIOTECA
-            let biblioteca = DB.getLibrary() || [];
-            biblioteca = biblioteca.map(f => ({
-                ...f,
-                proteinas: f.proteinas > 200 ? +(f.proteinas / 10).toFixed(1) : f.proteinas,
-                hidratos: f.hidratos > 500 ? +(f.hidratos / 10).toFixed(1) : f.hidratos,
-                grasas: f.grasas > 200 ? +(f.grasas / 10).toFixed(1) : f.grasas
-            }));
-            DB.saveLibrary(biblioteca);
-
             this.state.today = DB.today();
-
             let day = DB.getDay(this.state.today);
 
             if (!day) {
@@ -42,17 +31,33 @@ const App = {
                 DB.saveDay(day);
             }
 
+            // 🧹 SANITIZACIÓN AUTOMÁTICA DEL DÍA ACTUAL
+            ["desayuno", "comida", "merienda", "cena"].forEach(meal => {
+                if (day[meal] && Array.isArray(day[meal])) {
+                    day[meal].forEach(food => {
+                        const kcal = Number(food.kcal || 0);
+                        
+                        // Si las calorías del macronutriente superan el doble de las calorías totales del alimento,
+                        // significa que el macro se guardó mal. Lo saneamos a 0 para corregir el histórico.
+                        if (Number(food.proteinas) * 4 > kcal * 2) food.proteinas = 0;
+                        if (Number(food.hidratos) * 4 > kcal * 2) food.hidratos = 0;
+                        if (Number(food.grasas) * 9 > kcal * 2) food.grasas = 0;
+                    });
+                }
+            });
+
+            DB.saveDay(day);
             this.state.day = day;
 
             const settings = DB.getSettings();
-
             if (settings) {
                 this.state.settings = settings;
             }
+
             this.render();
             this.bindEvents();
             this.updateUI();
-            console.log("✅ Mi Nutrición NEXT iniciada");
+            console.log("✅ Mi Nutrición NEXT iniciada con datos limpios");
         } catch (error) {
             console.error(error);
             document.body.innerHTML = `
@@ -242,14 +247,7 @@ const App = {
         let total = 0;
         ["desayuno", "comida", "merienda", "cena"].forEach(meal => {
             (this.state.day[meal] || []).forEach(food => {
-                let val = Number(food[key] || 0);
-                
-                // Si un solo alimento tiene más de 40g de prote/grasa o 90g de hidratos de golpe por un error viejo, lo ajustamos
-                if (key === "proteinas" && val > 50) val = val / 10;
-                if (key === "grasas" && val > 40) val = val / 10;
-                if (key === "hidratos" && val > 120) val = val / 10;
-                
-                total += val;
+                total += Number(food[key] || 0);
             });
         });
         return total;
