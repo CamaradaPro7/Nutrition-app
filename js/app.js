@@ -244,10 +244,10 @@ const App = {
             (this.state.day[meal] || []).forEach(food => {
                 let val = Number(food[key] || 0);
                 
-                // Si el valor guardado viene hinchado por un error previo, corregir escala
-                if (val > 300) {
-                    val = val / 10;
-                }
+                // Si un solo alimento tiene más de 40g de prote/grasa o 90g de hidratos de golpe por un error viejo, lo ajustamos
+                if (key === "proteinas" && val > 50) val = val / 10;
+                if (key === "grasas" && val > 40) val = val / 10;
+                if (key === "hidratos" && val > 120) val = val / 10;
                 
                 total += val;
             });
