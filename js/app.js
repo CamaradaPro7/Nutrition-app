@@ -319,7 +319,13 @@ const App = {
             const lineas = bloque.trim().split("\n");
             const nombre = lineas[0].trim();
 
-            const numero = (valor) => parseFloat((valor || "0").replace(/\./g, "").replace(",", "."));
+            const numero = (valor) => {
+    if (!valor) return 0;
+    // Si contiene comas (formato ES), convierte la coma en punto decimal
+    // Si ya trae punto (formato EN), no elimina el punto para no multiplicar por 100/1000
+    let v = valor.trim().replace(",", ".");
+    return parseFloat(v) || 0;
+};
 
             // 1. Formato clásico (Calorías: 30, Proteínas: 0.2...)
             let kcal = numero((bloque.match(/Calor[ií]as:\s*([\d.,]+)/i) || [])[1]);
