@@ -19,9 +19,19 @@ const App = {
         }
     },
 
-    async init() {
+        async init() {
         try {
             DB.open();
+
+            // 🧹 LIMPIEZA AUTOMÁTICA DE MACROS EN LA BIBLIOTECA
+            let biblioteca = DB.getLibrary() || [];
+            biblioteca = biblioteca.map(f => ({
+                ...f,
+                proteinas: f.proteinas > 200 ? +(f.proteinas / 10).toFixed(1) : f.proteinas,
+                hidratos: f.hidratos > 500 ? +(f.hidratos / 10).toFixed(1) : f.hidratos,
+                grasas: f.grasas > 200 ? +(f.grasas / 10).toFixed(1) : f.grasas
+            }));
+            DB.saveLibrary(biblioteca);
 
             this.state.today = DB.today();
 
@@ -228,11 +238,18 @@ const App = {
         return Math.round(Math.max(0, this.getTargetCalories() - this.getCalories()));
     },
 
-    getMacroValue(key) {
+        getMacroValue(key) {
         let total = 0;
         ["desayuno", "comida", "merienda", "cena"].forEach(meal => {
             (this.state.day[meal] || []).forEach(food => {
-                total += Number(food[key] || 0);
+                let val = Number(food[key] || 0);
+                
+                // Si el valor guardado viene hinchado por un error previo, corregir escala
+                if (val > 300) {
+                    val = val / 10;
+                }
+                
+                total += val;
             });
         });
         return total;
