@@ -91,6 +91,13 @@ const App = {
         const gastoTotal = actividad.caloriasTotales || 0; 
         const objetivoTotal = objetivoBase + movimiento;
 
+        const restantesValor = objetivoTotal - this.getCalories();
+        const labelRestantes = restantesValor < 0 ? "Exceso" : "Restantes";
+        const valorRestantesTexto = restantesValor < 0 
+            ? `+${Math.abs(Math.round(restantesValor))} kcal` 
+            : `${Math.round(restantesValor)} kcal`;
+        const colorRestantes = restantesValor < 0 ? "color: #ff3b30;" : "";
+
         app.innerHTML = `
         <section class="card dashboard">
             <div class="dashboard-top">
@@ -126,9 +133,9 @@ const App = {
             </div>
             
             <div class="dashboard-stats">
-                <div class="stat-card">
-                    <div class="stat-title">Objetivo</div>
-                    <div class="stat-value">${objetivoBase} kcal</div>
+                                <div class="stat-card">
+                    <div class="stat-title">${labelRestantes}</div>
+                    <div class="stat-value" style="${colorRestantes}">${valorRestantesTexto}</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Actividad</div>
