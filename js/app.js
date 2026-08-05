@@ -878,33 +878,49 @@ const App = {
         this.toast("Actividad actualizada");
     },
 
-    copyReport() {
+        copyReport() {
         const actividad = this.getActivity();
         const objetivoBase = this.getBaseCalories();
-        const objetivo = this.getTargetCalories();
+        const objetivoTotal = this.getTargetCalories();
         const consumido = this.getCalories();
-        const restante = this.getRemainingCalories();
+        
         const proteinas = this.getMacroValue("proteinas");
         const hidratos = this.getMacroValue("hidratos");
         const grasas = this.getMacroValue("grasas");
 
-        let texto = "RESUMEN DIARIO\n\n";
+        // Cálculo dinámico del balance neto real
+        const diferencia = consumido - objetivoTotal;
+        let balanceTexto = "";
+        if (diferencia > 0) {
+            balanceTexto = `+${diferencia.toFixed(1)} kcal (Superávit calórico)`;
+        } else if (diferencia < 0) {
+            balanceTexto = `${diferencia.toFixed(1)} kcal (Déficit calórico)`;
+        } else {
+            balanceTexto = `0.0 kcal (Mantenimiento exacto)`;
+        }
+
+        let texto = "📊 RESUMEN DIARIO DE NUTRICIÓN Y ACTIVIDAD\n";
         texto += this.formatDate() + "\n\n";
-        texto += "🔥 NUTRICIÓN\n\n";
-        texto += `Consumido: ${consumido.toFixed(1)} kcal\n\n`;
-        texto += "🏃 ACTIVIDAD\n\n";
-        texto += `Movimiento: ${actividad.movimiento} kcal\n`;
-        texto += `Ejercicio: ${actividad.ejercicio} min\n`;
-        texto += `De pie: ${actividad.dePie} h\n`;
-        texto += `Actualizado: ${actividad.actualizada || "--:--"}\n\n`;
-        texto += "🎯 BALANCE\n\n";
-        texto += `Objetivo base: ${objetivoBase} kcal\n`;
-        texto += `Actividad: +${actividad.movimiento} kcal\n`;
-        texto += `Objetivo hoy: ${objetivo} kcal\n`;
-        texto += `Restantes: ${restante.toFixed(1)} kcal\n\n`;
-        texto += `Proteínas: ${proteinas.toFixed(1)} g\n`;
-        texto += `Hidratos: ${hidratos.toFixed(1)} g\n`;
-        texto += `Grasas: ${grasas.toFixed(1)} g\n\n`;
+
+        texto += "⚖️ BALANCE CALÓRICO\n";
+        texto += `• Consumido: ${consumido.toFixed(1)} kcal\n`;
+        texto += `• Objetivo base: ${objetivoBase} kcal\n`;
+        texto += `• Gasto por actividad: +${actividad.movimiento || 0} kcal\n`;
+        texto += `• Objetivo ajustado: ${objetivoTotal} kcal\n`;
+        texto += `• Balance neto: ${balanceTexto}\n\n`;
+
+        texto += "🧬 MACRONUTRIENTES TOTALES\n";
+        texto += `• Proteínas: ${proteinas.toFixed(1)} g (${(proteinas * 4).toFixed(0)} kcal)\n`;
+        texto += `• Hidratos: ${hidratos.toFixed(1)} g (${(hidratos * 4).toFixed(0)} kcal)\n`;
+        texto += `• Grasas: ${grasas.toFixed(1)} g (${(grasas * 9).toFixed(0)} kcal)\n\n`;
+
+        texto += "🏃 ACTIVIDAD FÍSICA\n";
+        texto += `• Movimiento: ${actividad.movimiento || 0} kcal\n`;
+        texto += `• Ejercicio: ${actividad.ejercicio || 0} min\n`;
+        texto += `• De pie: ${actividad.dePie || 0} h\n`;
+        texto += `• Actualizado: ${actividad.actualizada || "--:--"}\n\n`;
+
+        texto += "--------------------------------------------------\n\n";
 
         const comidas = [
             { titulo: "DESAYUNO", key: "desayuno" },
@@ -914,25 +930,32 @@ const App = {
         ];
 
         comidas.forEach(comida => {
-            texto += comida.titulo + "\n";
             const foods = this.state.day[comida.key] || [];
-
+            
             if (!foods.length) {
-                texto += "Sin alimentos\n\n";
-                return;
+                return; // Si no hay alimentos en esa comida, la salta para limpiar el texto
             }
 
-            let total = 0;
+            let totalMeal = 0;
+            texto += `${comida.titulo}\n`;
+
             foods.forEach(food => {
-                total += Number(food.kcal || 0);
+                totalMeal += Number(food.kcal || 0);
                 texto += `• ${food.hora || "--:--"} - ${food.nombre} (${food.kcal} kcal)\n`;
             });
 
-            texto += `Total ${comida.titulo.toLowerCase()}: ${Number(total.toFixed(1))} kcal\n\n`;
+            texto += `Total ${comida.titulo.toLowerCase()}: ${Number(totalMeal.toFixed(1))} kcal\n\n`;
         });
 
+        texto += "--------------------------------------------------\n";
+        texto += "💡 INSTRUCCIONES DE ANÁLISIS PARA LA IA:\n";
+        texto += "1. Revisa la coherencia entre las calorías consumidas y los gramos de macronutrientes reportados.\n";
+        texto += "2. Analiza la calidad nutricional de las ingestas (alimentos densos vs. ultraprocesados/salsas).\n";
+        texto += "3. Evalúa si el balance neto (superávit/déficit) es adecuado para el nivel de actividad registrado.\n";
+        texto += "4. Proporciona 2 o 3 ajustes estratégicos recomendados para la selección de alimentos del día siguiente.";
+
         navigator.clipboard.writeText(texto);
-        this.toast("Resumen copiado");
+        this.toast("Informe optimizado copiado para ChatGPT");
     },
 
     toast(message) {
