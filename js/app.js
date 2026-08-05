@@ -132,10 +132,10 @@ const App = {
                 </div>
             </div>
             
-            <div class="dashboard-stats">
-                                <div class="stat-card">
-                    <div class="stat-title">${labelRestantes}</div>
-                    <div class="stat-value" style="${colorRestantes}">${valorRestantesTexto}</div>
+                        <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-title">Objetivo</div>
+                    <div class="stat-value">${objetivoBase} kcal</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Actividad</div>
@@ -146,8 +146,8 @@ const App = {
                     <div class="stat-value">${gastoTotal} kcal</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title">Restantes</div>
-                    <div class="stat-value">${this.getRemainingCalories()} kcal</div>
+                    <div class="stat-title">${labelRestantes}</div>
+                    <div class="stat-value" style="${colorRestantes}">${valorRestantesTexto}</div>
                 </div>
             </div>
         </section>
