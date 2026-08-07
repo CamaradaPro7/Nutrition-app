@@ -796,20 +796,28 @@ const App = {
     },
 
         parseOCRText(rawText) {
-        let movimiento = 0;
-        let ejercicio = 0;
-        let dePie = 0;
-        let caloriasTotales = 0;
+    let movimiento = 0;
+    let ejercicio = 0;
+    let dePie = 0;
+    let caloriasTotales = 0;
 
-        // 1. Movimiento (ej. 638/600 KCAL)
-        const matchMov = rawText.match(/Movimiento[\s\S]*?(\d+)\s*\/\s*\d+/i) || 
-                         rawText.match(/(\d+)\s*\/\s*\d+\s*KCAL/i);
-        if (matchMov) movimiento = parseInt(matchMov[1]);
+    // 1. Limpiar marcas de tiempo (0:00, 6:00, 12:00, 18:00) para que no rompan las búsquedas
+    const textLimpio = rawText.replace(/\b([01]?\d|2[0-3]):[0-5]\d\b/g, '');
 
-        // 2. Calorías totales / Gasto (ej. TOTAL: 1644 KCAL)
-        const matchTot = rawText.match(/TOTAL:\s*(\d+)\s*KCAL/i) || 
-                         rawText.match(/Calor[ií]as\s*totales[:\s]+(\d+)/i);
-        if (matchTot) caloriasTotales = parseInt(matchTot[1]);
+    // 1. Movimiento (ej. 570/600 KCAL)
+    // Busca específicamente la cifra que precede a "/OBJETIVO KCAL" o la que lleva KCAL pegado
+    const matchMov = textLimpio.match(/(\d+)\s*\/\s*\d+\s*KCAL/i) ||
+                     textLimpio.match(/Movimiento[\s\S]*?(\d+)\s*KCAL/i);
+
+    if (matchMov) movimiento = parseInt(matchMov[1]);
+
+    // 2. Calorías totales / Gasto (ej. TOTAL: 1558 KCAL)
+    const matchTot = textLimpio.match(/TOTAL:\s*(\d+)\s*KCAL/i) ||
+                     textLimpio.match(/Calor[ií]as\s*totales[:\s]*(\d+)/i);
+
+    if (matchTot) caloriasTotales = parseInt(matchTot[1]);
+
+    // ... resto de tu parseOCRText igual para ejercicio y dePie
 
         // 3. Ejercicio: Tratamiento específico para fallos de OCR en Apple Watch
         // Buscamos la sección de Ejercicio
