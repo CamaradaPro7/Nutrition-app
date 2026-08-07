@@ -794,68 +794,68 @@ const App = {
             statusDiv.textContent = "❌ Error al leer la imagen. Inténtalo pegando texto.";
         }
     },
-
-        parseOCRText(rawText) {
+    
+    parseOCRText(rawText) {
     let movimiento = 0;
     let ejercicio = 0;
     let dePie = 0;
     let caloriasTotales = 0;
 
-    // 1. Limpiar marcas de tiempo (0:00, 6:00, 12:00, 18:00) para que no rompan las búsquedas
+    // 1. Limpiar marcas de tiempo del eje X (0:00, 6:00, 12:00, 18:00)
     const textLimpio = rawText.replace(/\b([01]?\d|2[0-3]):[0-5]\d\b/g, '');
 
-    // 1. Movimiento (ej. 570/600 KCAL)
-    // Busca específicamente la cifra que precede a "/OBJETIVO KCAL" o la que lleva KCAL pegado
-    const matchMov = textLimpio.match(/(\d+)\s*\/\s*\d+\s*KCAL/i) ||
-                     textLimpio.match(/Movimiento[\s\S]*?(\d+)\s*KCAL/i);
-
-    if (matchMov) movimiento = parseInt(matchMov[1]);
-
-    // 2. Calorías totales / Gasto (ej. TOTAL: 1558 KCAL)
+    // 2. Extraer Calorías Totales primero (ej. TOTAL: 1558 KCAL)
     const matchTot = textLimpio.match(/TOTAL:\s*(\d+)\s*KCAL/i) ||
                      textLimpio.match(/Calor[ií]as\s*totales[:\s]*(\d+)/i);
-
     if (matchTot) caloriasTotales = parseInt(matchTot[1]);
 
-    // ... resto de tu parseOCRText igual para ejercicio y dePie
+    // 3. Extraer Movimiento (ej. 570/600 KCAL o 570 KCAL)
+    // Evita capturar el número pegado a TOTAL
+    const matchMov = textLimpio.match(/Movimiento[\s\S]*?(\d+)\s*[\/\s|]+\s*\d+\s*KCAL/i) ||
+                     textLimpio.match(/Movimiento[\s\S]*?(\d+)\s*KCAL(?!\s*TOTAL)/i) ||
+                     textLimpio.match(/(\d+)\s*\/\s*\d+\s*KCAL/i);
 
-        // 3. Ejercicio: Tratamiento específico para fallos de OCR en Apple Watch
-        // Buscamos la sección de Ejercicio
-        const bloqueEjer = rawText.match(/Ejercicio[\s\S]*?MIN/i) || rawText.match(/(\d+[\d\s\/]*MIN)/i);
-        
-        if (bloqueEjer) {
-            const textoEjer = bloqueEjer[0];
-            // Si Tesseract lee "923/30" o "93/30", capturamos lo que hay antes de la barra
-            const matchBarra = textoEjer.match(/(\d+)\s*\/\s*(\d+)/);
-            if (matchBarra) {
-                let numStr = matchBarra[1]; // ej. "923" o "93"
-                const meta = matchBarra[2]; // ej. "30"
-
-                // Si la cifra capturada tiene 3 dígitos y termina en las dos últimas cifras de 'meta' o tiene un 2 fantasma
-                if (numStr.length === 3 && numStr.includes('2')) {
-                    // Si el objetivo es 30 y lee 923, el '2' es la barra / mal leída por Tesseract
-                    numStr = numStr.replace('2', '');
-                }
-                ejercicio = parseInt(numStr);
-            } else {
-                const matchSimple = textoEjer.match(/(\d+)/);
-                if (matchSimple) ejercicio = parseInt(matchSimple[1]);
-            }
+    if (matchMov) {
+        movimiento = parseInt(matchMov[1]);
+    } else if (caloriasTotales > 0) {
+        // Fallback de seguridad si no detecta la barra
+        const matchAlt = textLimpio.match(/Movimiento[\s\S]*?(\d+)/i);
+        if (matchAlt && parseInt(matchAlt[1]) !== caloriasTotales) {
+            movimiento = parseInt(matchAlt[1]);
         }
+    }
 
-        // 4. De pie (ej. 10/12 H)
-        const matchPie = rawText.match(/De\s*pie[\s\S]*?(\d+)\s*\/\s*\d+/i) || 
-                         rawText.match(/(\d+)\s*\/\s*\d+\s*H/i);
-        if (matchPie) dePie = parseInt(matchPie[1]);
+    // 4. Ejercicio: Tratamiento específico para fallos de OCR en Apple Watch
+    const bloqueEjer = textLimpio.match(/Ejercicio[\s\S]*?MIN/i) || textLimpio.match(/(\d+[\d\s\/]*MIN)/i);
+    
+    if (bloqueEjer) {
+        const textoEjer = bloqueEjer[0];
+        const matchBarra = textoEjer.match(/(\d+)\s*\/\s*(\d+)/);
+        if (matchBarra) {
+            let numStr = matchBarra[1];
+            if (numStr.length === 3 && numStr.includes('2')) {
+                numStr = numStr.replace('2', '');
+            }
+            ejercicio = parseInt(numStr);
+        } else {
+            const matchSimple = textoEjer.match(/(\d+)/);
+            if (matchSimple) ejercicio = parseInt(matchSimple[1]);
+        }
+    }
 
-        // Autocompletar el campo de texto
-        let resultText = `Movimiento ${movimiento} kcal\n`;
-        resultText += `Ejercicio ${ejercicio} min\n`;
-        resultText += `De pie ${dePie} h\n`;
-        if (caloriasTotales) resultText += `Calorías totales ${caloriasTotales} kcal`;
+    // 5. De pie (ej. 9/12 H)
+    const matchPie = textLimpio.match(/De\s*pie[\s\S]*?(\d+)\s*[\/\s|]+\s*\d+/i) || 
+                     textLimpio.match(/(\d+)\s*[\/\s|]+\s*\d+\s*H/i);
+    if (matchPie) dePie = parseInt(matchPie[1]);
 
-        document.getElementById("activityInput").value = resultText;
-    },
+    // Autocompletar el campo de texto
+    let resultText = `Movimiento ${movimiento} kcal\n`;
+    resultText += `Ejercicio ${ejercicio} min\n`;
+    resultText += `De pie ${dePie} h\n`;
+    if (caloriasTotales) resultText += `Calorías totales ${caloriasTotales} kcal`;
+
+    document.getElementById("activityInput").value = resultText;
+},
 
     importActivity() {
         const texto = document.getElementById("activityInput").value.trim();
