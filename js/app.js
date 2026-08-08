@@ -352,32 +352,33 @@ const App = {
             let hidratos = 0;
             let grasas = 0;
 
-            // 1. EXTRAER CALORÍAS (Busca explícitamente X kcal)
+            // 1. EXTRAER CALORÍAS
             const matchKcal = bloque.match(/([\d.,]+)\s*kcal/i);
             if (matchKcal) {
                 kcal = parseFloat(matchKcal[1].replace(',', '.')) || 0;
             }
 
             // 2. EXTRAER MACRONUTRIENTES EXPLÍCITOS
-            // Formato 1: Proteínas: 12 g / P: 12 g / P 12 g
             const matchP = bloque.match(/(?:Prote[ií]nas|Proteina|\bP)\s*:?\s*([\d.,]+)\s*g/i);
             if (matchP) proteinas = parseFloat(matchP[1].replace(',', '.')) || 0;
 
-            // Formato 2: Hidratos: 40 g / Carbohidratos: 40 g / C: 40 g / H: 40 g
             const matchC = bloque.match(/(?:Carbohidratos|Hidratos|\b[CH])\s*:?\s*([\d.,]+)\s*g/i);
             if (matchC) hidratos = parseFloat(matchC[1].replace(',', '.')) || 0;
 
-            // Formato 3: Grasas: 10 g / G: 10 g
             const matchG = bloque.match(/(?:Grasas|Grasa|\bG)\s*:?\s*([\d.,]+)\s*g/i);
             if (matchG) grasas = parseFloat(matchG[1].replace(',', '.')) || 0;
 
-            // 3. Normalizar e insertar en la biblioteca
+            // 3. Normalizar e insertar en la biblioteca con la categoría asignada
             const indexBiblioteca = biblioteca.findIndex(food => food.nombre.toLowerCase() === nombre.toLowerCase());
 
             if (indexBiblioteca === -1) {
-                biblioteca.push({ nombre, kcal, proteinas, hidratos, grasas });
+                biblioteca.push({ nombre, kcal, proteinas, hidratos, grasas, categoria: meal });
             } else {
-                biblioteca[indexBiblioteca] = { nombre, kcal, proteinas, hidratos, grasas };
+                biblioteca[indexBiblioteca] = { 
+                    ...biblioteca[indexBiblioteca], 
+                    nombre, kcal, proteinas, hidratos, grasas, 
+                    categoria: meal // Actualiza la categoría si ya existía
+                };
             }
 
             // 4. Guardar en el día actual
@@ -397,25 +398,53 @@ const App = {
         this.refresh();
     },
 
-    showLibrary(meal) {
+          showLibrary(meal, activeFilter = null) {
+        // Por defecto activa la pestaña de la comida desde la que abres la biblioteca
+        const currentFilter = activeFilter || meal || 'todos';
         const biblioteca = [...DB.getLibrary()].sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" }));
         const modal = document.getElementById("modal");
+
+        const btnStyle = (cat) => `
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: ${currentFilter === cat ? '#007aff' : '#f0f0f0'};
+            color: ${currentFilter === cat ? '#fff' : '#333'};
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+        `;
 
         modal.classList.remove("hidden");
         modal.innerHTML = `
             <div class="sheet">
                 <h2>📚 Biblioteca</h2>
-                <input id="librarySearch" type="text" placeholder="🔍 Buscar alimento..." oninput="App.filterLibrary()" style="width:100%;padding:12px;margin:15px 0;border:1px solid #ddd;border-radius:12px;font-size:16px;">
+                
+                <!-- Pestañas de secciones -->
+                <div style="display:flex; gap:6px; margin:15px 0 10px 0; overflow-x:auto; padding-bottom:4px;">
+                    <button style="${btnStyle('todos')}" onclick="App.showLibrary('${meal}', 'todos')">Todos</button>
+                    <button style="${btnStyle('desayuno')}" onclick="App.showLibrary('${meal}', 'desayuno')">🍳 Desayuno</button>
+                    <button style="${btnStyle('comida')}" onclick="App.showLibrary('${meal}', 'comida')">🍝 Comida</button>
+                    <button style="${btnStyle('merienda')}" onclick="App.showLibrary('${meal}', 'merienda')">🍓 Merienda</button>
+                    <button style="${btnStyle('cena')}" onclick="App.showLibrary('${meal}', 'cena')">🥗 Cena</button>
+                </div>
+
+                <input id="librarySearch" type="text" placeholder="🔍 Buscar alimento..." oninput="App.filterLibrary()" style="width:100%;padding:12px;margin-bottom:15px;border:1px solid #ddd;border-radius:12px;font-size:16px;">
+                
                 <div class="food-list">
-                    ${biblioteca.length ? biblioteca.map((food) => `
-                        <div class="food-item" onclick="App.addLibraryFood('${meal}','${food.nombre}', this)" style="cursor:pointer;">
+                    ${biblioteca.length ? biblioteca.map((food) => {
+                        const itemCategory = food.categoria || 'sin_categoria';
+                        const isHidden = (currentFilter !== 'todos' && itemCategory !== currentFilter);
+                        return `
+                        <div class="food-item" data-category="${itemCategory}" onclick="App.addLibraryFood('${meal}','${food.nombre}', this)" style="cursor:pointer; ${isHidden ? 'display:none;' : ''}">
                             <div>
                                 <div class="food-name">${food.nombre}</div>
                                 <div class="food-kcal">${food.kcal} kcal · P ${food.proteinas} g · C ${food.hidratos} g · G ${food.grasas} g</div>
                             </div>
                             <button class="delete-btn" onclick="event.stopPropagation(); App.deleteLibraryFood('${food.nombre}','${meal}')">✕</button>
                         </div>
-                    `).join("") : "<p class='text-center'>Biblioteca vacía</p>"}
+                    `}).join("") : "<p class='text-center'>Biblioteca vacía</p>"}
                 </div>
                 <div class="mt-20">
                     <button class="action-btn" onclick="App.closeModal()">✅ Listo</button>
@@ -428,21 +457,30 @@ const App = {
         const search = document.getElementById('librarySearch').value.toLowerCase();
         document.querySelectorAll('.food-item').forEach(item => {
             const text = item.textContent.toLowerCase();
-            item.style.display = text.includes(search) ? '' : 'none';
+            const matchesSearch = text.includes(search);
+            // Respeta si está oculto por el filtro de la pestaña seleccionada
+            if (item.style.display !== 'none' || search !== '') {
+                item.style.display = matchesSearch ? '' : 'none';
+            }
         });
     },
 
-    addLibraryFood(meal, nombre, element) {
-        const biblioteca = DB.getLibrary();
-        const food = biblioteca.find(f => f.nombre === nombre);
+        addLibraryFood(meal, nombre, element) {
+        let biblioteca = DB.getLibrary();
+        const foodIndex = biblioteca.findIndex(f => f.nombre === nombre);
 
         element.style.background = "#e8f6ea";
         element.style.transition = "0.2s";
 
         setTimeout(() => { element.style.background = ""; }, 200);
 
-        if (!food) return;
+        if (foodIndex === -1) return;
 
+        // Actualizar la categoría en la biblioteca
+        biblioteca[foodIndex].categoria = meal;
+        DB.saveLibrary(biblioteca);
+
+        const food = biblioteca[foodIndex];
         const ahora = new Date();
         this.state.day[meal].push({
             ...food,
